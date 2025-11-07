@@ -21,7 +21,7 @@ nodes:
   - hostname: "talos-01"
     ipAddress: "192.168.1.216"
     installDiskSelector:
-      serial: "VB0443fae7-aeff73c1"
+      wwid: "t10.ATA     VBOX HARDDISK                           VB0443fae7-aeff73c1"
     machineSpec:
       secureboot: false
     talosImageURL: factory.talos.dev/installer/9c1d1b442d73f96dcd04e81463eb20000ab014062d22e1b083e1773336bc1dd5
