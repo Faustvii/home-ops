@@ -71,7 +71,5 @@ spec:
     persistence:
       config:
         type: emptyDir
-        globalMounts:
-          - path: /app/config
       tmp:
         type: emptyDir
