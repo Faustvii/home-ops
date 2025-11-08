@@ -30,33 +30,33 @@ spec:
     server:
       enable_gzip: "true"
       root_url: https://grafana.${SECRET_DOMAIN}
-  # deployment:
-  #   spec:
-  #     strategy:
-  #       type: Recreate
-  #     template:
-  #       spec:
-  #         containers:
-  #           - name: grafana
-  #             securityContext:
-  #               allowPrivilegeEscalation: false
-  #               readOnlyRootFilesystem: true
-  #               capabilities: {drop: ["ALL"]}
-  #         securityContext:
-  #           runAsNonRoot: true
-  #           runAsUser: 1000
-  #           runAsGroup: 1000
-  #           fsGroup: 1000
-  #           fsGroupChangePolicy: OnRootMismatch
-  #         volumes:
-  #           - name: grafana-data
-  #             persistentVolumeClaim:
-  #               claimName: grafana-pvc
-  # persistentVolumeClaim:
-  #   spec:
-  #     accessModes:
-  #       - ReadWriteOnce
-  #     resources:
-  #       requests:
-  #         storage: 10Gi
-  # disableDefaultSecurityContext: All
+  deployment:
+    spec:
+      strategy:
+        type: Recreate
+      template:
+        spec:
+          containers:
+            - name: grafana
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: {drop: ["ALL"]}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+          volumes:
+            - name: grafana-data
+              persistentVolumeClaim:
+                claimName: grafana-pvc
+  persistentVolumeClaim:
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+  disableDefaultSecurityContext: All
