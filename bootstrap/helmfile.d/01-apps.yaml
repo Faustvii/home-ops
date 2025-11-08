@@ -19,13 +19,19 @@ releases:
     values: ['./templates/values.yaml.gotmpl']
     needs: ['kube-system/cilium']
 
+  - name: spegel
+    namespace: kube-system
+    chart: oci://ghcr.io/spegel-org/helm-charts/spegel
+    version: 0.4.0
+    values: ['./templates/values.yaml.gotmpl']
+    needs: ['kube-system/coredns']
 
   - name: cert-manager
     namespace: cert-manager
     chart: oci://quay.io/jetstack/charts/cert-manager
     version: v1.19.1
     values: ['./templates/values.yaml.gotmpl']
-    needs: ['kube-system/coredns']
+    needs: ['kube-system/spegel']
 
   - name: flux-operator
     namespace: flux-system
