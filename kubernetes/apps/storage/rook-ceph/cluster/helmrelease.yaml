@@ -57,9 +57,9 @@ spec:
         provider: host
         addressRanges:
           public:
-            - 169.254.255.0/24
+            - 192.168.10.0/24
           cluster:
-            - 169.254.255.0/24
+            - 192.168.10.0/24
         connections:
           requireMsgr2: true
       resources:
