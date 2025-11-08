@@ -9,3 +9,4 @@ components:
 resources:
   - ./namespace.yaml
   - ./volsync/ks.yaml
+  - ./openebs/ks.yaml
