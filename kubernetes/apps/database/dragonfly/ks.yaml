@@ -6,7 +6,7 @@ metadata:
   name: dragonfly
 spec:
   interval: 1h
-  path: ./kubernetes/main/apps/database/dragonfly/app
+  path: ./kubernetes/apps/database/dragonfly/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -24,7 +24,7 @@ spec:
   dependsOn:
     - name: dragonfly
   interval: 1h
-  path: ./kubernetes/main/apps/database/dragonfly/cluster
+  path: ./kubernetes/apps/database/dragonfly/cluster
   prune: true
   sourceRef:
     kind: GitRepository
