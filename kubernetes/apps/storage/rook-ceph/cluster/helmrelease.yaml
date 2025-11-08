@@ -4,14 +4,12 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: rook-ceph-cluster
-  namespace: storage
 spec:
   chartRef:
     kind: OCIRepository
     name: rook-ceph-cluster
   interval: 1h
   values:
-    operatorNameSpace: "{{ .Release.Namespace }}"
     monitoring:
       enabled: true
       createPrometheusRules: true
