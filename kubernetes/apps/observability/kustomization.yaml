@@ -6,8 +6,9 @@ namespace: observability
 
 components:
   - ../../components/sops
-#   - ../../components/alerts
+  - ../../components/alerts
 
 resources:
   - ./namespace.yaml
   - ./grafana/ks.yaml
+  - ./kube-prometheus-stack/ks.yaml
