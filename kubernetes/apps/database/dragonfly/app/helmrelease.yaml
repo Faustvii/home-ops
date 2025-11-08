@@ -95,14 +95,3 @@ spec:
             scrapeTimeout: 10s
     serviceAccount:
       dragonfly-operator: {}
-  postRenderers:
-    - kustomize:
-        patches:
-          - patch: |-
-              apiVersion: monitoring.coreos.com/v1
-              kind: ServiceMonitor
-              metadata:
-                name: dragonfly-operator
-                namespace: dbms
-              spec:
-                fallbackScrapeProtocol: PrometheusText1.0.0
