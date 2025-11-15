@@ -35,34 +35,7 @@ spec:
       requests:
         cpu: 1000m
         memory: 8Gi
-    # securityContext:
-    #   runAsUser: 1000
-    #   fsGroup: 2000
-    #   fsGroupChangePolicy: "OnRootMismatch"
-    livenessProbe:
-      command:
-        - mc-health
-      initialDelaySeconds: 60
-      periodSeconds: 10
-      failureThreshold: 10
-      successThreshold: 1
-      timeoutSeconds: 5
-    readinessProbe:
-      command:
-        - mc-health
-      initialDelaySeconds: 45
-      periodSeconds: 5
-      failureThreshold: 3
-      successThreshold: 1
-      timeoutSeconds: 5
-    startupProbe:
-      command:
-        - mc-health
-      enabled: true
-      initialDelaySeconds: 30
-      periodSeconds: 10
-      failureThreshold: 30
-      timeoutSeconds: 5
+
     extraEnv:
       TZ: "Europe/Paris"
       ENABLE_ROLLING_LOGS: true
@@ -72,12 +45,12 @@ spec:
 
     persistence:
       dataDir:
-        type: emptydir
-        enabled: true
+        enabled: false
         # existingClaim: *app
 
     serviceAnnotations:
       lbipam.cilium.io/ips: "192.168.10.31"
+      mc-router.itzg.me/externalServerName: "mc.${SECRET_DOMAIN}"
     serviceLabels:
       io.cilium/ippool: public
     minecraftServer:
@@ -92,11 +65,9 @@ spec:
       motd: Huh
       worldSaveName: "Test Realm"
       viewDistance: 16
-      forceReDownload: true
-      seed: 5143877906783391683
+      levelSeed: 5143877906783391683
       memory: 8G
       STOP_SERVER_ANNOUNCE_DELAY: 30
-      # jvmXXOpts: "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1"
       # rcon:
       #   enabled: true
       #   serviceType: ClusterIP
@@ -111,6 +82,7 @@ spec:
             type: ClusterIP
             port: 8100
       modrinth:
+        downloadDependencies: required
         projects:
           - fabric-api
           - chunky
