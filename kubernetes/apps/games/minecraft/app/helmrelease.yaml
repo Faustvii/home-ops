@@ -65,7 +65,8 @@ spec:
       motd: Huh
       worldSaveName: "Test Realm"
       viewDistance: 16
-      levelSeed: 5143877906783391683
+      levelSeed: "5143877906783391683"
+      maxPlayers: 24
       memory: 8G
       STOP_SERVER_ANNOUNCE_DELAY: 30
       # rcon:
