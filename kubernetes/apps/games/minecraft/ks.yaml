@@ -10,6 +10,10 @@ spec:
       app.kubernetes.io/name: *app
   interval: 1h
   path: ./kubernetes/apps/games/minecraft/mc-router
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -33,10 +37,10 @@ spec:
   #   - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/games/minecraft/app
-  # postBuild:
-  #   substitute:
-  #     APP: *app
-  #     VOLSYNC_CAPACITY: 15Gi
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   sourceRef:
     kind: GitRepository
