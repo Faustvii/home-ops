@@ -79,8 +79,6 @@ spec:
           containerPort: 24454
           protocol: UDP
           service:
-            annotations:
-              lbipam.cilium.io/ips: "192.168.10.32"
             enabled: true
             embedded: true
             type: LoadBalancer
