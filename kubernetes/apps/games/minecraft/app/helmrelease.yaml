@@ -68,9 +68,9 @@ spec:
       maxPlayers: 24
       memory: 8G
       STOP_SERVER_ANNOUNCE_DELAY: 30
-      # rcon:
-      #   enabled: true
-      #   serviceType: ClusterIP
+      rcon:
+        enabled: true
+        serviceType: ClusterIP
       serviceType: ClusterIP
       extraPorts:
         - name: voice
