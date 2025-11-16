@@ -50,6 +50,7 @@ spec:
 
     serviceAnnotations:
       mc-router.itzg.me/externalServerName: "mc.${SECRET_DOMAIN}"
+      lbipam.cilium.io/ips: "192.168.10.31"
     serviceLabels:
       io.cilium/ippool: public
     minecraftServer:
@@ -70,8 +71,9 @@ spec:
       STOP_SERVER_ANNOUNCE_DELAY: 30
       rcon:
         enabled: true
-        serviceType: ClusterIP
-      serviceType: ClusterIP
+        embedded: true
+        serviceType: LoadBalancer
+      serviceType: LoadBalancer
       extraPorts:
         - name: voice
           containerPort: 24454
@@ -80,7 +82,7 @@ spec:
             annotations:
               lbipam.cilium.io/ips: "192.168.10.32"
             enabled: true
-            embedded: false
+            embedded: true
             type: LoadBalancer
             port: 24454
       modrinth:
