@@ -85,7 +85,7 @@ spec:
             port: 24454
       modrinth:
         downloadDependencies: required
-        allowedVersionType: beta
+        allowedVersionType: alpha
         projects:
           - fabric-api
           - chunky
