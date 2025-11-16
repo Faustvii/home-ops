@@ -45,7 +45,7 @@ spec:
 
     persistence:
       dataDir:
-        enabled: false
+        enabled: true
         # existingClaim: *app
 
     serviceAnnotations:
@@ -97,6 +97,7 @@ spec:
           - krypton
           - spark
           - simple-voice-chat
+          - servux
           - vmp-fabric
           - c2me-fabric
           - scalablelux
