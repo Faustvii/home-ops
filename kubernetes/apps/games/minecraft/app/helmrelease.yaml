@@ -81,14 +81,14 @@ spec:
               lbipam.cilium.io/ips: "192.168.10.31"
             enabled: true
             embedded: false
-            type: ClusterIP
+            type: LoadBalancer
             port: 24454
       modrinth:
         downloadDependencies: required
         projects:
           - fabric-api
           - chunky
-          - noisium
+          - noisiumforked
           - krypton
           - simple-voice-chat
           - vmp-fabric
