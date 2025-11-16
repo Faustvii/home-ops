@@ -31,7 +31,7 @@ spec:
       tag: 2025.10.5-java25@sha256:58cf17a792deef51ddd127de9a6b72e83a64df187613b481874ada6ba1d57e6b
     resources:
       limits:
-        memory: 10Gi
+        memory: 12Gi
       requests:
         cpu: 1000m
         memory: 8Gi
