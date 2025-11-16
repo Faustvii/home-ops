@@ -87,10 +87,15 @@ spec:
         downloadDependencies: required
         allowedVersionType: alpha
         projects:
+          - armor-poser
+          - async
+          - audioplayer
           - fabric-api
+          # - carpet
           - chunky
           - noisiumforked
           - krypton
+          - spark
           - simple-voice-chat
           - vmp-fabric
           - c2me-fabric
