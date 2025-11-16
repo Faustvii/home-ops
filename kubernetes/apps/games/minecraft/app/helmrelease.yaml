@@ -71,7 +71,7 @@ spec:
       # rcon:
       #   enabled: true
       #   serviceType: ClusterIP
-      serviceType: LoadBalancer
+      serviceType: ClusterIP
       extraPorts:
         - name: voice
           containerPort: 24454
