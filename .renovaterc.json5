@@ -16,6 +16,7 @@
     "github>Faustvii/home-ops//.renovate/semanticCommits.json5",
     "github>Faustvii/home-ops//.renovate/grafanadashboards.json5",
     "github>Faustvii/home-ops//.renovate/minecraft.json5",
+    "github>Faustvii/home-ops//.renovate/customManagers.json5",
   ],
   dependencyDashboard: true,
   dependencyDashboardTitle: "Renovate Dashboard 🤖",
