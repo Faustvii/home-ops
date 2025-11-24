@@ -49,15 +49,16 @@ spec:
       #DATAPACKS_FILE: /extras/datapacks.txt
 
     extraVolumes:
-      - name: datapacks
-        configMap:
-          name: minecraft-datapacks
+      - volumes:
+          - name: datapacks
+            configMap:
+              name: minecraft-datapacks
 
-    extraVolumeMounts:
-      - name: datapacks
-        mountPath: /extras/datapacks.txt
-        subPath: datapacks.txt
-        readOnly: true
+        volumeMounts:
+          - name: datapacks
+            mountPath: /extras/datapacks.txt
+            subPath: datapacks.txt
+            readOnly: true
 
     persistence:
       dataDir:
