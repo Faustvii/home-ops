@@ -20,10 +20,10 @@ spec:
               repository: ghcr.io/nicholaswilde/static
               tag: version-ee8a20c@sha256:d1d47c730bc41c4ae46de8df0c9c76bb803927fcbe3446b6ff4f7cd152972940
 
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
-              capabilities: {drop: ["ALL"]}
+            # securityContext:
+            #   allowPrivilegeEscalation: false
+            #   readOnlyRootFilesystem: false
+            #   capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 10m
@@ -54,7 +54,7 @@ spec:
       app:
         ports:
           http:
-            port: 8000
+            port: &port 8000
       code:
         ports:
           http:
@@ -65,7 +65,7 @@ spec:
         rules:
           - backendRefs:
               - name: app
-                port: http
+                port: *port
         parentRefs:
           - name: envoy-external
             namespace: network
