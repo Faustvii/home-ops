@@ -44,6 +44,7 @@ spec:
       GID: 2000
       MAX_MEMORY: 8G
       STOP_SERVER_ANNOUNCE_DELAY: 30
+      USE_AIKAR_FLAGS: true
 
     persistence:
       dataDir:
