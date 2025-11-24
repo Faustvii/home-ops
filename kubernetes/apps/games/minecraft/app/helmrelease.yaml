@@ -70,6 +70,9 @@ spec:
       viewDistance: 16
       levelSeed: "5143877906783391683"
       maxPlayers: 24
+      resourcePackUrl: "https://download.mc-packs.net/pack/cbd82218081da66e09e66050d9db421d49fe47a5.zip"
+      resourcePackSha: "cbd82218081da66e09e66050d9db421d49fe47a5" # sha-1 digest in lowercase hexadecimal
+      resourcePackEnforce: true
       rcon:
         enabled: true
         embedded: true
