@@ -24,6 +24,7 @@ spec:
     name: minecraft
   interval: 1h
   values:
+    terminationGracePeriodSeconds: 90
     deploymentAnnotations:
       secret.reloader.stakater.com/reload: &secret minecraft-secret
     image:
@@ -41,7 +42,7 @@ spec:
       ENABLE_ROLLING_LOGS: true
       UID: 1000
       GID: 2000
-      MEMORY: 8G
+      MAX_MEMORY: 8G
 
     persistence:
       dataDir:
@@ -67,7 +68,6 @@ spec:
       viewDistance: 16
       levelSeed: "5143877906783391683"
       maxPlayers: 24
-      memory: 8G
       STOP_SERVER_ANNOUNCE_DELAY: 30
       rcon:
         enabled: true
