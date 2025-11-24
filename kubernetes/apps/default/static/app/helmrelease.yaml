@@ -62,6 +62,10 @@ spec:
     route:
       app:
         hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - name: app
+                port: http
         parentRefs:
           - name: envoy-external
             namespace: network
