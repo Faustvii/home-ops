@@ -48,7 +48,7 @@ spec:
           - --auth
           - none
         ports:
-          - containerPort: 8443
+          - containerPort: 8080
             name: vscode
         volumeMounts:
           - name: datadir
