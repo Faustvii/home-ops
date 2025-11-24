@@ -27,6 +27,7 @@ spec:
     terminationGracePeriodSeconds: 90
     deploymentAnnotations:
       secret.reloader.stakater.com/reload: &secret minecraft-secret
+      configmap.reloader.stakater.com/reload: "minecraft-datapacks"
     image:
       repository: ghcr.io/itzg/minecraft-server
       tag: 2025.10.5-java25@sha256:58cf17a792deef51ddd127de9a6b72e83a64df187613b481874ada6ba1d57e6b
@@ -45,6 +46,18 @@ spec:
       MAX_MEMORY: 8G
       STOP_SERVER_ANNOUNCE_DELAY: 30
       USE_AIKAR_FLAGS: true
+      #DATAPACKS_FILE: /extras/datapacks.txt
+
+    extraVolumes:
+      - name: datapacks
+        configMap:
+          name: minecraft-datapacks
+
+    extraVolumeMounts:
+      - name: datapacks
+        mountPath: /extras/datapacks.txt
+        subPath: datapacks.txt
+        readOnly: true
 
     persistence:
       dataDir:

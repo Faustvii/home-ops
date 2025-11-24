@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: minecraft-datapacks
+data:
+  datapacks.txt: |
+    https://packs.minecraft.com/data-pack/abandoned-mines-1-19-4-1-20-1.zip
+    https://packs.minecraft.com/data-pack/biome-bundle-1-19-4-1-20-1.zip
+    https://packs.minecraft.com/data-pack/cave-biomes-1-19-4-1-20-1.zip
