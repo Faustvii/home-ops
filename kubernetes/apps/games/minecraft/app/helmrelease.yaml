@@ -43,6 +43,7 @@ spec:
       UID: 1000
       GID: 2000
       MAX_MEMORY: 8G
+      STOP_SERVER_ANNOUNCE_DELAY: 30
 
     persistence:
       dataDir:
@@ -68,7 +69,6 @@ spec:
       viewDistance: 16
       levelSeed: "5143877906783391683"
       maxPlayers: 24
-      STOP_SERVER_ANNOUNCE_DELAY: 30
       rcon:
         enabled: true
         embedded: true
