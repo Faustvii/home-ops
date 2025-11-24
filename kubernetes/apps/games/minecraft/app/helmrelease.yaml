@@ -37,6 +37,29 @@ spec:
       requests:
         cpu: 1000m
         memory: 8Gi
+    readinessProbe:
+      initialDelaySeconds: 15
+
+    sidecarContainers:
+      - name: vscode
+        image: "ghcr.io/coder/code-server@4.106.2"
+        imagePullPolicy: IfNotPresent
+        args:
+          - --auth
+          - none
+        ports:
+          - containerPort: 8443
+            name: vscode
+        volumeMounts:
+          - name: datadir
+            mountPath: /data # mount Minecraft world + configs
+        resources:
+          requests:
+            cpu: 10m
+            memory: 512Mi
+          limits:
+            cpu: 1
+            memory: 1Gi
 
     extraEnv:
       TZ: "Europe/Paris"
