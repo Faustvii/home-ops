@@ -13,6 +13,5 @@ spec:
     - backendRefs:
         - name: minecraft
           namespace: games
-          identifier: bluemap
           port: 8100
 
