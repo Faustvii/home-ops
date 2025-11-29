@@ -21,9 +21,7 @@ spec:
               tag: 5.1.4@sha256:25fc7caf22101f85276ede9b1f76a46b7a93971bb6b70b6c58d14d6ab7f51415
             env:
               QBT_WEBUI_PORT: &port 80
-              QBT_BitTorrent__Session__Interface: "net1"
-              QBT_TORRENTING_PORT: 16720
-              QBT_BIND_IP: "192.168.90.10"
+              QBT_TORRENTING_PORT: 57513
             probes:
               liveness: &probes
                 enabled: true
