@@ -14,3 +14,4 @@ resources:
   - ./kube-prometheus-stack/ks.yaml
   - ./victoria-logs/ks.yaml
   - ./fluent-bit/ks.yaml
+  - ./gatus/ks.yaml
