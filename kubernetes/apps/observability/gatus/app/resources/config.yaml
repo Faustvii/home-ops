@@ -27,6 +27,7 @@ endpoints:
       - "[CONNECTED] == true"
 
 metrics: true
+debug: false
 
 storage:
   type: sqlite
