@@ -43,7 +43,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m
@@ -87,8 +87,12 @@ spec:
             [qbittorrent]
             addr = "http://localhost:80"
     persistence:
-      # config:
-      #   existingClaim: "{{ .Release.Name }}"
+      config:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 2Gi
+        enabled: true
+
       config-file:
         type: configMap
         identifier: config

@@ -27,8 +27,12 @@ nodes:
     talosImageURL: factory.talos.dev/installer/dc861599b458d7902682bf4d545139d2b0628eb705efbb113ed6608b6e6807fa
     controlPlane: true
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "38:05:25:33:bb:74"
+      - interface: bond0
+        bond:
+          deviceSelectors:
+            - driver: igc
+              hardwareAddr: "38:05:25:33:bb:*"
+          mode: active-backup
         dhcp: false
         addresses:
           - "192.168.10.10/24"
@@ -38,6 +42,9 @@ nodes:
         mtu: 1500
         vip:
           ip: "192.168.10.20"
+        vlans:
+          - vlanId: 90
+            dhcp: false
   # - hostname: "talos-02"
   #   ipAddress: "192.168.10.11"
   #   installDisk: "/dev/sda"
@@ -92,4 +99,3 @@ controlPlane:
   patches:
     - "@./patches/controller/cluster.yaml"
     - "@./patches/controller/machine-features.yaml"
-
