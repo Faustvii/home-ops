@@ -129,8 +129,8 @@ spec:
           protocol: TCP
           service:
             enabled: true
-            embedded: true
-            type: LoadBalancer
+            embedded: false
+            type: ClusterIP
             port: 8100
       modrinth:
         downloadDependencies: required
