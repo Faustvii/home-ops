@@ -124,6 +124,14 @@ spec:
             embedded: true
             type: LoadBalancer
             port: 24454
+        - name: bluemap
+          containerPort: 8100
+          protocol: HTTP
+          service:
+            enabled: true
+            embedded: true
+            type: LoadBalancer
+            port: 8100
       modrinth:
         downloadDependencies: required
         allowedVersionType: alpha
