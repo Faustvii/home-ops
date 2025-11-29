@@ -113,7 +113,7 @@ spec:
       rcon:
         enabled: true
         embedded: true
-        serviceType: LoadBalancer
+        serviceType: ClusterIP
       serviceType: LoadBalancer
       extraPorts:
         - name: voice
