@@ -58,7 +58,6 @@ spec:
             "name": "vpn",
             "namespace": "network",
             "ips": ["192.168.90.10/24"],
-            "default-route": ["192.168.90.1"],
             "mac": "02:84:a6:de:a9:de"
           }]
       securityContext:
