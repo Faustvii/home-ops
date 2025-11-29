@@ -126,7 +126,7 @@ spec:
             port: 24454
         - name: bluemap
           containerPort: 8100
-          protocol: HTTP
+          protocol: TCP
           service:
             enabled: true
             embedded: true
