@@ -84,7 +84,6 @@ metadata:
     external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
     gatus.home-operations.com/endpoint: |-
       group: internal
-      guarded: true
       ui:
         hide-hostname: true
         hide-url: true
@@ -139,11 +138,11 @@ spec:
     xForwardedFor:
       numTrustedHops: 1
   connection:
-    bufferLimit: 4Mi
+    bufferLimit: 8Mi
     maxAcceptPerSocketEvent: 0
   http2:
-    initialStreamWindowSize: 512Ki
-    initialConnectionWindowSize: 8Mi
+    initialStreamWindowSize: 2Mi
+    initialConnectionWindowSize: 32Mi
     onInvalidMessage: TerminateStream
   http3: {}
   targetSelectors:
