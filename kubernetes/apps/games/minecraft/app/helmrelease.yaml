@@ -69,7 +69,7 @@ spec:
       MAX_MEMORY: 8G
       STOP_SERVER_ANNOUNCE_DELAY: 30
       USE_AIKAR_FLAGS: true
-      DATAPACKS_FILE: /extras/datapacks.txt
+      # DATAPACKS_FILE: /extras/datapacks.txt
 
     extraVolumes:
       - volumes:
