@@ -15,3 +15,4 @@ resources:
   - ./victoria-logs/ks.yaml
   - ./fluent-bit/ks.yaml
   - ./gatus/ks.yaml
+  - ./blackbox-exporter/ks.yaml
