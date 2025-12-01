@@ -24,12 +24,13 @@ spec:
   values:
     fullnameOverride: *app
     nameOverride: *app
-    replicaCount: 1
 
-    image:
-        repository: infisical/infisical
-        tag: "v0.154.0"
-        pullPolicy: IfNotPresent
+    infisical:
+      replicaCount: 1
+      image:
+          repository: infisical/infisical
+          tag: "v0.154.0"
+          pullPolicy: IfNotPresent
 
     ingress:
       enabled: false
