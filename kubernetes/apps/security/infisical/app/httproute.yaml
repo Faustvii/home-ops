@@ -14,7 +14,7 @@ spec:
       sectionName: https
   rules:
     - backendRefs:
-        - name: infisical
+        - name: infisical-infisical
           namespace: security
           port: 8080
 
