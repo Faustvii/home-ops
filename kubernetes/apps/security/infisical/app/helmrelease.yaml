@@ -1,0 +1,35 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app infisical
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: infisical-standalone
+      version: 1.7.2
+      sourceRef:
+        kind: HelmRepository
+        name: infisical
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    image:
+        repository: infisical/infisical
+        tag: "v0.154.0"
+        pullPolicy: IfNotPresent
+
+    # ingress:
+    #   enabled: true
+    #   ingressClassName: internal
+    #   nginx:
+    #     enabled: false
+    #   hostName: &host "infisical.${SECRET_DOMAIN}"
