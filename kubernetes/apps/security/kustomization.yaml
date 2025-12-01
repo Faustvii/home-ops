@@ -6,4 +6,5 @@ namespace: security
 components:
   - ../../components/sops
 resources:
+  - ./namespace.yaml
   - ./infisical/ks.yaml
