@@ -22,14 +22,14 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    fullnameOverride: *app
+    nameOverride: *app
+    replicaCount: 1
+
     image:
         repository: infisical/infisical
         tag: "v0.154.0"
         pullPolicy: IfNotPresent
 
-    # ingress:
-    #   enabled: true
-    #   ingressClassName: internal
-    #   nginx:
-    #     enabled: false
-    #   hostName: &host "infisical.${SECRET_DOMAIN}"
+    ingress:
+      enabled: false
