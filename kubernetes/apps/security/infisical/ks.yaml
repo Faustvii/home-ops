@@ -8,7 +8,7 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/security/infisical/app
   components:
-    - ../../../../components/database
+    - ../../../../components/database/postgres/pg18
   postBuild:
     substitute:
       APP: *app
