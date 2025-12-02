@@ -33,7 +33,7 @@ spec:
           pullPolicy: IfNotPresent
 
     postgresql:
-      enabled: false
+      enabled: true
       name: postgres-rw.database
       auth:
         username: *app
