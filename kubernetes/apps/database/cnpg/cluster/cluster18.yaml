@@ -13,9 +13,9 @@ spec:
   storage:
     size: 8Gi
 
-  bootstrap:
-    recovery:
-      source: &src source
+  # bootstrap:
+    # recovery:
+    #   source: &src source
 
   plugins:
     - name: &plugin barman-cloud.cloudnative-pg.io
