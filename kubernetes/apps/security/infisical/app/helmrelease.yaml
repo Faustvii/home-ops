@@ -28,22 +28,17 @@ spec:
     infisical:
       replicaCount: 1
       image:
-          repository: infisical/infisical
-          tag: "v0.154.0"
-          pullPolicy: IfNotPresent
+        repository: infisical/infisical
+        tag: "v0.154.0"
+        pullPolicy: IfNotPresent
 
     postgresql:
       enabled: true
-      name: postgres-rw.database
-      auth:
-        username: app
-        password:
-          valueFrom:
-            secretKeyRef:
-              name: "postgres-app"
-              namespace: database
-              key: password
-        database: *app
+      useExistingPostgresSecret:
+        enabled: true
+        existingConnectionStringSecret:
+          name: "postgres-app"
+          key: "uri"
 
     ingress:
       enabled: false
