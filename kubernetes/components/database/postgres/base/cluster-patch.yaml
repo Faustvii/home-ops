@@ -1,0 +1,14 @@
+# filepath: kubernetes/components/database/postgres/base/cluster-patch.yaml
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+  namespace: database
+spec:
+  managed:
+    roles:
+      - name: ${APP}
+        ensure: present
+        login: true
+        superuser: false
+        disablePassword: false
