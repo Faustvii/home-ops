@@ -33,7 +33,7 @@ spec:
         pullPolicy: IfNotPresent
 
     postgresql:
-      enabled: true
+      enabled: false
       useExistingPostgresSecret:
         enabled: true
         existingConnectionStringSecret:
