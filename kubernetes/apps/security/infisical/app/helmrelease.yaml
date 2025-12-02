@@ -21,6 +21,12 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  valuesFrom:
+    - kind: Secret
+      name: postgres-app
+      namespace: database
+      valuesKey: password
+      targetPath: postgresql.auth.password
   values:
     fullnameOverride: *app
     nameOverride: *app
@@ -34,11 +40,10 @@ spec:
 
     postgresql:
       enabled: true
-      useExistingPostgresSecret:
-        enabled: true
-        existingConnectionStringSecret:
-          name: "postgres-app"
-          key: "uri"
+      name: postgres-rw.database
+      auth:
+        username: app
+        database: *app
 
     ingress:
       enabled: false
