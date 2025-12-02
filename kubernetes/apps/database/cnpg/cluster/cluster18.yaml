@@ -24,7 +24,7 @@ spec:
         barmanObjectName: &store minio-store
 
   externalClusters:
-    - name: *src
+    - name: source
       plugin:
         name: *plugin
         parameters:
