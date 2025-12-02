@@ -4,4 +4,7 @@ metadata:
   name: minecraft-datapacks
 data:
   datapacks.txt: |
-    https://static.${SECRET_DOMAIN}/MindsMemories%20v0.0.1%20(MC%201.24.10)_dp.zip
+    https://github.com/Faustvii/minds_packs/releases/download/v0.0.1-mc1.21.10/MindsAdvancements_v0.0.1_mc_1.21.10_dp.zip
+    https://github.com/Faustvii/minds_packs/releases/download/v0.0.1-mc1.21.10/MindsDeepcutting_v0.0.1_mc_1.21.10_dp.zip
+    https://github.com/Faustvii/minds_packs/releases/download/v0.0.1-mc1.21.10/MindsGhasts_v0.0.1_mc_1.21.10_dp.zip
+    https://github.com/Faustvii/minds_packs/releases/download/v0.0.1-mc1.21.10/MindsMemories_v0.0.1_mc_1.21.10_dp.zip
