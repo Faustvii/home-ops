@@ -36,11 +36,12 @@ spec:
       enabled: true
       name: postgres-rw.database
       auth:
-        username: *app
+        username: app
         password:
           valueFrom:
             secretKeyRef:
-              name: "{{ .Release.Name }}-postgres"
+              name: "postgres-app"
+              namespace: database
               key: password
         database: *app
 
