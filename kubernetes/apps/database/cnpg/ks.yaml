@@ -67,10 +67,6 @@ spec:
   retryInterval: 2m
   path: ./kubernetes/apps/database/cnpg/cluster
   prune: true
-  postBuild:
-    substituteFrom:
-      - name: minio
-        kind: Secret
   sourceRef:
     kind: GitRepository
     name: flux-system
