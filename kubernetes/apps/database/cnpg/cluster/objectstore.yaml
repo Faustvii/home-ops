@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.m00nlit.dev/barmancloud.cnpg.io/objectstore_v1.json
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: minio-store
+spec:
+  configuration:
+    destinationPath: s3://tal-postgres/
+    endpointURL: https://minio-api.faust.space
+    s3Credentials:
+      accessKeyId:
+        name: minio
+        key: accessKey
+      secretAccessKey:
+        name: minio
+        key: secretKey
+    wal:
+      compression: zstd
+    data:
+      compression: gzip
+  retentionPolicy: "30d"
