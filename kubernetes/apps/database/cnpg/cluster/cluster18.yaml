@@ -22,6 +22,12 @@ spec:
               name: postgres-18
               annotations:
                  gatus.home-operations.com/enabled: "true"
+                 gatus.home-operations.com/endpoint: |
+                    name: postgres-18
+                    group: internal
+                    ui:
+                      hide-url: true
+                      hide-hostname: true
             spec:
               type: ClusterIP
           updateStrategy: patch
