@@ -102,7 +102,6 @@ spec:
                 - ""
               resources:
                 - services
-                - configmaps
               verbs:
                 - get
                 - watch
