@@ -108,7 +108,7 @@ spec:
       levelSeed: "5143877906783391683"
       maxPlayers: 24
       resourcePackUrl: "https://github.com/Faustvii/minds_packs/releases/download/v0.0.1-mc1.21.10/MindsResources_v0.0.1_mc_1.21.10_rp.zip"
-      resourcePackSha: "732130412b1ca0504da927d75b01203acf67ea13" # sha-1 digest in lowercase hexadecimal
+      resourcePackSha: "efad8b1ae7ee59ec901c77c85349a602bbd9f81c" # sha-1 digest in lowercase hexadecimal
       resourcePackEnforce: true
       rcon:
         enabled: true
