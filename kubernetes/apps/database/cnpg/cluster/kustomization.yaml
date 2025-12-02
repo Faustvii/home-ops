@@ -7,3 +7,5 @@ resources:
   - objectstore.yaml
   - scheduledbackup.yaml
   - secret.sops.yaml
+  - gatus.yaml
+  - prometheusrule.yaml
