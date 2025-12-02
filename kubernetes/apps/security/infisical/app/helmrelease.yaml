@@ -32,6 +32,18 @@ spec:
           tag: "v0.154.0"
           pullPolicy: IfNotPresent
 
+    postgresql:
+      enabled: false
+      name: postgres-rw.database
+      auth:
+        username: *app
+        password:
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Release.Name }}-postgres"
+              key: password
+        database: *app
+
     ingress:
       enabled: false
       nginx:
