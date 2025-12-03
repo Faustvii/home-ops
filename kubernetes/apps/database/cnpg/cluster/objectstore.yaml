@@ -7,7 +7,7 @@ metadata:
 spec:
   configuration:
     destinationPath: s3://tal-postgres/
-    endpointURL: https://minio-api.faust.space
+    endpointURL: http://192.168.1.61:10106
     s3Credentials:
       accessKeyId:
         name: minio
