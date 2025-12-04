@@ -32,10 +32,8 @@ spec:
         tag: "v0.154.0"
         pullPolicy: IfNotPresent
 
-    containers:
-      infisical-infisical:
-        environment:
-          REDIS_URL: "redis://dragonfly.database.svc.cluster.local/1"
+      env:
+        REDIS_URL: "redis://dragonfly.database.svc.cluster.local:6379/1"
 
     postgresql:
       enabled: false
@@ -47,6 +45,8 @@ spec:
 
     redis:
       enabled: false
+      usePassword: false
+      fullnameOverride: dragonfly.database.svc.cluster.local
 
     ingress:
       enabled: false
