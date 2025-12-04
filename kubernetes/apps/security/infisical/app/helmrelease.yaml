@@ -47,7 +47,7 @@ spec:
           key: uri
 
     redis:
-      enabled: true
+      enabled: false
       usePassword: false
       fullnameOverride: dragonfly.database.svc.cluster.local
 
