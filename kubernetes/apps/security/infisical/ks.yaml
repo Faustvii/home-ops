@@ -9,6 +9,7 @@ spec:
   path: ./kubernetes/apps/security/infisical/app
   components:
     - ../../../../components/database/postgres
+    - ../../../../components/database/dragonfly
   postBuild:
     substitute:
       APP: *app
