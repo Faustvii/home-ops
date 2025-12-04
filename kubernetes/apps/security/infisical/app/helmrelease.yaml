@@ -34,7 +34,7 @@ spec:
 
     containers:
       infisical-infisical:
-        env:
+        environment:
           REDIS_URL: "redis://dragonfly.database.svc.cluster.local/1"
 
     postgresql:
