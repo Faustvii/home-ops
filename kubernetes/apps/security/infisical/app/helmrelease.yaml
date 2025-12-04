@@ -40,6 +40,11 @@ spec:
           name: postgres-app
           key: uri
 
+    redis:
+      enabled: false
+      name: "dragonfly.svc.cluster.local:6379"
+      usePassword: false
+
     ingress:
       enabled: false
       nginx:
