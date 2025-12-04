@@ -25,18 +25,12 @@ spec:
     fullnameOverride: *app
     nameOverride: *app
 
-    env:
-      - name: REDIS_URL
-        value: "redis://dragonfly.database.svc.cluster.local:6379/1"
-
     infisical:
       replicaCount: 1
       image:
         repository: infisical/infisical
         tag: "v0.154.0"
         pullPolicy: IfNotPresent
-
-
 
     postgresql:
       enabled: false
@@ -48,8 +42,6 @@ spec:
 
     redis:
       enabled: false
-      usePassword: false
-      fullnameOverride: dragonfly.database.svc.cluster.local
 
     ingress:
       enabled: false
