@@ -8,11 +8,10 @@ spec:
   chart:
     spec:
       chart: democratic-csi
-      version: 0.14.7
+      version: 0.15.0
       sourceRef:
         name: democratic-csi
         kind: HelmRepository
-        namespace: flux-system
   install:
     remediation:
       retries: 2
@@ -29,7 +28,7 @@ spec:
 
     storageClasses:
       - name: local-hostpath
-        defaultClass: false
+        defaultClass: true
         reclaimPolicy: Delete
         volumeBindingMode: WaitForFirstConsumer
         # distributed support is not yet ready for expansion
