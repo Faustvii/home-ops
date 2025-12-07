@@ -6,8 +6,8 @@ metadata:
   name: &app radarr
 spec:
   interval: 1h
-  # components:
-  #   - ../../../../components/volsync
+  components:
+    - ../../../../components/volsync
   path: ./kubernetes/apps/default/radarr/app
   postBuild:
     substitute:
