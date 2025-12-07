@@ -11,3 +11,4 @@ resources:
   - ./volsync/ks.yaml
   - ./openebs/ks.yaml
   - ./kopia/ks.yaml
+  - ./democratic/ks.yaml
