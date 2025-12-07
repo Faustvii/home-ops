@@ -93,7 +93,7 @@ spec:
             subPath: repository.config
       repository:
         type: nfs
-        server: 192.168.1.94
+        server: truenas.faust
         path: /mnt/standard/volsync/kopia
         globalMounts:
           - path: /repository
