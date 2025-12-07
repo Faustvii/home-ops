@@ -65,7 +65,7 @@ spec:
       TZ: "Europe/Paris"
       ENABLE_ROLLING_LOGS: true
       UID: 1000
-      GID: 2000
+      GID: 1000
       MAX_MEMORY: 8G
       STOP_SERVER_ANNOUNCE_DELAY: 30
       USE_AIKAR_FLAGS: true
@@ -82,6 +82,14 @@ spec:
             mountPath: /extras/datapacks.txt
             subPath: datapacks.txt
             readOnly: true
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
 
     persistence:
       dataDir:
