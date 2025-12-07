@@ -86,7 +86,7 @@ spec:
     persistence:
       dataDir:
         enabled: true
-        existingClaim: "{{ .Release.Name }}-dst" # VolSync ReplicationDestination PVC
+        existingClaim: "{{ .Release.Name }}"
 
     serviceAnnotations:
       mc-router.itzg.me/externalServerName: "mc.${SECRET_DOMAIN}"
