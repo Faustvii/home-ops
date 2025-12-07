@@ -70,6 +70,8 @@ spec:
             namespace: network
     persistence:
       config:
-        existingClaim: "{{ .Release.Name }}"
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 5Gi
       tmp:
         type: emptyDir
