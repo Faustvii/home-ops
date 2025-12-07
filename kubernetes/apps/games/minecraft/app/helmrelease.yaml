@@ -86,7 +86,7 @@ spec:
     persistence:
       dataDir:
         enabled: true
-        existingClaim: "{{ .Release.Name }}"
+        existingClaim: *app
 
     serviceAnnotations:
       mc-router.itzg.me/externalServerName: "mc.${SECRET_DOMAIN}"
