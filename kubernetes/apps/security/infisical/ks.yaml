@@ -10,6 +10,11 @@ spec:
   components:
     - ../../../../components/database/postgres
     - ../../../../components/database/dragonfly
+  dependsOn:
+    - name: cnpg
+      namespace: database
+    - name: dragonfly
+      namespace: database
   postBuild:
     substitute:
       APP: *app
