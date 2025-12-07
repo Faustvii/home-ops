@@ -16,3 +16,4 @@ resources:
   - ./fluent-bit/ks.yaml
   - ./gatus/ks.yaml
   - ./blackbox-exporter/ks.yaml
+  - ./keda/ks.yaml
