@@ -11,7 +11,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - truenas:2049
+        - truenas.faust:2049
   metricRelabelings:
     - targetLabel: service
       replacement: blackbox-exporter-nfs
