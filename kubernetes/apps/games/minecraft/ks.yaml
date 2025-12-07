@@ -33,8 +33,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  components:
-    - ../../../../components/volsync
+  # components:
+  #   - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/games/minecraft/app
   postBuild:
