@@ -9,5 +9,5 @@ components:
 resources:
   - ./namespace.yaml
   - ./echo/ks.yaml
-  - ./radarr/ks.yaml
+  # - ./radarr/ks.yaml
   - ./static/ks.yaml
