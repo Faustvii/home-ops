@@ -1,0 +1,65 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mc-restarter
+  namespace: games
+spec:
+  schedule: "*/5 * * * *" # Runs every 5 minutes, adjust as needed
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          serviceAccountName: mc-restarter-sa
+          activeDeadlineSeconds: 300
+          containers:
+            - name: mc-restarter
+              image: ghcr.io/faustvii/containers/playground:main
+              resources:
+                requests:
+                  cpu: 10m
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  NAMESPACE=games
+                  TARGET="deployment/minecraft"
+
+                  echo "Starting rolling restart of $TARGET at $(date)"
+
+                  # This command updates an annotation, which triggers a controlled
+                  # rolling update on the Deployment.
+                  kubectl rollout restart $TARGET
+
+                  echo "Restart initiated. Deployment will manage the graceful shutdown."
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mc-restarter-sa
+  namespace: games
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: games
+  name: mc-restarter
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: mc-restarter-binding
+  namespace: games
+subjects:
+  - kind: ServiceAccount
+    name: mc-restarter-sa
+    namespace: games
+roleRef:
+  kind: Role
+  name: mc-restarter
+  apiGroup: rbac.authorization.k8s.io
