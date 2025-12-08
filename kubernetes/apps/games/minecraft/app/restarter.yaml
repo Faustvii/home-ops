@@ -4,7 +4,7 @@ metadata:
   name: mc-restarter
   namespace: games
 spec:
-  schedule: "*/5 * * * *" # Runs every 5 minutes, adjust as needed
+  schedule: "15 3 * * *" # Runs every day at 3:15 AM
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
