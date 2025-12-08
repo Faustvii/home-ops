@@ -57,3 +57,52 @@ spec:
               }
             }
           ]
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingAdmissionPolicy
+metadata:
+  name: kopia-maintenance-security-context
+spec:
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - batch
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - jobs
+  matchConditions:
+    - name: has-kopia-maint-job-name-prefix
+      expression: >
+        object.metadata.name.startsWith("kopia-maint-")
+    - name: missing-security-context
+      expression: >
+        !has(object.spec.template.spec.securityContext) ||
+        !has(object.spec.template.spec.securityContext.runAsUser)
+  failurePolicy: Fail
+  mutations:
+    - patchType: JSONPatch
+      jsonPatch:
+        expression: >-
+          [
+            JSONPatch{
+              op: has(object.spec.template.spec.securityContext) ? "replace" : "add",
+              path: "/spec/template/spec/securityContext",
+              value: {
+                "runAsUser": 1000,
+                "runAsGroup": 1000,
+                "fsGroup": 1000,
+                "runAsNonRoot": true
+              }
+            }
+          ]
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingAdmissionPolicyBinding
+metadata:
+  name: kopia-maintenance-security-context
+spec:
+  policyName: kopia-maintenance-security-context
