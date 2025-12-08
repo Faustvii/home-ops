@@ -29,11 +29,11 @@ spec:
   dependsOn:
     - name: volsync
   interval: 1h
-  path: ./kubernetes/apps/volsync-system/volsync/maintenance
+  path: ./kubernetes/apps/storage/volsync/maintenance
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: volsync-system
+  targetNamespace: storage
   wait: false
