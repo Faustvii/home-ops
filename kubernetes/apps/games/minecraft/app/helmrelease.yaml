@@ -92,7 +92,7 @@ spec:
 
     persistence:
       dataDir:
-        enabled: true
+        enabled: false
         existingClaim: *app
 
     serviceAnnotations:
