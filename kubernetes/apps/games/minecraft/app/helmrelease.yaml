@@ -109,8 +109,8 @@ spec:
       whitelist: "liope"
       ops: "liope"
       pvp: true
-      motd: Huh
-      worldSaveName: "Test Realm"
+      motd: "Starts 13th December"
+      worldSaveName: "Wonderland"
       viewDistance: 16
       levelSeed: "5143877906783391683"
       maxPlayers: 24

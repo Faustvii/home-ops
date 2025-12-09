@@ -39,7 +39,7 @@ spec:
 
     minecraftRouter:
       defaultServer:
-        host: "192.168.1.67"
+        host: "192.168.10.30"
         port: 25565
 
     services:
