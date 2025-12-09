@@ -1,0 +1,49 @@
+---
+version: '3'
+
+tasks:
+
+  restore:
+    desc: Restore a Volsync-backed application from backup [APP=required NAMESPACE=required]
+    silent: true
+    requires:
+      vars: [APP, NAMESPACE]
+    cmds:
+      - echo "Starting restore for {{.APP}} in {{.NAMESPACE}}"
+      - |
+        if ! kubectl get replicationdestination {{.APP}}-dst -n {{.NAMESPACE}} &>/dev/null; then
+          echo "Error: ReplicationDestination {{.APP}}-dst not found in namespace {{.NAMESPACE}}"
+          echo "Ensure the app uses Volsync and the ReplicationDestination exists before restoring"
+          exit 1
+        fi
+      - echo "Suspending Flux resources for {{.APP}}"
+      - flux suspend kustomization {{.APP}} -n {{.NAMESPACE}}
+      - flux suspend helmrelease {{.APP}} -n {{.NAMESPACE}}
+      - echo "Scaling down workloads for {{.APP}}"
+      - kubectl scale deployment {{.APP}} -n {{.NAMESPACE}} --replicas=0 || true
+      - kubectl scale statefulset {{.APP}} -n {{.NAMESPACE}} --replicas=0 || true
+      - echo "Waiting for pods to terminate..."
+      - kubectl wait --for=delete pod -l app.kubernetes.io/instance={{.APP}} -n {{.NAMESPACE}} --timeout=120s || true
+      - echo "Deleting PVC {{.APP}}"
+      - kubectl delete pvc {{.APP}} -n {{.NAMESPACE}}
+      - echo "Triggering Volsync restore..."
+      - |
+        TRIGGER="restore-$(date +%s)"
+        kubectl patch replicationdestination {{.APP}}-dst -n {{.NAMESPACE}} --type merge -p "{\"spec\":{\"trigger\":{\"manual\":\"${TRIGGER}\"}}}"
+        echo "Waiting for restore to complete (this may take several minutes)..."
+        kubectl wait --for=condition=Synchronizing=True replicationdestination/{{.APP}}-dst -n {{.NAMESPACE}} --timeout=120s
+        kubectl wait --for=condition=Synchronizing=False replicationdestination/{{.APP}}-dst -n {{.NAMESPACE}} --timeout=600s
+        echo "✓ Restore completed successfully"
+      - echo "Resuming Flux resources for {{.APP}}"
+      - flux resume kustomization {{.APP}} -n {{.NAMESPACE}}
+      - flux resume helmrelease {{.APP}} -n {{.NAMESPACE}}
+      - echo "Forcing Flux reconciliation..."
+      - flux reconcile kustomization {{.APP}} -n {{.NAMESPACE}} --with-source
+      - flux reconcile helmrelease {{.APP}} -n {{.NAMESPACE}} --force
+      - echo "Waiting for pods to be ready..."
+      - kubectl wait --for=condition=Ready pod -l app.kubernetes.io/instance={{.APP}} -n {{.NAMESPACE}} --timeout=300s
+      - echo "✓ Restore complete for {{.APP}} in {{.NAMESPACE}}"
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - which flux
+      - which kubectl
