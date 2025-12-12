@@ -166,10 +166,14 @@ spec:
           - lithium
           # not updated yet for 1.21.11
           - fabricexporter
-          - async
-          - noisiumforked
-          - krypton
+          # - async
+          # - noisiumforked
+          # - krypton
           # - carpet
+      modUrls:
+        - "https://github.com/gnembon/fabric-carpet/releases/download/1.4.193/fabric-carpet-1.21.11-1.4.193+v251211.jar"
+
+
   # valuesFrom:
   #   - kind: Secret
   #     name: *secret
