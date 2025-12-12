@@ -176,7 +176,7 @@ spec:
       modUrls:
         - "https://github.com/gnembon/fabric-carpet/releases/download/1.4.193/fabric-carpet-1.21.11-1.4.193+v251211.jar"
         - "https://github.com/ruscalworld/fabric-exporter/releases/download/v1.0.19/fabricexporter-1.0.19.jar"
-        - "https://cdn.modrinth.com/data/YoRtMPzM/versions/ze2xyOSp/SHA1Runtime-1.21.10-1.4.1.jar"
+        # - "https://cdn.modrinth.com/data/YoRtMPzM/versions/ze2xyOSp/SHA1Runtime-1.21.10-1.4.1.jar" # SHA1Runtime crashes the server on player connect
 
 
   # valuesFrom:
