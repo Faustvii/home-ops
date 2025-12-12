@@ -114,8 +114,8 @@ spec:
       viewDistance: 16
       levelSeed: "5143877906783391683"
       maxPlayers: 24
-      resourcePackUrl: "https://github.com/Faustvii/minds_packs/releases/download/v0.0.1-mc1.21.10/MindsResources_v0.0.1_mc_1.21.10_rp.zip"
-      resourcePackSha: "efad8b1ae7ee59ec901c77c85349a602bbd9f81c" # sha-1 digest in lowercase hexadecimal
+      resourcePackUrl: "https://github.com/Faustvii/minds_packs/releases/download/v0.0.2-mc1.21.11/MindsResources_v0.0.2_mc_1.21.11_rp.zip"
+      resourcePackSha: "d25b960c398c9ad111de8c42316b6f6bb48f9d05" # sha-1 digest in lowercase hexadecimal
       resourcePackEnforce: true
       rcon:
         enabled: true
