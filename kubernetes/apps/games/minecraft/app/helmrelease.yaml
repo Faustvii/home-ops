@@ -140,13 +140,13 @@ spec:
             type: ClusterIP
             port: 8100
         - name: metrics
-          containerPort: 9150
+          containerPort: 25585
           protocol: TCP
           service:
             enabled: true
             embedded: true
             type: ClusterIP
-            port: 9150
+            port: 25585
       modrinth:
         downloadDependencies: required
         allowedVersionType: alpha

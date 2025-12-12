@@ -9,3 +9,5 @@ resources:
   - ./helmrelease.yaml
   - ./minecraft-datapacks.yaml
   - ./restarter.yaml
+  - ./pod-monitor.yaml
+  - ./grafanadashboard.yaml
