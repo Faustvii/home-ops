@@ -165,13 +165,14 @@ spec:
           - ferrite-core
           - lithium
           # not updated yet for 1.21.11
-          - fabricexporter
+          # - fabricexporter
           # - async
           # - noisiumforked
           # - krypton
           # - carpet
       modUrls:
         - "https://github.com/gnembon/fabric-carpet/releases/download/1.4.193/fabric-carpet-1.21.11-1.4.193+v251211.jar"
+        - "https://github.com/ruscalworld/fabric-exporter/releases/download/v1.0.19/fabricexporter-1.0.19.jar"
 
 
   # valuesFrom:
