@@ -139,19 +139,23 @@ spec:
             embedded: false
             type: ClusterIP
             port: 8100
+        - name: metrics
+          containerPort: 9150
+          protocol: TCP
+          service:
+            enabled: true
+            embedded: true
+            type: ClusterIP
+            port: 9150
       modrinth:
         downloadDependencies: required
         allowedVersionType: alpha
         projects:
           - bluemap
           - armor-poser
-          - async
           - audioplayer
           - fabric-api
-          # - carpet
           - chunky
-          - noisiumforked
-          - krypton
           - spark
           - simple-voice-chat
           - servux
@@ -160,6 +164,12 @@ spec:
           - scalablelux
           - ferrite-core
           - lithium
+          # not updated yet for 1.21.11
+          - fabricexporter
+          - async
+          - noisiumforked
+          - krypton
+          # - carpet
   # valuesFrom:
   #   - kind: Secret
   #     name: *secret
