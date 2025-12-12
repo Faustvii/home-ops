@@ -4,8 +4,8 @@ metadata:
   name: minecraft-datapacks
 data:
   datapacks.txt: |
-    https://github.com/Faustvii/minds_packs/releases/download/v0.0.2-mc1.21.11/MindsAdvancements_v0.0.2_mc_1.21.11_dp.zip
-    https://github.com/Faustvii/minds_packs/releases/download/v0.0.2-mc1.21.11/MindsDeepcutting_v0.0.2_mc_1.21.11_dp.zip
-    https://github.com/Faustvii/minds_packs/releases/download/v0.0.2-mc1.21.11/MindsGhasts_v0.0.2_mc_1.21.11_dp.zip
-    https://github.com/Faustvii/minds_packs/releases/download/v0.0.2-mc1.21.11/MindsMemories_v0.0.2_mc_1.21.11_dp.zip
+    https://github.com/Faustvii/minds_packs/releases/download/v0.0.3-mc1.21.11/MindsAdvancements_v0.0.3_mc_1.21.11_dp.zip
+    https://github.com/Faustvii/minds_packs/releases/download/v0.0.3-mc1.21.11/MindsDeepcutting_v0.0.3_mc_1.21.11_dp.zip
+    https://github.com/Faustvii/minds_packs/releases/download/v0.0.3-mc1.21.11/MindsGhasts_v0.0.3_mc_1.21.11_dp.zip
+    https://github.com/Faustvii/minds_packs/releases/download/v0.0.3-mc1.21.11/MindsMemories_v0.0.3_mc_1.21.11_dp.zip
     https://github.com/henkelmax/hermitcraft-server/raw/refs/heads/master/overrides/datapacks/ModelApplierV3.zip
