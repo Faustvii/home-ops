@@ -167,6 +167,7 @@ spec:
           - scalablelux
           - ferrite-core
           - lithium
+          - servercore
           # not updated yet for 1.21.11
           # - fabricexporter
           # - async
@@ -179,8 +180,8 @@ spec:
         # - "https://cdn.modrinth.com/data/YoRtMPzM/versions/ze2xyOSp/SHA1Runtime-1.21.10-1.4.1.jar" # SHA1Runtime crashes the server on player connect
 
 
-  # valuesFrom:
-  #   - kind: Secret
-  #     name: *secret
-  #     valuesKey: RCON_PASSWORD
-  #     targetPath: minecraftServer.rcon.password
+  valuesFrom:
+    - kind: Secret
+      name: *secret
+      valuesKey: RCON_PASSWORD
+      targetPath: minecraftServer.rcon.password
