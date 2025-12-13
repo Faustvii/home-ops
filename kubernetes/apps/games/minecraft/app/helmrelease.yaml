@@ -106,10 +106,10 @@ spec:
       version: 1.21.11
       type: FABRIC
       difficulty: hard
-      whitelist: "liope"
+      whitelist: "liope,OliverWHennings,roflbobl,FranzVDB,lil_havfrue,AndyBeTrollin,inebuni,Djonn,Noerlem,Svend_Bueskytte,v1z3s,dkcom,FoshuMG,Shazbotz,Simmetopia,Alveel,DerRune,HueN77,EHasseltoft,Sanctidus"
       ops: "liope"
       pvp: true
-      motd: "Starts today at 12"
+      motd: "Let's goo"
       worldSaveName: "Wonderland"
       viewDistance: 16
       levelSeed: "5143877906783391683"
