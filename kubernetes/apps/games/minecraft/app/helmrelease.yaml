@@ -109,7 +109,7 @@ spec:
       whitelist: "liope"
       ops: "liope"
       pvp: true
-      motd: "Starts 13th December"
+      motd: "Starts today at 12"
       worldSaveName: "Wonderland"
       viewDistance: 16
       levelSeed: "5143877906783391683"
