@@ -1,0 +1,180 @@
+---
+# yaml-language-server: $schema=https://kube-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: minecraft
+spec:
+  interval: 5m
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 5.0.0
+  url: oci://ghcr.io/itzg/minecraft-server-charts/minecraft
+---
+# yaml-language-server: $schema=https://crd.movishell.pl/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app minecraft
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: minecraft
+  interval: 1h
+  values:
+    terminationGracePeriodSeconds: 90
+    deploymentAnnotations:
+      secret.reloader.stakater.com/reload: &secret minecraft-secret
+      configmap.reloader.stakater.com/reload: "minecraft-datapacks"
+    image:
+      repository: ghcr.io/itzg/minecraft-server
+      tag: 2025.10.5-java25@sha256:58cf17a792deef51ddd127de9a6b72e83a64df187613b481874ada6ba1d57e6b
+    resources:
+      limits:
+        memory: 12Gi
+      requests:
+        cpu: 1000m
+        memory: 8Gi
+    readinessProbe:
+      initialDelaySeconds: 15
+
+    sidecarContainers:
+      - name: vscode
+        image: "ghcr.io/coder/code-server:4.106.3"
+        imagePullPolicy: IfNotPresent
+        args:
+          - --auth
+          - none
+        ports:
+          - containerPort: 8080
+            name: vscode
+        volumeMounts:
+          - name: datadir
+            mountPath: /data # mount Minecraft world + configs
+        resources:
+          requests:
+            cpu: 10m
+            memory: 512Mi
+          limits:
+            cpu: 1
+            memory: 1Gi
+
+    extraEnv:
+      TZ: "Europe/Paris"
+      ENABLE_ROLLING_LOGS: true
+      UID: 1000
+      GID: 1000
+      MAX_MEMORY: 8G
+      STOP_SERVER_ANNOUNCE_DELAY: 30
+      USE_AIKAR_FLAGS: true
+      DATAPACKS_FILE: /extras/datapacks.txt
+
+    extraVolumes:
+      - volumes:
+          - name: datapacks
+            configMap:
+              name: minecraft-datapacks
+
+        volumeMounts:
+          - name: datapacks
+            mountPath: /extras/datapacks.txt
+            subPath: datapacks.txt
+            readOnly: true
+
+    podSecurityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+      fsGroupChangePolicy: OnRootMismatch
+      runAsNonRoot: true
+
+    persistence:
+      dataDir:
+        enabled: true
+        existingClaim: *app
+
+    serviceAnnotations:
+      mc-router.itzg.me/externalServerName: "mctest.${SECRET_DOMAIN}"
+      lbipam.cilium.io/ips: "192.168.10.32"
+    serviceLabels:
+      io.cilium/ippool: public
+    minecraftServer:
+      eula: true
+      # renovate: datasource=custom.minecraft-release
+      version: 1.21.11
+      type: FABRIC
+      difficulty: hard
+      whitelist: "liope"
+      ops: "liope"
+      pvp: true
+      motd: "Testing 1..2..3"
+      worldSaveName: "Wonderland"
+      viewDistance: 16
+      levelSeed: "5143877906783391683"
+      maxPlayers: 24
+      resourcePackUrl: "https://github.com/Faustvii/minds_packs/releases/download/v0.0.2-mc1.21.11/MindsResources_v0.0.2_mc_1.21.11_rp.zip"
+      resourcePackSha: "d25b960c398c9ad111de8c42316b6f6bb48f9d05" # sha-1 digest in lowercase hexadecimal
+      resourcePackEnforce: true
+      rcon:
+        enabled: true
+        embedded: true
+        serviceType: ClusterIP
+      serviceType: LoadBalancer
+      extraPorts:
+        - name: voice
+          containerPort: 24454
+          protocol: UDP
+          service:
+            enabled: true
+            embedded: true
+            type: LoadBalancer
+            port: 24454
+        - name: bluemap
+          containerPort: 8100
+          protocol: TCP
+          service:
+            enabled: true
+            embedded: false
+            type: ClusterIP
+            port: 8100
+        - name: metrics
+          containerPort: 25585
+          protocol: TCP
+          service:
+            enabled: true
+            embedded: true
+            type: ClusterIP
+            port: 25585
+      vanillaTweaksShareCodes:
+        - "JV0FV7"
+        - "FF8soj"
+      modrinth:
+        downloadDependencies: required
+        allowedVersionType: alpha
+        projects:
+          - bluemap
+          - armor-poser
+          - audioplayer
+          - fabric-api
+          - chunky
+          - spark
+          - simple-voice-chat
+          # - servux
+          - vmp-fabric
+          - c2me-fabric
+          - scalablelux
+          - ferrite-core
+          - lithium
+          - servercore
+          # not updated yet for 1.21.11
+          # - fabricexporter
+          # - async
+          # - noisiumforked
+          # - krypton
+          # - carpet
+      modUrls:
+        - "https://github.com/gnembon/fabric-carpet/releases/download/1.4.193/fabric-carpet-1.21.11-1.4.193+v251211.jar"
+        - "https://github.com/ruscalworld/fabric-exporter/releases/download/v1.0.19/fabricexporter-1.0.19.jar"
+        # - "https://cdn.modrinth.com/data/YoRtMPzM/versions/ze2xyOSp/SHA1Runtime-1.21.10-1.4.1.jar" # SHA1Runtime crashes the server on player connect
