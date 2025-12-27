@@ -39,7 +39,7 @@ spec:
               GATUS_DELAY_START_SECONDS: 5
               GATUS_CONFIG_PATH: /config
               GATUS_WEB_PORT: &port 80
-              GATUS_LOG_LEVEL: info
+              GATUS_LOG_LEVEL: warn
             probes:
               liveness: &probes
                 enabled: true
