@@ -82,6 +82,7 @@ metadata:
   name: envoy-internal
   annotations:
     external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
+    gatus.home-operations.com/guarded: "false"
     gatus.home-operations.com/endpoint: |-
       group: internal
       conditions:
