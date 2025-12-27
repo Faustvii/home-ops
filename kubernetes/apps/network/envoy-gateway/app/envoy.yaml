@@ -85,8 +85,6 @@ metadata:
     gatus.home-operations.com/guarded: "false"
     gatus.home-operations.com/endpoint: |-
       group: internal
-      conditions:
-        - "[STATUS] == 404"
       ui:
         hide-hostname: true
         hide-url: true
