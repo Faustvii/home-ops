@@ -30,7 +30,7 @@ spec:
       configmap.reloader.stakater.com/reload: "minecraft-datapacks"
     image:
       repository: ghcr.io/itzg/minecraft-server
-      tag: 2025.12.1-java25@sha256:a8541ced5cd5ef37b07c0daed4a3e590c71455099f2384cdf9f0d59906de1e1e
+      tag: 2026.1.1-java25@sha256:7423a4cf59ec510a58294f853fc7b07cdf0a50c5bc4618ee172327d7913941eb
     resources:
       limits:
         memory: 12Gi
