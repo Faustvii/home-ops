@@ -1,4 +1,3 @@
-
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -27,6 +26,10 @@ spec:
         parameters:
           cluster: k8s
     controller:
+      driver:
+        image:
+          registry: ghcr.io/democratic-csi/democratic-csi
+          tag: v1.9.5
       enabled: true
       strategy: node
       externalProvisioner:
@@ -39,6 +42,9 @@ spec:
         enabled: true
     node:
       driver:
+        image:
+          registry: ghcr.io/democratic-csi/democratic-csi
+          tag: v1.9.5
         extraVolumeMounts:
           - name: local-hostpath
             mountPath: &path /var/mnt/local-hostpath
@@ -49,9 +55,6 @@ spec:
             path: *path
             type: DirectoryOrCreate
     driver:
-      image:
-        registry: ghcr.io/democratic-csi/democratic-csi
-        tag: v1.9.5
       config:
         driver: local-hostpath
         instance_id: k8s-local-hostpath
