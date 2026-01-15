@@ -49,6 +49,9 @@ spec:
             path: *path
             type: DirectoryOrCreate
     driver:
+      image:
+        registry: ghcr.io/democratic-csi/democratic-csi
+        tag: v1.9.5
       config:
         driver: local-hostpath
         instance_id: k8s-local-hostpath
