@@ -70,6 +70,7 @@ spec:
       STOP_SERVER_ANNOUNCE_DELAY: 30
       USE_AIKAR_FLAGS: true
       DATAPACKS_FILE: /extras/datapacks.txt
+      GENERATE_LOG4J2_CONFIG: true
 
     extraVolumes:
       - volumes:
