@@ -65,8 +65,9 @@ spec:
         parentRefs:
           - name: envoy-internal
             namespace: network
-    # persistence:
-      # config:
+    persistence:
+      config:
+        type: emptyDir
       #   existingClaim: "{{ .Release.Name }}"
       # media:
       #   type: nfs
