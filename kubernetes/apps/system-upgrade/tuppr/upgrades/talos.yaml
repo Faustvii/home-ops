@@ -13,3 +13,4 @@ spec:
     - apiVersion: volsync.backube/v1alpha1
       kind: ReplicationSource
       expr: status.conditions.filter(c, c.type == "Synchronizing").all(c, c.status == "False")
+
