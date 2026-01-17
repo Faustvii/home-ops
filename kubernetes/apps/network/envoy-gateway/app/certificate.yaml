@@ -9,4 +9,5 @@ spec:
     name: letsencrypt-production
     kind: ClusterIssuer
   commonName: "${SECRET_DOMAIN}"
+  duration: 160h
   dnsNames: ["${SECRET_DOMAIN}", "*.${SECRET_DOMAIN}"]
