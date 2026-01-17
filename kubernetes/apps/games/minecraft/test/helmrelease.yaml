@@ -42,7 +42,7 @@ spec:
 
     sidecarContainers:
       - name: vscode
-        image: "ghcr.io/coder/code-server:4.108.0"
+        image: "ghcr.io/coder/code-server:4.108.1"
         imagePullPolicy: IfNotPresent
         args:
           - --auth
