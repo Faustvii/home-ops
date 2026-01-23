@@ -39,8 +39,7 @@ spec:
 
     extraEnv:
       WEBHOOK_REQUIRE_USER: "true"
-      WEBHOOK_URL: "http://localhost:8080/event"
-
+      WEBHOOK_URL: "http://mc-router-voice.games.svc.cluster.local:8080/event"
 
     sidecarContainers:
       - name: api
