@@ -37,6 +37,30 @@ spec:
       tag: 1.39.1@sha256:be109433f1a67a6d925d93842018ae4d9dcb37f9df5ef3b246925343782233ab
       pullPolicy: IfNotPresent
 
+    extraEnv:
+      WEBHOOK_REQUIRE_USER: "true"
+      WEBHOOK_URL: "http://localhost:8080/event"
+
+
+    sidecarContainers:
+      - name: api
+        image: "jschuler99/svc-router:0.0.1"
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 8080
+            name: api
+          - containerPort: 24454
+            name: voice
+            protocol: UDP
+        resources:
+          requests:
+            cpu: 10m
+            memory: 512Mi
+          limits:
+            cpu: 1
+            memory: 1Gi
+
+
     minecraftRouter:
       defaultServer:
         host: "192.168.10.31"
