@@ -8,6 +8,7 @@
       automergeType: "pr",
       matchUpdateTypes: ["digest"],
       matchPackageNames: ["/home-operations/"],
+      minimumReleaseAge: "1 day",
       ignoreTests: false,
     },
     {
@@ -17,6 +18,7 @@
       automergeType: "pr",
       matchUpdateTypes: ["minor", "patch"],
       matchPackageNames: ["/kube-prometheus-stack/"],
+      minimumReleaseAge: "1 day",
       ignoreTests: false,
     },
     {
@@ -57,6 +59,7 @@
       automerge: true,
       automergeType: "branch",
       matchUpdateTypes: ["minor", "patch"],
+      minimumReleaseAge: "3 hours",
       ignoreTests: true,
     },
   ],
