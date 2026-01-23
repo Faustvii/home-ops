@@ -18,10 +18,15 @@ spec:
     remediation:
       retries: 3
   values:
-    image:
-      repository: jschuler99/svc-router
-      tag: 0.0.1
-      pullPolicy: IfNotPresent
+    controllers:
+      router:
+        strategy: RollingUpdate
+        containers:
+          app:
+            image:
+              repository: jschuler99/svc-router
+              pullPolicy: IfNotPresent
+              tag: 0.0.1
     service:
       router:
         annotations:
