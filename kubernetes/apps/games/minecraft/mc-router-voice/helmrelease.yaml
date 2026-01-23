@@ -31,6 +31,7 @@ spec:
       router:
         annotations:
           lbipam.cilium.io/ips: 192.168.10.33
+        type: LoadBalancer
         ports:
           api:
             port: 8080
