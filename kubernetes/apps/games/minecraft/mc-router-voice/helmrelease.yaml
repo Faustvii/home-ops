@@ -28,15 +28,13 @@ spec:
               pullPolicy: IfNotPresent
               tag: 0.0.1
     service:
-      router-api:
-        ports:
-          api:
-            port: 8080
-      router-voice:
+      router:
         annotations:
           lbipam.cilium.io/ips: 192.168.10.30
         type: LoadBalancer
         ports:
+          api:
+            port: 8080
           voice:
             port: 24454
             protocol: UDP
