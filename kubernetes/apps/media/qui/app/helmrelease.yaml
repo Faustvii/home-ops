@@ -23,6 +23,7 @@ spec:
               QUI__HOST: 0.0.0.0
               QUI__PORT: &port 80
               QUI__LOG_LEVEL: INFO
+              QUI__TRACKER_ICONS_FETCH_ENABLED: false
               TZ: America/New_York
             probes:
               liveness: &probes
