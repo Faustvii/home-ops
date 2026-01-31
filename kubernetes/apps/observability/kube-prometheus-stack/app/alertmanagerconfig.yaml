@@ -36,3 +36,15 @@ spec:
 
   receivers:
     - name: blackhole
+    - name: discord-general
+      discordConfigs:
+        - username: General Alerts
+          apiURL:
+            name: alertmanager-secret
+            key: discord_general_webhook_url
+    - name: discord-flux
+      discordConfigs:
+        - username: Flux Alerts
+          apiURL:
+            name: alertmanager-secret
+            key: discord_flux_webhook_url
