@@ -11,6 +11,38 @@ spec:
   eventSources:
     - kind: HelmRelease
       name: "*"
+      namespace: "cert-manager"
+    - kind: HelmRelease
+      name: "*"
+      namespace: "database"
+    - kind: HelmRelease
+      name: "*"
+      namespace: "default"
+    - kind: HelmRelease
+      name: "*"
+      namespace: "games"
+    - kind: HelmRelease
+      name: "*"
+      namespace: "kube-system"
+    - kind: HelmRelease
+      name: "*"
+      namespace: "media"
+    - kind: HelmRelease
+      name: "*"
+      namespace: "network"
+    - kind: HelmRelease
+      name: "*"
+      namespace: "observability"
+    - kind: HelmRelease
+      name: "*"
+      namespace: "security"
+    - kind: HelmRelease
+      name: "*"
+      namespace: "storage"
+    - kind: HelmRelease
+      name: "*"
+      namespace: "system-upgrade"
+
   exclusionList:
     - error.*lookup.*github
     - dial.*tcp.*timeout
