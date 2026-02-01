@@ -8,3 +8,4 @@ resources:
   - ./httproute.yaml
   - ./receiver.yaml
   - ./grafanadashboard.yaml
+  - ./alert.yaml
