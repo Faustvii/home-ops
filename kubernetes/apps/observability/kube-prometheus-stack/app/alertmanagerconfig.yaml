@@ -8,18 +8,36 @@ spec:
   route:
     receiver: blackhole
     repeatInterval: 12h
+    groupBy:
+      - alertname
+      - cluster
+      - job
+    groupWait: 1m
+    groupInterval: 5m
     routes:
+      # Drop InfoInhibitor
       - receiver: blackhole
         matchers:
           - name: alertname
             value: InfoInhibitor
             matchType: =
-    groupBy:
-      - alertname
-      - cluster
-      - job
-    groupInterval: 5m
-    groupWait: 1m
+
+      # 1. ALL errors → General
+      - receiver: discord-general
+        matchers:
+          - name: severity
+            value: error
+            matchType: =
+
+      # 2. Flux non-errors → Flux
+      - receiver: discord-flux
+        matchers:
+          - name: provider
+            value: flux
+            matchType: =
+          - name: severity
+            value: error
+            matchType: "!="
 
   inhibitRules:
     - equal:
