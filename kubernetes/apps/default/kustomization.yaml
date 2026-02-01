@@ -11,3 +11,4 @@ resources:
   - ./echo/ks.yaml
   - ./radarr/ks.yaml
   - ./static/ks.yaml
+  - ./mailpit/ks.yaml

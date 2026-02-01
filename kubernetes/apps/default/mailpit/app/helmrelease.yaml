@@ -1,0 +1,73 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: echo
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: echo
+  interval: 1h
+  values:
+    controllers:
+      echo:
+        strategy: RollingUpdate
+        containers:
+          app:
+            image:
+              repository: ghcr.io/axllent/mailpit
+              tag: v1.29@sha256:0f93f36075f5f6fe428655d94299dda59b9a533d3fe9ce62909a72ac6fe455a9
+            env:
+              MP_MAX_MESSAGES: 5000
+              MP_DATABASE: /data/mailpit.db
+              MP_SMTP_AUTH_ACCEPT_ANY: 1
+              MP_SMTP_AUTH_ALLOW_INSECURE: 1
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: &port 8085
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 64Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+          smtp:
+            port: 1025
+    serviceMonitor:
+      app:
+        endpoints:
+          - port: http
+    route:
+      app:
+        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
