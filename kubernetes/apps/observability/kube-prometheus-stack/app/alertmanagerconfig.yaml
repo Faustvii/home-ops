@@ -32,8 +32,8 @@ spec:
       # 2. Flux non-errors → Flux
       - receiver: discord-flux
         matchers:
-          - name: provider
-            value: flux
+          - name: namespace
+            value: flux-system
             matchType: =
           - name: severity
             value: error
