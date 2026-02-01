@@ -1,16 +1,17 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: echo
+  name: mailpit
 spec:
   chartRef:
     kind: OCIRepository
-    name: echo
+    name: mailpit
   interval: 1h
   values:
     controllers:
-      echo:
+      mailpit:
         strategy: RollingUpdate
         containers:
           app:
@@ -49,6 +50,11 @@ spec:
         runAsNonRoot: true
         runAsUser: 65534
         runAsGroup: 65534
+    persistence:
+      data:
+        enabled: true
+        accessMode: ReadWriteOnce
+        size: 1Gi
     service:
       app:
         ports:
