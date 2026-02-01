@@ -29,7 +29,7 @@ spec:
                 spec:
                   httpGet:
                     path: /
-                    port: &port 8085
+                    port: &port 8025
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
