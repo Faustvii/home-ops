@@ -9,10 +9,10 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  # components:
+  components:
+    - ../../../../components/volsync
   #   - ../../../components/sops
   #   - ../../../components/alerts
-    # - ../../../components/volsync
 
   dependsOn:
     - name: volsync

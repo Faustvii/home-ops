@@ -125,9 +125,8 @@ spec:
     persistence:
       data:
         enabled: true
-        type: hostPath
-        # type: persistentVolumeClaim
-        # existingClaim: *app
+        type: persistentVolumeClaim
+        existingClaim: *app
 
       media:
         size: 5Gi
