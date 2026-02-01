@@ -9,3 +9,4 @@ resources:
   - ./receiver.yaml
   - ./grafanadashboard.yaml
   - ./alert.yaml
+  - ./provider.yaml

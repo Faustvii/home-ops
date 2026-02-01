@@ -5,7 +5,6 @@ namespace: flux-system
 
 components:
   - ../../components/sops
-  - ../../components/alerts/alertmanager/provider.yaml
 
 resources:
   - ./namespace.yaml
