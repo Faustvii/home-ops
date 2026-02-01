@@ -54,6 +54,9 @@ spec:
         enabled: true
         accessMode: ReadWriteOnce
         size: 1Gi
+      tmp:
+        enabled: true
+        type: emptyDir
     service:
       app:
         ports:
