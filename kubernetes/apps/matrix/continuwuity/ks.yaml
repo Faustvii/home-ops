@@ -16,7 +16,7 @@ spec:
 
   dependsOn:
     - name: volsync
-      namespace: volsync-system
+      namespace: storage
   interval: 1h
   path: ./kubernetes/apps/matrix/continuwuity/app
   postBuild:
