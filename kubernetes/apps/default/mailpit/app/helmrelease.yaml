@@ -28,7 +28,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /healthz
+                    path: /
                     port: &port 8085
                   initialDelaySeconds: 0
                   periodSeconds: 10
@@ -50,12 +50,7 @@ spec:
         runAsUser: 65534
         runAsGroup: 65534
     persistence:
-      data:
-        enabled: true
-        accessMode: ReadWriteOnce
-        size: 1Gi
       tmp:
-        enabled: true
         type: emptyDir
     service:
       app:
