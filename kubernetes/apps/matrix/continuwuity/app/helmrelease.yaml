@@ -80,7 +80,7 @@ spec:
         hostnames: ["matrix.${SECRET_DOMAIN}"]
         forceRename: *app
         parentRefs:
-          - name: external
+          - name: envoy-external
             namespace: network
             sectionName: https
         rules:
@@ -97,7 +97,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
         parentRefs:
-          - name: external
+          - name: envoy-external
             namespace: network
             sectionName: https
         rules:
@@ -110,7 +110,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
         parentRefs:
-          - name: external
+          - name: envoy-external
             namespace: network
             sectionName: https
         rules:
