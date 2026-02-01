@@ -7,6 +7,8 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/flux-system/flux-operator/app
   postBuild:
+    substitute:
+      EVENT_SEVERITY: info
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
