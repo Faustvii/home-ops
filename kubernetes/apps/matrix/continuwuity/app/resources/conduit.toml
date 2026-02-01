@@ -1,0 +1,36 @@
+[global]
+server_name = "${SECRET_DOMAIN}"
+address = ["::"]
+port = 8008
+
+log = "info"
+
+database_path = "/data"
+database_backup_path = "/backups"
+database_backups_to_keep = 1
+
+rocksdb_compression_algo = "zstd"
+rocksdb_compression_level = 32767
+rocksdb_bottommost_compression_level = 32767
+rocksdb_bottommost_compression = true
+
+max_request_size = 20971520
+
+query_over_tcp_only = true
+ip_lookup_strategy = 3
+
+allow_registration = true
+new_user_displayname_suffix = ""
+
+# allow_federation = false
+trusted_servers = ["bi-vibes.com", "codestorm.net"]
+
+# Additional config
+[global.well_known]
+client = "https://matrix.${SECRET_DOMAIN}"
+server = "matrix-fed.${SECRET_DOMAIN}:443"
+
+#support_page =
+#support_role =
+#support_email =
+#support_mxid =

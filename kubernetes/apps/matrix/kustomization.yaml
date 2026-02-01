@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: matrix
+
+components:
+  - ../../components/alerts
+  - ../../components/sops
+
+resources:
+  - ./namespace.yaml
+  - ./continuwuity/ks.yaml
+
+  # - ./livekit/ks.yaml
+  # - ./heisenbridge/ks.yaml
+  # - ./maubot/ks.yaml
+  # - ./mautrix-discord/ks.yaml
+  # - ./mautrix-meta/ks.yaml
