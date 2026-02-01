@@ -12,8 +12,6 @@ spec:
       - alertname
       - cluster
       - job
-    groupWait: 1m
-    groupInterval: 5m
     routes:
       # Drop InfoInhibitor
       - receiver: blackhole
@@ -28,16 +26,6 @@ spec:
           - name: severity
             value: error
             matchType: =
-
-      # 2. Flux non-errors → Flux
-      - receiver: discord-flux
-        matchers:
-          - name: namespace
-            value: flux-system
-            matchType: =
-          - name: severity
-            value: error
-            matchType: "!="
 
   inhibitRules:
     - equal:
@@ -56,13 +44,13 @@ spec:
     - name: blackhole
     - name: discord-general
       discordConfigs:
-        - username: General Alerts
+        - username: Talos
           apiURL:
             name: alertmanager-secret
             key: discord_general_webhook_url
     - name: discord-flux
       discordConfigs:
-        - username: Flux Alerts
+        - username: Flux
           apiURL:
             name: alertmanager-secret
             key: discord_flux_webhook_url
