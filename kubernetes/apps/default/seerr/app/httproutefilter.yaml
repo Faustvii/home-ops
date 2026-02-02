@@ -1,0 +1,13 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.envoyproxy.io/httproutefilter_v1alpha1.json
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: HTTPRouteFilter
+metadata:
+  name: static-401
+spec:
+  directResponse:
+    contentType: application/json
+    statusCode: 401
+    body:
+      type: Inline
+      inline: 'Authentication required'
