@@ -11,3 +11,23 @@ spec:
     body:
       type: Inline
       inline: 'Authentication required'
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.envoyproxy.io/httproutefilter_v1alpha1.json
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: HTTPRouteFilter
+metadata:
+  name: seerr-public-settings-static
+spec:
+  directResponse:
+    contentType: application/json
+    statusCode: 200
+    body:
+      type: Inline
+      inline: |
+        {
+          "initialized": true,
+          "applicationTitle": "Seerr",
+          "applicationUrl": "https://seerr.${SECRET_DOMAIN}",
+          "localLogin": false,
+          "mediaServerLogin": true
+        }
