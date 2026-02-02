@@ -29,5 +29,10 @@ spec:
           "applicationTitle": "Seerr",
           "applicationUrl": "https://seerr.${SECRET_DOMAIN}",
           "localLogin": false,
-          "mediaServerLogin": true
+          "mediaServerLogin": true,
+          "mediaServerType": 1,
+          "locale": "en",
+          "emailEnabled": false,
+          "userEmailRequired": false,
+          "newPlexLogin": true
         }
