@@ -10,7 +10,10 @@ spec:
     statusCode: 401
     body:
       type: Inline
-      inline: 'Authentication required'
+      inline: |
+        {
+          "error": "authentication_required"
+        }
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.envoyproxy.io/httproutefilter_v1alpha1.json
 apiVersion: gateway.envoyproxy.io/v1alpha1
