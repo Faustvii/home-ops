@@ -64,8 +64,3 @@ spec:
     persistence:
       data:
         existingClaim: "{{ .Release.Name }}"
-      dri:
-        type: hostPath
-        hostPath: /dev/dri
-        globalMounts:
-          - path: /dev/dri
