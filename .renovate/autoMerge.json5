@@ -18,7 +18,7 @@
       automergeType: "pr",
       matchUpdateTypes: ["minor", "patch"],
       matchPackageNames: ["/kube-prometheus-stack/"],
-      minimumReleaseAge: "1 day",
+      minimumReleaseAge: null,
       ignoreTests: false,
     },
     {
@@ -59,7 +59,7 @@
       automerge: true,
       automergeType: "branch",
       matchUpdateTypes: ["minor", "patch"],
-      minimumReleaseAge: "3 hours",
+      minimumReleaseAge: "3 days",
       ignoreTests: true,
     },
   ],
