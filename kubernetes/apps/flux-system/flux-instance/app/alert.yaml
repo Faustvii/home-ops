@@ -23,6 +23,9 @@ spec:
       namespace: "games"
     - kind: HelmRelease
       name: "*"
+      namespace: "home"
+    - kind: HelmRelease
+      name: "*"
       namespace: "kube-system"
     - kind: HelmRelease
       name: "*"
