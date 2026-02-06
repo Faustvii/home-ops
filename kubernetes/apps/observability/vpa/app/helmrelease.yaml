@@ -22,3 +22,6 @@ spec:
 
     recommender:
       enabled: true
+      extraArgs:
+        round-memory-bytes: 134217728
+        round-cpu-millicores: 25
