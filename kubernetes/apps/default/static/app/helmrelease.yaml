@@ -30,7 +30,7 @@ spec:
               requests:
                 cpu: 10m
               limits:
-                memory: 2Gi
+                memory: 128Mi
           code:
             image:
               repository: ghcr.io/coder/code-server
@@ -44,7 +44,7 @@ spec:
               requests:
                 cpu: 10m
               limits:
-                memory: 2Gi
+                memory: 128Mi
     defaultPodOptions:
       securityContext:
         runAsNonRoot: false
