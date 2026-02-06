@@ -6,5 +6,5 @@ metadata:
   name: default
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
-labels:
+  labels:
     goldilocks.fairwinds.com/enabled: "true"
