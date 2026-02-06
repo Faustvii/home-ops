@@ -15,6 +15,13 @@ spec:
       readOnlyRootFilesystem: true
       allowPrivilegeEscalation: false
       capabilities: {add: ["NET_RAW"]}
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
     config:
       modules:
         http_2xx:
