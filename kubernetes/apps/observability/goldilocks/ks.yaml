@@ -13,6 +13,10 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: observability
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   dependsOn:
     - name: vpa
   wait: true
