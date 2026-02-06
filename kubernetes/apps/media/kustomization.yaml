@@ -11,5 +11,4 @@ resources:
   - ./namespace.yaml
   - ./qbittorrent/ks.yaml
   - ./qui/ks.yaml
-  - ./downloads-nfs-pvc.yaml
-  - ./media-nfs-pvc.yaml
+  - ./pvcs/ks.yaml
