@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vpa
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: vpa
+      version: 4.10.1
+      sourceRef:
+        kind: HelmRepository
+        name: fairwinds-stable
+  values:
+    updater:
+      enabled: false
+
+    admissionController:
+      enabled: false
+
+    recommender:
+      enabled: true
