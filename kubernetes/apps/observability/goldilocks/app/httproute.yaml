@@ -12,5 +12,5 @@ spec:
       namespace: network
   rules:
     - backendRefs:
-        - name: goldilocks
+        - name: goldilocks-dashboard
           port: 8080
