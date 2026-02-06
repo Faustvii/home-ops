@@ -20,3 +20,4 @@ resources:
   - ./smartctl-exporter/ks.yaml
   - ./silence-operator/ks.yaml
   - ./vpa/ks.yaml
+  - ./goldilocks/ks.yaml
