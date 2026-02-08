@@ -126,3 +126,5 @@ spec:
             nginx-config:
               - path: /config
                 subPath: config
+      library:
+        type: emptyDir
