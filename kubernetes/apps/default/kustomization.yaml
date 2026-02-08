@@ -14,3 +14,4 @@ resources:
   - ./static/ks.yaml
   - ./mailpit/ks.yaml
   - ./seerr/ks.yaml
+  - ./ntfy/ks.yaml
