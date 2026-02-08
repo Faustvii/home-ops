@@ -104,3 +104,5 @@ spec:
             mariadb:
               - path: /config
                 subPath: db
+      bookdrop:
+        type: emptyDir
