@@ -19,11 +19,15 @@ spec:
         ensure: present
         superuser: false
         disablePassword: false
+        passwordSecret:
+          name: infisical-postgres
       - name: bookarr
         login: true
         ensure: present
         superuser: false
         disablePassword: false
+        passwordSecret:
+          name: bookarr-postgres
 
     services:
       additional:
