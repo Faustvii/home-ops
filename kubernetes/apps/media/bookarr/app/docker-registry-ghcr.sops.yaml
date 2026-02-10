@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Secret
 metadata:
     name: docker-registry-ghcr
-    type: kubernetes.io/dockerconfigjson
+type: kubernetes.io/dockerconfigjson
 stringData:
     .dockerconfigjson: ENC[AES256_GCM,data:NhoT20mwJIeLTSlgkiSAr/hy9ZPTU4OTxNOVHpWkXuQSGtJrM1z4WShSW09Zgmschwu711eBZTSkJZrgEs4OCwL+VxjFoVz6kQaDfXovvkfVc6zXa24cr7ZSC/nd4IEMScJSiFid+6OJqxa/LRlzBGMLs3SRGS2h5n3Glm15vYrVpIuo7ejnzr9s7xVxJw3dj4cM4b2pyset4jCIcafKwt5BCkhBLwExHY9qftqrbu5cNA==,iv:6yyckoURc5bwxfwcYSEHAS0ywc+hktzhK3taSx1wAyQ=,tag:2mQjvYgs4xc9PaKzfK1FqQ==,type:str]
 sops:
@@ -16,8 +16,8 @@ sops:
             eVkrWUE2SURHeU41clZzamExTzdhUlEKGoLe9VpmmuHbCnvcHS88POlZVOEYPGsy
             WqbOd9u4l3J/4gyX6plSpnfEaQarJPnipGL9+OwZSI+r0teQdg1l6g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-02-10T19:11:01Z"
-    mac: ENC[AES256_GCM,data:p8w8AsbMaH/MSgLpEO0qIXaYmV/LVE133efY70JW77JTYnh6AgyQ0yevv6AI7+UDhV1L9t8203mopoPkjakkY4HhA3yNFLPHL/fJqrIBbOHVQq/m9lAdra7fhJsXxSPlwYdr7Jt3Ac9wc3C1Qj8sWpPbygpalspVsES2lTWOplU=,iv:L8J+GV2Bj3cYv5JLMDX2CewrEIW2mInIBSYSmZz6RxI=,tag:YkZuVR+PgvTgfE8OpiUvqw==,type:str]
+    lastmodified: "2026-02-10T19:12:21Z"
+    mac: ENC[AES256_GCM,data:55mvKQYYQvTuHyUdfJZpikxYQJ2Hfi0XIvN0NkuKrsasvhxxdL24JCI2vMQ/qtiZH059THJ8qbkIhv2s/ix2VXJeEqSZ4nt+nJG+YkH1q7cE+FCNylwJNxPuaOeS8Wff1Q2j2uTs33MR14/741kwnMR3Zv0KP+pqT6hHrqskYGY=,iv:Ag7TYcSpv3w7WnDSasSZCE69vVOzTO1pne1r4NZV37M=,tag:iamwNdn9hYirexgeYKjthQ==,type:str]
     encrypted_regex: ^(data|stringData)$
     mac_only_encrypted: true
     version: 3.11.0
