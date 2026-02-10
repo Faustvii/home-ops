@@ -4,12 +4,7 @@ metadata:
     name: docker-registry-ghcr
     type: kubernetes.io/dockerconfigjson
 stringData:
-    dockerconfigjson:
-        auths:
-            ghcr.io:
-                username: ENC[AES256_GCM,data:oxPg9Uvazuo=,iv:MW8pUMSXzIIm5/rpeWWdQIGOG/j0Lqd+QWFahRNeHss=,tag:fgVdVdoEWtcYqKUlxIZsvQ==,type:str]
-                password: ENC[AES256_GCM,data:tvqYebD3Jg1dCWrzP2/R282YqP5WLeoLiMXDxxwMhD28ipEarbswiQ==,iv:qMOyWFSYhYMaqArHDiGZHC1RHNXErDAxqBmJw4f4TsU=,tag:rdyUzI6t45njIX2FOj19mA==,type:str]
-                auth: ENC[AES256_GCM,data:dXmdVbqckCqbqisgOmp3w7uGI+ZQW4sid59r0sZ/qy9HFOdwqZtmq0n5Ij+9BqQidAvl+GCduv55FsXv4G6lnCMwxUM=,iv:39tCnXY3yQU4jnVS7CvH5qTTBOSfTz9DA1XNf6OWjhU=,tag:CUVNSOM0zbJf/Lo8l9Sy1w==,type:str]
+    dockerconfigjson: ENC[AES256_GCM,data:XLIIaUZDFWewD83x7AbY++0M+wMcyrgpmhzpiUrLy0CTFoBANvLpYwD2zD957VdCRbJz/akVmjrqtYpkfYXh7SrMV/40IXn0zvlEm6avsMc2f0WWlqy8iLeuKW69fdga/+vF/FRWBMlXcmU3xWFuwrQ7q/v9EkiLKde2r5x8e7Supet0jTaEYKwZdqYjDrcL/PRbra8VjiVZ8UT4sahXRb7pZqduMlgxR/cACr7nK4VtLA==,iv:DaWUZovBSVsd0G0QRXM9ITgT1G+dG/3lNlxPED1LFns=,tag:OFejvxL69hpMdP11osHEfw==,type:str]
 sops:
     age:
         - recipient: age10yqv86uf4nvjn7q3ftlkellvxkgp839g3vf07kse6gxzpmxz945srd73fx
@@ -21,8 +16,8 @@ sops:
             eVkrWUE2SURHeU41clZzamExTzdhUlEKGoLe9VpmmuHbCnvcHS88POlZVOEYPGsy
             WqbOd9u4l3J/4gyX6plSpnfEaQarJPnipGL9+OwZSI+r0teQdg1l6g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-02-10T18:57:47Z"
-    mac: ENC[AES256_GCM,data:pAfJprPIZjw+hgreLGpvpq4w5S0JBHAPdVBQs3w2Lrl8jD/qJSaYfgI49/nX/jmTd6pakWSz1MvI6ds11UzL6B9r3AhxS5U0mdfngl2a0ns14vSCqZR5rPOaIYQKGXrG1RrAv9bSSs4UwQgZH7kyMXQfWR3jI2i9bsXaNg+G2IM=,iv:hl6uADsqB6mo55YnRX3syGCkTnS8qyDJs+pzpx8h/TQ=,tag:IlMkxE6QU92bLcPyYnQJAA==,type:str]
+    lastmodified: "2026-02-10T19:07:37Z"
+    mac: ENC[AES256_GCM,data:GVVEmJUhaDcigD7nVxWg9PIt9Xv9GLsmPsdYViv3liDsrwRfz9aKEuAOgKG371UDcq4XfABJ0Vq03TjZQzqsb2X31oKv/dAlwXq5zqWJHuonphFaNONwUhybAz2s/KJu9D7KyBr7XF0tqZNPB66jxTcazeSiBrCY6wS9WSwsL0k=,iv:/AO2I2wBGG2wDpBf28VvIpZyuvQKZhoBE6ec+rXbJgw=,tag:nqSfMJ3wLRFhvdBBH/F7FQ==,type:str]
     encrypted_regex: ^(data|stringData)$
     mac_only_encrypted: true
     version: 3.11.0
