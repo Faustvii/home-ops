@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: docker-registry-ghcr
+stringData:
+    DOCKER_SERVER: ENC[AES256_GCM,data:DopZ6zZejA==,iv:cZio2L50Ukx7QLxkx4gLCaedrvdfHCFGKC53UcY04Kg=,tag:DzGMLe8lWS83mnXV0rvm3w==,type:str]
+    DOCKER_USERNAME: ENC[AES256_GCM,data:K5D42kBWAFY=,iv:ERe5seJAQE/o+1b0eha6bLxGBmVH9Gp6hdNF+007v/w=,tag:dQYXRMDNm+PGmZmXfQDMEQ==,type:str]
+    DOCKER_PASSWORD: ENC[AES256_GCM,data:kVUS2GIjAg5Mftpa2JqOE/Tub8W4SMPKCgikcR8qUvJSThMxNmWMjQ==,iv:3oFy+qqIxGftZ5skN+/jr5JCbb5iHPX9Osat6K8iQzI=,tag:twT9Kb2nHv2vNq2jn7JF+Q==,type:str]
+sops:
+    age:
+        - recipient: age10yqv86uf4nvjn7q3ftlkellvxkgp839g3vf07kse6gxzpmxz945srd73fx
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBManNERVp0eUdJOTgxblQr
+            WmhsOUw0ZG5tbVpzNGIwaUNVNVQyZWZBN2o4CndlZHdwd1ZTYTJkbERuNnl3MmdD
+            QWZpdklFUnd4QkN4Mk9wbWxzWW50KzAKLS0tIHJoTVlxRXJJUzNHZ3FOaXRvTkRR
+            eVkrWUE2SURHeU41clZzamExTzdhUlEKGoLe9VpmmuHbCnvcHS88POlZVOEYPGsy
+            WqbOd9u4l3J/4gyX6plSpnfEaQarJPnipGL9+OwZSI+r0teQdg1l6g==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-02-10T18:34:47Z"
+    mac: ENC[AES256_GCM,data:23EhcP28JAM0WVjJZmedxdiQ5F321iJkfoH4HbYn8ZSj+5OBxLYw/wOH1gPb/XJiXKJhUBNwPyz4IguhZs5yvrkgdF5+k2+vuXIjoTRixE20E6wsxLDt4PgkVh2GSzPSyYMYMF1PjYwqK5nj9lr8V/GVL1VXRyEDeIUKtr+bgm0=,iv:IwLXLCqEglSVmzBxBaO+a55zwiZNcAykgDUxYkoFHrA=,tag:bSO8zkj3aS/8aCoccZp1FQ==,type:str]
+    encrypted_regex: ^(data|stringData)$
+    mac_only_encrypted: true
+    version: 3.11.0

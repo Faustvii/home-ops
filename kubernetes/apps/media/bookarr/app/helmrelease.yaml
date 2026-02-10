@@ -50,6 +50,8 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: {drop: ["ALL"]}
     defaultPodOptions:
+      imagePullSecrets:
+        - name: docker-registry-ghcr
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
