@@ -25,8 +25,8 @@ spec:
               CONNECTIONSTRINGS__BOOKARRDB:
                 valueFrom:
                   secretKeyRef:
-                    name: postgres-app
-                    key: uri
+                    name: bookarr-postgres
+                    key: connectionString
             probes:
               liveness: &probes
                 enabled: true
