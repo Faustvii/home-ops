@@ -24,7 +24,7 @@ patches:
                   "apiVersion": "postgresql.cnpg.io/v1",
                   "kind": "Cluster",
                   "name": "postgres",
-                  "namespace": "postgres",
+                  "namespace": "database",
                   "expression": "resource.status.readyInstances >= 1"
                 }
               k8s.ksgate.org/postgres-service: |
@@ -32,14 +32,14 @@ patches:
                   "apiVersion": "v1",
                   "kind": "Service",
                   "name": "postgres-rw",
-                  "namespace": "postgres"
+                  "namespace": "database"
                 }
               k8s.ksgate.org/database-applied: |
                 {
                   "apiVersion": "postgresql.cnpg.io/v1",
                   "kind": "Database",
                   "name": "postgres-${APP}",
-                  "namespace": "postgres",
+                  "namespace": "database",
                   "expression": "resource.status.applied"
                 }
             schedulingGates:
