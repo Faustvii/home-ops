@@ -19,6 +19,11 @@ spec:
         ensure: present
         superuser: false
         disablePassword: false
+      - name: bookarr
+        login: true
+        ensure: present
+        superuser: false
+        disablePassword: false
 
     services:
       additional:
