@@ -7,6 +7,20 @@ resources:
   - ./base/pass
 patches:
   - target:
+      kind: Cluster
+      name: postgres
+    patch: |-
+      - op: add
+        path: /spec/managed/roles/-
+        value:
+          name: ${APP}
+          login: true
+          ensure: present
+          superuser: false
+          disablePassword: false
+          passwordSecret:
+            name: ${APP}-postgres
+  - target:
       kind: HelmRelease
       group: helm.toolkit.fluxcd.io
       version: v2

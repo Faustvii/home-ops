@@ -21,8 +21,9 @@ spec:
               tag: latest@sha256:392668c83d6d20add1823c031ff9819a5418d1f45c13a0742d62bf81cb6ad0f7
             env:
               TZ: America/New_York
-              Database__UsePostgres: "true"
-              ConnectionStrings__bookarrdb:
+              DATABASE__USEPOSTGRES: "true"
+              CACHE__CACHEPATH: /cache/bookarrCache.db
+              CONNECTIONSTRINGS__BOOKARRDB:
                 valueFrom:
                   secretKeyRef:
                     name: bookarr-postgres
@@ -72,6 +73,8 @@ spec:
             namespace: network
     persistence:
       config:
+        type: emptyDir
+      cache:
         type: emptyDir
       #   existingClaim: "{{ .Release.Name }}"
       # media:
