@@ -21,8 +21,8 @@ spec:
               tag: latest@sha256:1b24be5f0bf582c19c7c34d93ff8db443407b289d682d491496c71915aa18495
             env:
               TZ: America/New_York
-              DATABASE__USEPOSTGRES: "true"
-              CONNECTIONSTRINGS__BOOKARRDB:
+              Database__UsePostgres: "true"
+              ConnectionStrings__bookarrdb:
                 valueFrom:
                   secretKeyRef:
                     name: bookarr-postgres
