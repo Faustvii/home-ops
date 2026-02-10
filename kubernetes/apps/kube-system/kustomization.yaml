@@ -18,3 +18,4 @@ resources:
   - ./descheduler/ks.yaml
   - ./reflector/ks.yaml
   - ./csi-driver-nfs/ks.yaml
+  - ./ksgate/ks.yaml
