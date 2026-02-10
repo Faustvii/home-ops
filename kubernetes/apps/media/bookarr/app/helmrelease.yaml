@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/faustvii/bookarr
-              tag: latest
+              tag: latest@sha256:1b24be5f0bf582c19c7c34d93ff8db443407b289d682d491496c71915aa18495
             env:
               TZ: America/New_York
               DATABASE__USEPOSTGRES: "true"
@@ -68,7 +68,7 @@ spec:
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
         parentRefs:
-          - name: envoy-internal
+          - name: envoy-external
             namespace: network
     persistence:
       config:
