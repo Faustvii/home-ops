@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: docker.io/sosedoff/pgweb
-              tag: 0.16.2
+              tag: 0.17.0
             probes:
               liveness: &probes
                 enabled: true
