@@ -99,5 +99,7 @@ spec:
         globalMounts:
           - path: /config/.qbt.toml
             subPath: .qbt.toml
+      media:
+        existingClaim: "media-nfs-pvc"
       tmp:
         type: emptyDir
