@@ -12,13 +12,17 @@ spec:
   values:
     controllers:
       bookarr:
+        strategy: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 1
+          maxSurge: 1
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
               repository: ghcr.io/faustvii/bookarr
-              tag: latest@sha256:d7a64440a62a2389a45951c00968e37fd7c9ef9a01e9b224b2220080d23c1380
+              tag: latest@sha256:96a867e5db3ecffa0b143e499e271612a034ef39652b030f1c1c9f42368ee9ff
             env:
               TZ: America/New_York
               DATABASE__USEPOSTGRES: "true"
