@@ -24,7 +24,7 @@ spec:
               repository: ghcr.io/faustvii/bookarr
               tag: latest@sha256:a08cea08114b55adcc686b836eb80d1df1bf77f923b2095699103a176efdc750
             env:
-              TZ: America/New_York
+              TZ: ${TZ}
               DATABASE__USEPOSTGRES: "true"
               CACHE__CACHEPATH: /cache/bookarrCache.db
               CONNECTIONSTRINGS__BOOKARRDB:
