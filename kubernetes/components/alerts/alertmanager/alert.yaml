@@ -26,4 +26,5 @@ spec:
     - dial.*tcp.*timeout
     - waiting.*socket
     - health check failed.*context canceled
+    - .*status code 502.*
   suspend: false
