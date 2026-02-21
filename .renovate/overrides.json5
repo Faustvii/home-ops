@@ -13,5 +13,12 @@
       matchPackageNames: ["/factory\\.talos\\.dev/"],
       overridePackageName: "ghcr.io/siderolabs/installer",
     },
+    {
+      description: "Separate Major, Minor and Patch for Talos Installer",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/siderolabs/installer"],
+      separateMajorMinor: true,
+      separateMinorPatch: true
+    }
   ],
 }
