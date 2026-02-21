@@ -24,7 +24,7 @@ spec:
       enabled: true
       image:
         repository: registry.k8s.io/autoscaling/vpa-recommender
-        tag: 1.5.1
+        tag: 1.6.0
       extraArgs:
         round-memory-bytes: "33554432" # 32Mi
         round-cpu-millicores: "25"
