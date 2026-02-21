@@ -24,7 +24,7 @@ nodes:
       serial: "50026B7383F0C77C"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/686aee2d00e456079d6a81b4ea79f3fd5d5b58e264cae1ed559c5992afb9df3b
+    talosImageURL: factory.talos.dev/installer/05075578f9126b51cc000f57a0dffd26b4461c6f1f30baee0c4eed26a46825e6
     controlPlane: true
     networkInterfaces:
       - interface: bond0

@@ -1,0 +1,9 @@
+customization:
+  extraKernelArgs:
+    - pcie_aspm=off # Disable PCIe ASPM
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/amd-ucode
+      - siderolabs/amdgpu
+      - siderolabs/nfsd
+      - siderolabs/nut-client
