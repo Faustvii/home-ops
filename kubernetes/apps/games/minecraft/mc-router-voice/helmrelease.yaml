@@ -24,9 +24,9 @@ spec:
         containers:
           app:
             image:
-              repository: jschuler99/svc-router
+              repository: ghcr.io/jlschuler99/svc-router
               pullPolicy: IfNotPresent
-              tag: 0.0.1
+              tag: 0.0.2
     service:
       router:
         annotations:
