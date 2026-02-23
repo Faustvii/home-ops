@@ -43,7 +43,7 @@ spec:
 
     extradeploy:
       - name: voice-router
-        image: "jschuler99/svc-router:0.0.1"
+        image: "jschuler99/svc-router:0.0.2"
         imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 8080
