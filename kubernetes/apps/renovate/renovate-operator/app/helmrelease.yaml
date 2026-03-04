@@ -29,5 +29,11 @@ spec:
     #   ownNamespaceOnly: true
     webhook:
       enabled: true
+      route:
+        hostnames: ["renovate-webhook.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+            sectionName: https
     logging:
       level: debug
