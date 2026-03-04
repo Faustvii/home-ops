@@ -1,0 +1,35 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mogenius/renovate-operator/refs/heads/main/charts/renovate-operator/crd/renovate-operator.mogenius.com_renovatejobs.yaml
+apiVersion: renovate-operator.mogenius.com/v1alpha1
+kind: RenovateJob
+metadata:
+  name: renovate-github
+spec:
+  discoveryFilter: faustvii/*
+  provider:
+    name: github
+  extraEnv:
+    - name: LOG_LEVEL
+      value: debug
+    - name: RENOVATE_GIT_AUTHOR
+      value: "Renovate <renovate@rphilipsen.nl>"
+    - name: RENOVATE_ONBOARDING_CONFIG
+      value: |
+        {
+          "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+          "extends": [
+            'config:recommended'
+          ]
+        }
+    - name: RENOVATE_REDIS_URL
+      value: "redis://dragonfly.database.svc.cluster.local:6379/2"
+  image: ghcr.io/renovatebot/renovate:42.76.3@sha256:64dad0bc6f6be5504a05580bb609a619159204c8f88f049edfb0531c1fba60e8
+  parallelism: 10
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  schedule: "@hourly"
+  secretRef: renovate-secret
+  webhook:
+    enabled: true
