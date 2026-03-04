@@ -8,4 +8,5 @@ components:
   - ../../components/database/dragonfly
 
 resources:
+  - ./namespace.yaml
   - ./renovate-operator/ks.yaml
