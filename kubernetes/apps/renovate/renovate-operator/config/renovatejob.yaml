@@ -6,11 +6,11 @@ metadata:
   name: renovate-github
 spec:
   discoveryFilter: faustvii/*
-  provider:
-    name: github
   extraEnv:
     - name: LOG_LEVEL
       value: debug
+    - name: RENOVATE_PLATFORM
+      value: github
     - name: RENOVATE_GIT_AUTHOR
       value: "Renovate <renovate@rphilipsen.nl>"
     - name: RENOVATE_ONBOARDING_CONFIG
