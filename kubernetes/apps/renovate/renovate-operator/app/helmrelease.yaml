@@ -34,3 +34,5 @@ spec:
     #   ownNamespaceOnly: true
     webhook:
       enabled: true
+    logging:
+      level: debug
