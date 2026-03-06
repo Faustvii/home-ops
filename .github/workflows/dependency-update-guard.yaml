@@ -225,12 +225,12 @@ jobs:
 
             const marker = "<!-- maintainer-volatility-advisory -->";
             let message = `${marker}\n### Maintainer Volatility Advisory (30d)\n\n`;
-            message += "This is an advisory signal for supply-chain stability. It does not assert AI-generated code detection.\n\n";
+            message += "This is an advisory signal for supply-chain stability.\n\n";
 
             if (rows.length === 0) {
               message += "No GitHub source repositories were discovered from the PR metadata/body for scoring.\n";
             } else {
-              message += "| Repository | Risk | Score | Authors(30d) | Commits(30d/prev30d) | Commit Size median/max | Releases(30d/prev30d) |\n";
+              message += "| Repository | Risk | Score | Authors | Commits | Commit Size median/max | Releases |\n";
               message += "|---|---:|---:|---:|---:|---:|---:|\n";
               for (const row of rows.sort((a, b) => b.score - a.score).slice(0, 20)) {
                 message += `| ${row.repo} | ${row.risk} | ${row.score} | ${row.authors} | ${row.commits30}/${row.commitsPrev30} | ${row.median}/${row.max} | ${row.releases30}/${row.releasesPrev30} |\n`;
