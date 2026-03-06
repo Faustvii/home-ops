@@ -1,0 +1,288 @@
+---
+name: "Dependency Update Advisory"
+
+on:
+  pull_request:
+    branches: ["main"]
+    types: [opened, synchronize, reopened, edited, labeled]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  pre-job:
+    name: Dependency Advisory Pre-Job
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'renovate/container') }}
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.changed-files.outputs.any_changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Get Changed Files
+        id: changed-files
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
+        with:
+          separator: "\n"
+          files: |
+            kubernetes/**
+
+      - name: Pre-Job Summary
+        run: |
+          echo "Dependency advisory enabled: ${{ steps.changed-files.outputs.any_changed }}" >> "$GITHUB_STEP_SUMMARY"
+          if [[ "${{ steps.changed-files.outputs.any_changed }}" == "true" ]]; then
+            echo "Reason: kubernetes file change + renovate/container label" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Reason: renovate/container label present, but no kubernetes file change" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  maintainer-volatility:
+    name: Maintainer Volatility Advisory
+    needs: pre-job
+    if: ${{ needs.pre-job.outputs.should_run == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Build volatility advisory comment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const body = pr.body || "";
+
+            const repoSet = new Set();
+            const ghUrlRegex = /https?:\/\/github\.com\/([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)/g;
+            for (const match of body.matchAll(ghUrlRegex)) {
+              const owner = match[1];
+              const repo = match[2].replace(/\.git$/, "");
+              if (owner && repo) {
+                repoSet.add(`${owner}/${repo}`);
+              }
+            }
+
+            const ghcrRegex = /ghcr\.io\/([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)/g;
+            for (const match of body.matchAll(ghcrRegex)) {
+              const owner = match[1];
+              const repo = match[2];
+              if (owner && repo) {
+                repoSet.add(`${owner}/${repo}`);
+              }
+            }
+
+            const repos = [...repoSet].filter((full) => {
+              const [owner, name] = full.split("/");
+              return owner && name && !name.includes("$") && !name.includes("{");
+            }).slice(0, 20);
+
+            const now = new Date();
+            const daysAgo = (days) => new Date(now.getTime() - days * 24 * 60 * 60 * 1000).toISOString();
+
+            function clamp(value, min, max) {
+              return Math.max(min, Math.min(max, value));
+            }
+
+            function scoreAuthorChurn(distinctAuthors) {
+              if (distinctAuthors <= 2) return 10;
+              if (distinctAuthors <= 4) return 25;
+              if (distinctAuthors <= 7) return 50;
+              if (distinctAuthors <= 10) return 75;
+              return 100;
+            }
+
+            function scoreFrequency(currCount, prevCount) {
+              if (currCount === 0) return 0;
+              const baseline = Math.max(prevCount, 1);
+              const ratio = currCount / baseline;
+              return clamp(Math.round((ratio - 1) * 40), 0, 100);
+            }
+
+            function scoreCommitSize(median, max) {
+              const medianScore = clamp((median / 600) * 60, 0, 60);
+              const maxScore = clamp((max / 3000) * 40, 0, 40);
+              return Math.round(medianScore + maxScore);
+            }
+
+            function scoreReleaseSpike(currReleases, prevReleases) {
+              if (currReleases === 0) return 0;
+              const baseline = Math.max(prevReleases, 1);
+              const ratio = currReleases / baseline;
+              return clamp(Math.round((ratio - 1) * 45), 0, 100);
+            }
+
+            function classify(score) {
+              if (score >= 70) return "high";
+              if (score >= 40) return "medium";
+              return "low";
+            }
+
+            async function listCommits(owner, repo, params) {
+              try {
+                return await github.paginate(github.rest.repos.listCommits, {
+                  owner,
+                  repo,
+                  per_page: 100,
+                  ...params,
+                });
+              } catch {
+                return [];
+              }
+            }
+
+            async function listReleases(owner, repo) {
+              try {
+                return await github.paginate(github.rest.repos.listReleases, {
+                  owner,
+                  repo,
+                  per_page: 100,
+                });
+              } catch {
+                return [];
+              }
+            }
+
+            async function commitSizeStats(owner, repo, commits) {
+              const sample = commits.slice(0, 20);
+              const sizes = [];
+              for (const commit of sample) {
+                try {
+                  const details = await github.rest.repos.getCommit({
+                    owner,
+                    repo,
+                    ref: commit.sha,
+                  });
+                  const additions = details.data.stats?.additions || 0;
+                  const deletions = details.data.stats?.deletions || 0;
+                  sizes.push(additions + deletions);
+                } catch {
+                  continue;
+                }
+              }
+
+              if (sizes.length === 0) {
+                return { median: 0, max: 0 };
+              }
+
+              sizes.sort((a, b) => a - b);
+              const mid = Math.floor(sizes.length / 2);
+              const median = sizes.length % 2 === 0 ? Math.round((sizes[mid - 1] + sizes[mid]) / 2) : sizes[mid];
+              return { median, max: sizes[sizes.length - 1] };
+            }
+
+            function countReleasesInRange(releases, fromIso, toIso) {
+              const from = new Date(fromIso).getTime();
+              const to = new Date(toIso).getTime();
+              return releases.filter((release) => {
+                const published = release.published_at ? new Date(release.published_at).getTime() : NaN;
+                return Number.isFinite(published) && published >= from && published < to;
+              }).length;
+            }
+
+            const rows = [];
+
+            for (const full of repos) {
+              const [owner, repo] = full.split("/");
+              if (!owner || !repo) continue;
+
+              const currCommits = await listCommits(owner, repo, { since: daysAgo(30), until: now.toISOString() });
+              const prevCommits = await listCommits(owner, repo, { since: daysAgo(60), until: daysAgo(30) });
+              const authors = new Set(currCommits.map((c) => c.author?.login || c.commit?.author?.email || "unknown"));
+
+              const sizeStats = await commitSizeStats(owner, repo, currCommits);
+              const releases = await listReleases(owner, repo);
+              const currReleases = countReleasesInRange(releases, daysAgo(30), now.toISOString());
+              const prevReleases = countReleasesInRange(releases, daysAgo(60), daysAgo(30));
+
+              const churn = scoreAuthorChurn(authors.size);
+              const frequency = scoreFrequency(currCommits.length, prevCommits.length);
+              const size = scoreCommitSize(sizeStats.median, sizeStats.max);
+              const release = scoreReleaseSpike(currReleases, prevReleases);
+
+              const score = Math.round((0.30 * churn) + (0.25 * frequency) + (0.25 * size) + (0.20 * release));
+              rows.push({
+                repo: full,
+                authors: authors.size,
+                commits30: currCommits.length,
+                commitsPrev30: prevCommits.length,
+                median: sizeStats.median,
+                max: sizeStats.max,
+                releases30: currReleases,
+                releasesPrev30: prevReleases,
+                score,
+                risk: classify(score),
+              });
+            }
+
+            const marker = "<!-- maintainer-volatility-advisory -->";
+            let message = `${marker}\n### Maintainer Volatility Advisory (30d)\n\n`;
+            message += "This is an advisory signal for supply-chain stability. It does not assert AI-generated code detection.\n\n";
+
+            if (rows.length === 0) {
+              message += "No GitHub source repositories were discovered from the PR metadata/body for scoring.\n";
+            } else {
+              message += "| Repository | Risk | Score | Authors(30d) | Commits(30d/prev30d) | Commit Size median/max | Releases(30d/prev30d) |\n";
+              message += "|---|---:|---:|---:|---:|---:|---:|\n";
+              for (const row of rows.sort((a, b) => b.score - a.score).slice(0, 20)) {
+                message += `| ${row.repo} | ${row.risk} | ${row.score} | ${row.authors} | ${row.commits30}/${row.commitsPrev30} | ${row.median}/${row.max} | ${row.releases30}/${row.releasesPrev30} |\n`;
+              }
+              message += "\nRisk thresholds: low < 40, medium 40-69, high >= 70.\n";
+            }
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              per_page: 100,
+            });
+
+            const existing = comments.find((c) => c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: message,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: message,
+              });
+            }
+
+            core.summary
+              .addHeading("Maintainer Volatility Advisory")
+              .addRaw(`Scored repositories: ${rows.length}\n`)
+              .addRaw("Advisory only: does not block merges.\n")
+              .write();
+
+  dependency-update-advisory-status:
+    name: Dependency Update Advisory Success
+    needs: [pre-job, maintainer-volatility]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip if not dependency PR
+        if: ${{ needs.pre-job.outputs.should_run != 'true' }}
+        run: |
+          echo "Dependency advisory skipped: non-dependency PR"
+
+      - name: Fail if required jobs failed
+        if: ${{ needs.pre-job.outputs.should_run == 'true' && needs.maintainer-volatility.result == 'failure' }}
+        run: exit 1
+
+      - name: Success
+        if: ${{ needs.pre-job.outputs.should_run != 'true' || needs.maintainer-volatility.result != 'failure' }}
+        run: echo "Dependency update advisory checks passed or were skipped"
