@@ -60,21 +60,23 @@ jobs:
           script: |
             const pr = context.payload.pull_request;
             const body = pr.body || "";
+            const title = pr.title || "";
+            const text = `${title}\n${body}`;
 
             const repoSet = new Set();
-            const ghUrlRegex = /https?:\/\/github\.com\/([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)/g;
-            for (const match of body.matchAll(ghUrlRegex)) {
+            const ghUrlRegex = /https?:\/\/(?:github\.com|redirect\.github\.com)\/([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)/g;
+            for (const match of text.matchAll(ghUrlRegex)) {
               const owner = match[1];
-              const repo = match[2].replace(/\.git$/, "");
+              const repo = match[2].replace(/\.git$/, "").replace(/[).,;:!?]+$/, "");
               if (owner && repo) {
                 repoSet.add(`${owner}/${repo}`);
               }
             }
 
             const ghcrRegex = /ghcr\.io\/([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)/g;
-            for (const match of body.matchAll(ghcrRegex)) {
+            for (const match of text.matchAll(ghcrRegex)) {
               const owner = match[1];
-              const repo = match[2];
+              const repo = match[2].replace(/[).,;:!?]+$/, "");
               if (owner && repo) {
                 repoSet.add(`${owner}/${repo}`);
               }
@@ -107,10 +109,10 @@ jobs:
               return clamp(Math.round((ratio - 1) * 40), 0, 100);
             }
 
-            function scoreCommitSize(median, max) {
+            function scoreCommitSize(median, p90) {
               const medianScore = clamp((median / 600) * 60, 0, 60);
-              const maxScore = clamp((max / 3000) * 40, 0, 40);
-              return Math.round(medianScore + maxScore);
+              const p90Score = clamp((p90 / 3000) * 40, 0, 40);
+              return Math.round(medianScore + p90Score);
             }
 
             function scoreReleaseSpike(currReleases, prevReleases) {
@@ -151,9 +153,16 @@ jobs:
               }
             }
 
+            function percentile(sortedValues, p) {
+              if (sortedValues.length === 0) return 0;
+              const idx = Math.ceil((p / 100) * sortedValues.length) - 1;
+              return sortedValues[Math.max(0, Math.min(idx, sortedValues.length - 1))];
+            }
+
             async function commitSizeStats(owner, repo, commits) {
-              const sample = commits.slice(0, 20);
+              const sample = commits.slice(0, 40);
               const sizes = [];
+              let skippedMerges = 0;
               for (const commit of sample) {
                 try {
                   const details = await github.rest.repos.getCommit({
@@ -161,6 +170,13 @@ jobs:
                     repo,
                     ref: commit.sha,
                   });
+
+                  // Merge commits often aggregate large diffs and skew risk scoring.
+                  if ((details.data.parents || []).length > 1) {
+                    skippedMerges += 1;
+                    continue;
+                  }
+
                   const additions = details.data.stats?.additions || 0;
                   const deletions = details.data.stats?.deletions || 0;
                   sizes.push(additions + deletions);
@@ -170,13 +186,14 @@ jobs:
               }
 
               if (sizes.length === 0) {
-                return { median: 0, max: 0 };
+                return { median: 0, p90: 0, sampleCount: 0, skippedMerges };
               }
 
               sizes.sort((a, b) => a - b);
               const mid = Math.floor(sizes.length / 2);
               const median = sizes.length % 2 === 0 ? Math.round((sizes[mid - 1] + sizes[mid]) / 2) : sizes[mid];
-              return { median, max: sizes[sizes.length - 1] };
+              const p90 = percentile(sizes, 90);
+              return { median, p90, sampleCount: sizes.length, skippedMerges };
             }
 
             function countReleasesInRange(releases, fromIso, toIso) {
@@ -205,7 +222,7 @@ jobs:
 
               const churn = scoreAuthorChurn(authors.size);
               const frequency = scoreFrequency(currCommits.length, prevCommits.length);
-              const size = scoreCommitSize(sizeStats.median, sizeStats.max);
+              const size = scoreCommitSize(sizeStats.median, sizeStats.p90);
               const release = scoreReleaseSpike(currReleases, prevReleases);
 
               const score = Math.round((0.30 * churn) + (0.25 * frequency) + (0.25 * size) + (0.20 * release));
@@ -215,7 +232,9 @@ jobs:
                 commits30: currCommits.length,
                 commitsPrev30: prevCommits.length,
                 median: sizeStats.median,
-                max: sizeStats.max,
+                p90: sizeStats.p90,
+                commitSample: sizeStats.sampleCount,
+                skippedMerges: sizeStats.skippedMerges,
                 releases30: currReleases,
                 releasesPrev30: prevReleases,
                 score,
@@ -230,12 +249,13 @@ jobs:
             if (rows.length === 0) {
               message += "No GitHub source repositories were discovered from the PR metadata/body for scoring.\n";
             } else {
-              message += "| Repository | Risk | Score | Authors | Commits | Commit Size median/max | Releases |\n";
+              message += "| Repository | Risk | Score | Authors | Commits | Commit Size median/p90 | Releases |\n";
               message += "|---|---:|---:|---:|---:|---:|---:|\n";
               for (const row of rows.sort((a, b) => b.score - a.score).slice(0, 20)) {
-                message += `| ${row.repo} | ${row.risk} | ${row.score} | ${row.authors} | ${row.commits30}/${row.commitsPrev30} | ${row.median}/${row.max} | ${row.releases30}/${row.releasesPrev30} |\n`;
+                message += `| ${row.repo} | ${row.risk} | ${row.score} | ${row.authors} | ${row.commits30}/${row.commitsPrev30} | ${row.median}/${row.p90} | ${row.releases30}/${row.releasesPrev30} |\n`;
               }
               message += "\nRisk thresholds: low < 40, medium 40-69, high >= 70.\n";
+              message += "Commit-size stats are based on recent non-merge commits (median/p90) to reduce outlier spikes.\n";
             }
 
             const comments = await github.paginate(github.rest.issues.listComments, {
