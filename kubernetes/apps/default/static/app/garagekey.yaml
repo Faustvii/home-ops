@@ -7,6 +7,7 @@ metadata:
 spec:
   clusterRef:
     name: garage
+    namespace: storage
   bucketPermissions:
     - bucketRef: static-backup
       read: true

@@ -7,5 +7,6 @@ metadata:
 spec:
   clusterRef:
     name: garage
+    namespace: storage
   quotas:
     maxSize: 1Gi
