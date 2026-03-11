@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   # - ./externalsecret.yaml
   - ./garagecluster.yaml
-  - ./service.yaml
+  # - ./service.yaml
