@@ -11,3 +11,8 @@ spec:
   storage:
     data:
       size: 100Gi
+  admin:
+    adminTokenSecretRef:
+      key: GARAGE_ADMIN_TOKEN
+      name: garage-cluster
+    enabled: true
