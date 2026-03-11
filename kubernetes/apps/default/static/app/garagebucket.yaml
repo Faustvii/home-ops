@@ -1,0 +1,11 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/rajsinghtech/garage-operator/refs/heads/main/schemas/garagebucket_v1alpha1.json
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageBucket
+metadata:
+  name: static-backup
+spec:
+  clusterRef:
+    name: garage
+  quotas:
+    maxSize: 1Gi
