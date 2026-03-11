@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/rajsinghtech/garage-operator/refs/heads/main/schemas/garagecluster_v1alpha1.json
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageCluster
+metadata:
+  name: garage
+spec:
+  replicas: 1
+  replication:
+    factor: 1
+  zone: eu-west-1
+  storage:
+    data:
+      size: 100Gi
