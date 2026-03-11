@@ -11,6 +11,10 @@ spec:
   storage:
     data:
       size: 100Gi
+  network:
+    rpcSecretRef:
+      key: GARAGE_RPC_SECRET
+      name: garage-cluster
   admin:
     adminTokenSecretRef:
       key: GARAGE_ADMIN_TOKEN
