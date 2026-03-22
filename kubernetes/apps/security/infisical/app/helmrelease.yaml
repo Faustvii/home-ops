@@ -29,7 +29,7 @@ spec:
       replicaCount: 1
       image:
         repository: infisical/infisical
-        tag: "v0.158.13"
+        tag: "v0.158.17"
         pullPolicy: IfNotPresent
 
     postgresql:
