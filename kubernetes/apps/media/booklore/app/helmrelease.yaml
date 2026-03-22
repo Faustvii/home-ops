@@ -32,8 +32,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/booklore-app/booklore
-              tag: v2.0.5@sha256:805c387c5e8e99bc3d2277f85f26a28a22ee58546a85438f4fb2f8e174657c1e
+              repository: ghcr.io/faustvii/booklore
+              tag: v2.1.0@sha256:3fab963d70fb8953461d72d9fe4c7f76eff2f27fe4b914a960fc5e0ee2332bbe
             env:
               TZ: ${TZ}
               USER_ID: 1000
