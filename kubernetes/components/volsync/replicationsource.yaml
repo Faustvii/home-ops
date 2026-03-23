@@ -20,6 +20,12 @@ spec:
       runAsUser: ${VOLSYNC_PUID:=1000}
       runAsGroup: ${VOLSYNC_PGID:=1000}
       fsGroup: ${VOLSYNC_PGID:=1000}
+    moverVolumes:
+      - mountPath: repository
+        volumeSource:
+          nfs:
+            path: /mnt/standard/volsync/kopia
+            server: truenas.faust
     parallelism: 2
     repository: ${APP}-volsync-secret
     retain:

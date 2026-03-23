@@ -11,3 +11,9 @@ spec:
     schedule: 0 */8 * * *
   repository:
     repository: volsync-maintenance-secret
+  moverVolumes:
+    - mountPath: repository
+      volumeSource:
+        nfs:
+          path: /mnt/standard/volsync/kopia
+          server: truenas.faust

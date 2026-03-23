@@ -20,6 +20,12 @@ spec:
     cleanupTempPVC: true
     copyMethod: Snapshot
     enableFileDeletion: true
+    moverVolumes:
+      - mountPath: repository
+        volumeSource:
+          nfs:
+            path: /mnt/standard/volsync/kopia
+            server: truenas.faust
     moverSecurityContext:
       runAsUser: ${VOLSYNC_PUID:=1000}
       runAsGroup: ${VOLSYNC_PGID:=1000}
