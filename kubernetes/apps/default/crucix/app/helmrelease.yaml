@@ -52,7 +52,8 @@ spec:
         type: emptyDir
       data:
         enabled: true
-        sizeLimit: 1Gi
+        size: 1Gi
+        accessMode: ReadWriteOnce
         globalMounts:
           - path: /app/runs
 
