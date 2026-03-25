@@ -56,6 +56,7 @@ spec:
         accessMode: ReadWriteOnce
         globalMounts:
           - path: /app/runs
+          - path: /app/runs/memory
 
     service:
       app:
