@@ -4,7 +4,7 @@ name: "Dependency Update Advisory"
 on:
   pull_request:
     branches: ["main"]
-    types: [opened, synchronize, reopened, edited, labeled]
+    types: [opened, synchronize, edited]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
