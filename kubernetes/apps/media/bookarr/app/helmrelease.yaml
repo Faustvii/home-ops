@@ -80,6 +80,18 @@ spec:
         type: emptyDir
       cache:
         type: emptyDir
+      library:
+        type: emptyDir
+        globalMounts:
+          - path: /app/import
+            subPath: import
+          - path: /app/failed
+            subPath: failed
+          - path: /app/duplicate
+            subPath: duplicate
+          - path: /app/done
+            subPath: done
+
       #   existingClaim: "{{ .Release.Name }}"
       # media:
       #   type: nfs
