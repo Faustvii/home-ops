@@ -32,21 +32,6 @@
       schedule: ["* 0-3 * * 4"],
     },
     {
-      description: "Auto-merge GitHub Actions",
-      matchManagers: [
-        "github-actions"
-      ],
-      automerge: true,
-      automergeType: "branch",
-      matchUpdateTypes: [
-        "minor",
-        "patch",
-        "digest"
-      ],
-      ignoreTests: true,
-      schedule: ["* 0-3 * * 4"],
-    },
-    {
       description: "Auto-merge trusted GitHub Actions",
       matchManagers: [
         "github-actions"
@@ -61,20 +46,6 @@
         "minor",
         "patch",
         "digest"
-      ],
-      ignoreTests: true,
-      schedule: ["* 0-3 * * 4"],
-    },
-    {
-      description: "Auto-merge GitHub Releases",
-      matchDatasources: [
-        "github-releases"
-      ],
-      automerge: true,
-      automergeType: "branch",
-      matchUpdateTypes: [
-        "minor",
-        "patch"
       ],
       ignoreTests: true,
       schedule: ["* 0-3 * * 4"],
