@@ -25,7 +25,6 @@
     "prEditedNotification",
     "prIgnoreNotification",
   ],
-  minimumReleaseAge: "3 days",
   flux: {
     managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
   },
