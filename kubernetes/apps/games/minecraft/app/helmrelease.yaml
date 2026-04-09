@@ -104,7 +104,7 @@ spec:
     minecraftServer:
       eula: true
       # renovate: datasource=custom.minecraft-release
-      version: 1.21.11
+      version: 26.1.2
       type: FABRIC
       difficulty: hard
       whitelist: "liope,OliverWHennings,roflbobl,FranzVDB,lil_havfrue,AndyBeTrollin,inebuni,Djonn,Noerlem,Svend_Bueskytte,v1z3s,dkcom,FoshuMG,Shazbotz,Simmetopia,Alveel,DerRune,HueN77,EHasseltoft,Sanctidus"
