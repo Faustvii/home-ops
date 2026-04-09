@@ -13,3 +13,6 @@ spec:
     - port: node-exporter-metrics
       interval: 60s
       path: /metrics
+      relabelings:
+        - targetLabel: job
+          replacement: node-exporter
