@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: truenas-smartctl
+  labels:
+    app: truenas-smartctl
+subsets:
+  - addresses:
+      - ip: 192.168.1.94
+    ports:
+      - name: metrics
+        port: 9633
