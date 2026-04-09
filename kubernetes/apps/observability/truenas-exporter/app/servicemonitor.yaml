@@ -9,9 +9,10 @@ spec:
   endpoints:
     - port: smartctl-metrics
       interval: 60s
+      scrapeTimeout: 30s
       path: /metrics
     - port: node-exporter-metrics
-      interval: 60s
+      interval: 30s
       path: /metrics
       relabelings:
         - targetLabel: job
