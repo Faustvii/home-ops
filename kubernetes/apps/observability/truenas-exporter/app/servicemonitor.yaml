@@ -1,12 +1,15 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: truenas-smartctl
+  name: truenas
 spec:
   selector:
     matchLabels:
-      app: truenas-smartctl
+      app: truenas
   endpoints:
-    - port: metrics
+    - port: smartctl-metrics
+      interval: 60s
+      path: /metrics
+    - port: node-exporter-metrics
       interval: 60s
       path: /metrics

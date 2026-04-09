@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: truenas-metrics
+  labels:
+    app: truenas
+spec:
+  clusterIP: None
+  ports:
+    - name: smartctl-metrics
+      port: 9633
+      targetPort: 9633
+    - name: node-exporter-metrics
+      port: 9100
+      targetPort: 9100
