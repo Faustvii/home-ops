@@ -1,10 +1,10 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: truenas-smartctl-exporter
+  name: truenas-exporter
 spec:
   interval: 10m
-  path: ./kubernetes/apps/observability/truenas-smartctl-exporter/app
+  path: ./kubernetes/apps/observability/truenas-exporter/app
   prune: true
   sourceRef:
     kind: GitRepository
