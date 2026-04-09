@@ -12,3 +12,6 @@ subsets:
         port: 9633
       - name: node-exporter-metrics
         port: 9100
+        relabelings:
+          - targetLabel: job
+            replacement: node-exporter
