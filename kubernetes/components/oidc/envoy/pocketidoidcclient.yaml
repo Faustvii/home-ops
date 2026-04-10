@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/dist/schemas/pocketidoidcclient_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: ${APP}
+spec:
+  name: ${OIDC_APP_NAME}
+  launchUrl: https://${APP}.${SECRET_DOMAIN}
+  callbackUrls:
+    - https://${APP}.${SECRET_DOMAIN}${OIDC_CALLBACK_PATH:=/oauth2/callback}
+  logoutCallbackUrls:
+    - https://${APP}.${SECRET_DOMAIN}${OIDC_LOGOUT_CALLBACK_PATH:=/logout}
+  pkceEnabled: ${OIDC_PKCE_ENABLED:=false}
+  logoUrl: ${APP_ICON_URL}
+  allowedUserGroups:
+    - name: ${APP}-users
+  secret:
+    name: ${APP}-oidc-credentials

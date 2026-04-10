@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/dist/schemas/pocketidinstance_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDInstance
+metadata:
+  name: pocket-id
+spec:
+  encryptionKey:
+    valueFrom:
+      secretKeyRef:
+        name: pocket-id-secret
+        key: ENCRYPTION_KEY
+  appUrl: https://pocket-id.${SECRET_DOMAIN}
+  analyticsDisabled: true
+  versionCheckDisabled: true
+  metrics:
+    enabled: true
+  userManagement:
+    allowOwnAccountEdit: true
+    allowUserSignups: "disabled"
+  route:
+    enabled: true
+    parentRefs:
+      - name: envoy-external
+        namespace: network

@@ -8,6 +8,8 @@ spec:
   components:
     - ../../../../components/volsync
   dependsOn:
+    - name: pocket-id
+      namespace: security
     - name: volsync
       namespace: storage
   interval: 1h
@@ -15,6 +17,10 @@ spec:
   postBuild:
     substitute:
       APP: booklore
+      OIDC_APP_NAME: Booklore
+      OIDC_CALLBACK_PATH: /oauth2-callback
+      OIDC_LOGOUT_CALLBACK_PATH: /login
+      OIDC_PROVIDER_LOGOUT_PATH: /logout
       VOLSYNC_CAPACITY: 15Gi
     substituteFrom:
       - name: cluster-secrets

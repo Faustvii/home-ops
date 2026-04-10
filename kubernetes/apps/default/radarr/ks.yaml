@@ -8,10 +8,17 @@ spec:
   interval: 1h
   components:
     - ../../../../components/volsync
+  dependsOn:
+    - name: pocket-id
+      namespace: security
   path: ./kubernetes/apps/default/radarr/app
   postBuild:
     substitute:
       APP: *app
+      OIDC_APP_NAME: Radarr
+      OIDC_CALLBACK_PATH: /oauth2/callback
+      OIDC_LOGOUT_CALLBACK_PATH: /
+      OIDC_PROVIDER_LOGOUT_PATH: /logout
       VOLSYNC_CAPACITY: 5Gi
     substituteFrom:
       - name: cluster-secrets
