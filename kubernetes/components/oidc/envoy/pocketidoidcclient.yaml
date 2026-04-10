@@ -12,7 +12,7 @@ spec:
   logoutCallbackUrls:
     - https://${APP}.${SECRET_DOMAIN}${OIDC_LOGOUT_CALLBACK_PATH:=/logout}
   pkceEnabled: ${OIDC_PKCE_ENABLED:=false}
-  logoUrl: ${APP_ICON_URL}
+  #logoUrl: ${APP_ICON_URL}
   allowedUserGroups:
     - name: ${APP}-users
   secret:
