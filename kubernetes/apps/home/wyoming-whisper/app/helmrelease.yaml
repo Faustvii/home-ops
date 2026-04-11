@@ -43,11 +43,11 @@ spec:
           http:
             enabled: true
             primary: false
-            port: &port 8000
+            port: 8000
           whisper:
             enabled: true
             primary: true
-            port: 10300
+            port: &port 10300
             protocol: TCP
     route:
       app:
