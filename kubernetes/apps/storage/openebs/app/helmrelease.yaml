@@ -12,6 +12,12 @@ spec:
   values:
     preUpgradeHook:
       enabled: false
+    openebs-crds:
+      csi:
+        volumeSnapshots:
+          enabled: false
+          keep: false
+
     localpv-provisioner:
       analytics:
         enabled: false
@@ -27,11 +33,6 @@ spec:
       helperPod:
         image:
           registry: quay.io/
-    openebs-crds:
-      csi:
-        volumeSnapshots:
-          enabled: false
-          keep: false
     zfs-localpv:
       zfsNode:
         encrKeysDir: "/var/openebs/zfs"
@@ -41,6 +42,11 @@ spec:
 
       zfs:
         bin: /usr/local/sbin/zfs
+      crds:
+        csi:
+          volumeSnapshots:
+            enabled: false
+
     lvm-localpv:
       enabled: false
     mayastor:
