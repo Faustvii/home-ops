@@ -3,6 +3,39 @@ version: '3'
 
 tasks:
 
+  # To run backup jobs in parallel for all replicationsources:
+  # kubectl get replicationsources --all-namespaces --no-headers | awk '{print $2, $1}' | xargs --max-procs=4 -l bash -c 'task volsync:snapshot rsrc=$0 namespace=$1'
+  snapshot:
+    desc: Trigger a Restic ReplicationSource snapshot (ex. task volsync:snapshot rsrc=plex [namespace=default])
+    silent: true
+    vars:
+      rsrc: '{{ or .rsrc (fail "ReplicationSource `rsrc` is required") }}'
+      namespace: '{{.namespace | default "default"}}'
+      ts:
+        sh: date +%s
+    cmds:
+      - echo "Triggering VolSync snapshot for {{.rsrc}} in {{.namespace}}"
+      - kubectl -n {{.namespace}} patch replicationsources {{.rsrc}} --type merge -p '{"spec":{"trigger":{"manual":"{{.ts}}"}}}'
+      - |
+        job="volsync-src-{{.rsrc}}"
+        echo "Waiting for job ${job} to be created..."
+        for _ in $(seq 1 120); do
+          if kubectl -n {{.namespace}} get job "${job}" >/dev/null 2>&1; then
+            break
+          fi
+          sleep 1
+        done
+        kubectl -n {{.namespace}} get job "${job}" >/dev/null 2>&1 || {
+          echo "Error: Job ${job} was not created within 120s"
+          exit 1
+        }
+      - kubectl -n {{.namespace}} wait job/volsync-src-{{.rsrc}} --for condition=complete --timeout=120m
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - which kubectl
+      - sh: kubectl -n {{.namespace}} get replicationsources {{.rsrc}} >/dev/null 2>&1
+        msg: "ReplicationSource '{{.rsrc}}' not found in namespace '{{.namespace}}'"
+
   restore:
     desc: Restore a Volsync-backed application from backup [APP=required NAMESPACE=required]
     silent: true
