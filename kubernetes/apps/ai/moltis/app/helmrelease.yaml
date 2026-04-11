@@ -12,10 +12,11 @@ spec:
   values:
     defaultPodOptions:
       securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: { type: RuntimeDefault }
-
     controllers:
       *app :
         type: statefulset
@@ -28,6 +29,10 @@ spec:
             restartPolicy: Always
             securityContext:
               privileged: true
+              runAsNonRoot: false
+              runAsUser: 0
+              runAsGroup: 0
+              allowPrivilegeEscalation: true
             env:
               - name: DOCKER_TLS_CERTDIR
                 value: /certs
@@ -73,7 +78,9 @@ spec:
               - --no-tls
             env:
               TZ: "${TZ}"
-              MOLTIS_BEHIND_PROXY: "true"
+
+              MOLTIS_NO_TLS: true
+              MOLTIS_BEHIND_PROXY: true
 
               MOLTIS_CONFIG_DIR: /config
               MOLTIS_DATA_DIR: /data
@@ -101,12 +108,8 @@ spec:
                   failureThreshold: 3
               readiness: *probe
             securityContext:
-              runAsNonRoot: true
-              runAsUser: 1000
-              runAsGroup: 1000
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
 
     service:
       app:
