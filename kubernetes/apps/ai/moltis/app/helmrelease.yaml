@@ -80,7 +80,7 @@ spec:
               TZ: "${TZ}"
 
               MOLTIS_NO_TLS: true
-              MOLTIS_BEHIND_PROXY: false
+              MOLTIS_BEHIND_PROXY: true
 
               MOLTIS_CONFIG_DIR: /config
               MOLTIS_DATA_DIR: /data
@@ -91,9 +91,9 @@ spec:
               DOCKER_HOST: tcp://localhost:2376
               DOCKER_CERT_PATH: /certs/client
               DOCKER_TLS_VERIFY: "1"
-            # envFrom:
-            #   - secretRef:
-            #       name: *app
+            envFrom:
+              - secretRef:
+                  name: *app
             probes:
               liveness: &probe
                 enabled: true
