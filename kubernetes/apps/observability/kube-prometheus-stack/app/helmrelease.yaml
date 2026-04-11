@@ -77,6 +77,14 @@ spec:
                   storage: 50Gi
     prometheus-node-exporter:
       fullnameOverride: node-exporter
+    nodeExporter:
+      operatingSystems:
+        linux:
+          enabled: false
+        aix:
+          enabled: false
+        darwin:
+          enabled: false
     kube-state-metrics:
       fullnameOverride: kube-state-metrics
     grafana:
