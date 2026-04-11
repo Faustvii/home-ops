@@ -72,7 +72,7 @@ spec:
               tag: latest@sha256:fadedb5c6bd5909d47eed32329db8cf8fb96a173ae290f0609aeedcb4d7be7d2
             args:
               - --bind
-              - "[::]"
+              - "::"
               - --port
               - "13131"
               - --no-tls
