@@ -140,7 +140,12 @@ spec:
           - path: /data
             subPath: data
 
-      tmp:
+      tmpfs:
         type: emptyDir
-      certs:
-        type: emptyDir
+        globalMounts:
+          - path: /certs
+            subPath: certs
+          - path: /home/moltis/.docker
+            subPath: home
+          - path: /tmp
+            subPath: tmp
