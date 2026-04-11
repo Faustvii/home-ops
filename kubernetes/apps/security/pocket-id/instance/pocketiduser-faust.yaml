@@ -4,6 +4,8 @@ apiVersion: pocketid.internal/v1alpha1
 kind: PocketIDUser
 metadata:
   name: faust
+  annotations:
+    pocketid.internal/delete-from-pocket-id: "true"
 spec:
   username:
     value: faust
