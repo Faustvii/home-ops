@@ -19,3 +19,4 @@ spec:
     name: ${APP}-oidc-credentials
     keys:
       clientSecret: client-secret
+      clientID: client-id

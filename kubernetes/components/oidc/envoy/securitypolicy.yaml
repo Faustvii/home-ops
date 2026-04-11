@@ -12,7 +12,8 @@ spec:
   oidc:
     provider:
       issuer: https://pocket-id.${SECRET_DOMAIN}
-    clientID: ${APP}
+    clientIDRef:
+      name: ${APP}-oidc-credentials
     clientSecret:
       name: ${APP}-oidc-credentials
     redirectURL: https://${APP}.${SECRET_DOMAIN}${OIDC_CALLBACK_PATH:=/oauth2/callback}
