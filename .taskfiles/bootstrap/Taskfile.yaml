@@ -18,8 +18,17 @@ tasks:
       - test -f {{.TALOS_DIR}}/talconfig.yaml
       - which talhelper talosctl sops
 
+  zfs:
+    desc: Bootstrap ZFS onto a node (runs once during bootstrap)
+    cmd: bash {{.SCRIPTS_DIR}}/bootstrap-zfs.sh
+    preconditions:
+      - test -f {{.SCRIPTS_DIR}}/bootstrap-zfs.sh
+      - which kubectl
+      - test -f {{.KUBECONFIG}}
+
   apps:
     desc: Bootstrap apps into the Talos cluster
+    deps: [zfs]
     cmd: bash {{.SCRIPTS_DIR}}/bootstrap-apps.sh
     preconditions:
       - msg: Unsupported bash version, run `brew install bash` to upgrade

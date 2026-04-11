@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
 clusterName: kubernetes
 
 talosVersion: "${talosVersion}"
@@ -24,8 +25,22 @@ nodes:
       serial: "50026B7383F0C77C"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/05075578f9126b51cc000f57a0dffd26b4461c6f1f30baee0c4eed26a46825e6
     controlPlane: true
+    schematic:
+      customization:
+        extraKernelArgs:
+          - pcie_aspm=off # Disable PCIe ASPM
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/amd-ucode
+            - siderolabs/amdgpu
+            - siderolabs/nfsd
+            - siderolabs/nut-client
+            - siderolabs/zfs
+    kernelModules:
+      - name: zfs
+    patches:
+      - "@./patches/storage/talos-01.yaml"
     networkInterfaces:
       - interface: bond0
         bond:
@@ -89,7 +104,6 @@ patches:
   - "@./patches/global/machine-files.yaml"
   - "@./patches/global/machine-kubelet.yaml"
   - "@./patches/global/machine-network.yaml"
-  - "@./patches/global/machine-storage.yaml"
   - "@./patches/global/machine-sysctls.yaml"
   - "@./patches/global/machine-time.yaml"
   - "@./patches/global/machine-nut.yaml"
