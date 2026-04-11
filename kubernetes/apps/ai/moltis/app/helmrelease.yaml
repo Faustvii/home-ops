@@ -73,7 +73,7 @@ spec:
               - --no-tls
             env:
               TZ: "${TZ}"
-              # MOLTIS_BEHIND_PROXY: "true"
+              MOLTIS_BEHIND_PROXY: "true"
 
               MOLTIS_CONFIG_DIR: /config
               MOLTIS_DATA_DIR: /data
