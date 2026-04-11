@@ -27,6 +27,10 @@ spec:
               - base
               - --language
               - en
+            env:
+              WYOMING_WHISPER__INSTANCE_NAME: Wyoming-Whisper
+              WYOMING_WHISPER__PORT: &port 10300
+              WYOMING_WHISPER__LOG_LEVEL: info
             resources:
               requests:
                 cpu: 100m
@@ -40,26 +44,11 @@ spec:
         annotations:
           lbipam.cilium.io/ips: 192.168.10.40
         ports:
-          http:
-            enabled: true
-            primary: false
-            port: 8000
           whisper:
             enabled: true
             primary: true
-            port: &port 10300
+            port: *port
             protocol: TCP
-    route:
-      app:
-        hostnames:
-          - "whisper.${SECRET_DOMAIN}"
-        parentRefs:
-          - name: envoy-internal
-            namespace: network
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
     persistence:
       data:
         existingClaim: "{{ .Release.Name }}"
