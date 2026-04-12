@@ -15,6 +15,7 @@ spec:
       size: 100Gi
   network:
     rpcPublicAddr: "192.168.10.51"
+    rpcBindAddress: "[::]:3901"
     rpcSecretRef:
       key: GARAGE_RPC_SECRET
       name: garage-cluster
