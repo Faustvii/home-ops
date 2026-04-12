@@ -17,10 +17,12 @@ spec:
     rpcSecretRef:
       key: GARAGE_RPC_SECRET
       name: garage-cluster
-    service:
-      type: NodePort
   admin:
     adminTokenSecretRef:
       key: GARAGE_ADMIN_TOKEN
       name: garage-cluster
     enabled: true
+  publicEndpoint:
+    type: LoadBalancer
+    loadBalancer:
+      perNode: true
