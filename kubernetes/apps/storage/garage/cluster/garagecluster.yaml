@@ -37,6 +37,9 @@ spec:
   admin:
     enabled: true
     bindPort: 3903
+    adminTokenSecretRef:
+      key: GARAGE_ADMIN_TOKEN
+      name: garage-cluster
 
   # How remote clusters reach this cluster's nodes
   publicEndpoint:
