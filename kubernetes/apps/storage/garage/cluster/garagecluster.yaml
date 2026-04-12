@@ -4,7 +4,7 @@ kind: GarageCluster
 metadata:
   name: garage
 spec:
-  replicas: 2
+  replicas: 1
   replication:
     factor: 1
   zone: eu-west-1
@@ -14,8 +14,6 @@ spec:
     data:
       size: 100Gi
   network:
-    rpcPublicAddr: "192.168.10.51"
-    rpcBindAddress: "[::]:3901"
     rpcSecretRef:
       key: GARAGE_RPC_SECRET
       name: garage-cluster
@@ -25,6 +23,7 @@ spec:
       name: garage-cluster
     enabled: true
   publicEndpoint:
-    type: LoadBalancer
-    loadBalancer:
-      perNode: true
+    type: ExternalIP
+    externalIP:
+      addresses:
+        garage-0: "192.168.10.51:3901"
