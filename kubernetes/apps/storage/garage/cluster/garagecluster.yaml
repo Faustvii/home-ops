@@ -24,6 +24,7 @@ spec:
   network:
     rpcBindPort: 3901
     # Shared RPC secret - MUST be same across all clusters
+    rpcPublicAddr: "192.168.10.51:3901"
     rpcSecretRef:
       key: GARAGE_RPC_SECRET
       name: garage-cluster
