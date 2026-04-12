@@ -11,7 +11,7 @@ spec:
   zone: eu-west-1
 
   replication:
-    factor: 1
+    factor: 2
     consistencyMode: consistent
     zoneRedundancy: "AtLeast(1)" # Replicas must span at least 2 zones
 
