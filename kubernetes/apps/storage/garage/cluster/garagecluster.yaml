@@ -11,9 +11,9 @@ spec:
   zone: eu-west-1
 
   replication:
-    factor: 2
+    factor: 1
     consistencyMode: consistent
-    zoneRedundancy: "AtLeast(2)" # Replicas must span at least 2 zones
+    zoneRedundancy: "AtLeast(1)" # Replicas must span at least 2 zones
 
   storage:
     metadata:
@@ -54,9 +54,6 @@ spec:
       zone: eu-west-2
       connection:
         adminApiEndpoint: "http://truenas.faust:30190"
-        adminTokenSecretRef:
-          name: GARAGE_ADMIN_TOKEN
-          key: garage-cluster
 
   layoutManagement:
     autoApply: true
