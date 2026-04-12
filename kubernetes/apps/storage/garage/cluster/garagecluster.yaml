@@ -4,7 +4,7 @@ kind: GarageCluster
 metadata:
   name: garage
 spec:
-  replicas: 1
+  replicas: 2
   replication:
     factor: 1
   zone: eu-west-1
