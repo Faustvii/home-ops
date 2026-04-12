@@ -5,25 +5,56 @@ metadata:
   name: garage
 spec:
   replicas: 1
-  replication:
-    factor: 1
+  image: dxflrs/garage:v2.2.0
+
+  # Zone for this cluster - used for fault tolerance
   zone: eu-west-1
+
+  replication:
+    factor: 2
+    consistencyMode: consistent
+    zoneRedundancy: "AtLeast(2)" # Replicas must span at least 2 zones
+
   storage:
     metadata:
       size: 10Gi
     data:
       size: 100Gi
+
   network:
+    rpcBindPort: 3901
+    # Shared RPC secret - MUST be same across all clusters
     rpcSecretRef:
       key: GARAGE_RPC_SECRET
       name: garage-cluster
+    service:
+      type: ClusterIP
+
+  s3Api:
+    bindPort: 3900
+    region: garage
+
   admin:
-    adminTokenSecretRef:
-      key: GARAGE_ADMIN_TOKEN
-      name: garage-cluster
     enabled: true
+    bindPort: 3903
+
+  # How remote clusters reach this cluster's nodes
   publicEndpoint:
-    type: ExternalIP
-    externalIP:
-      addresses:
-        garage-0: "192.168.10.51:3901"
+    type: LoadBalancer
+    loadBalancer:
+      perNode: true # Each node gets its own LB for direct routing
+
+  # Remote clusters in other K8s clusters
+  # Nodes are auto-discovered via Admin API
+  remoteClusters:
+    - name: garage-eu
+      zone: eu-west-2
+      connection:
+        adminApiEndpoint: "http://truenas.faust:30190"
+        adminTokenSecretRef:
+          name: GARAGE_ADMIN_TOKEN
+          key: garage-cluster
+
+  layoutManagement:
+    autoApply: true
+    minNodesHealthy: 2 # Wait for 2/3 nodes before applying layout
