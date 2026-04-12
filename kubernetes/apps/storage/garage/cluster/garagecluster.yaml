@@ -4,7 +4,7 @@ kind: GarageCluster
 metadata:
   name: garage
 spec:
-  replicas: 2
+  replicas: 1
   replication:
     factor: 1
   zone: eu-west-1
@@ -14,6 +14,7 @@ spec:
     data:
       size: 100Gi
   network:
+    rpcPublicAddr: "192.168.10.51"
     rpcSecretRef:
       key: GARAGE_RPC_SECRET
       name: garage-cluster
