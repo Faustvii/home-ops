@@ -1,0 +1,13 @@
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageNode
+metadata:
+  name: truenas-node
+spec:
+  clusterRef:
+    name: garage
+  nodeId: "b92061ea9d24a83e8c3906b2dd61af077f294696c8a42749faeacc07564ea475"
+  zone: eu-west-2
+  capacity: 1Ti
+  external:
+    address: truenas.faust
+    port: 30187

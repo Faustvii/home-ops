@@ -9,12 +9,16 @@ spec:
     factor: 1
   zone: eu-west-1
   storage:
+    metadata:
+      size: 10Gi
     data:
       size: 100Gi
   network:
     rpcSecretRef:
       key: GARAGE_RPC_SECRET
       name: garage-cluster
+    service:
+      type: NodePort
   admin:
     adminTokenSecretRef:
       key: GARAGE_ADMIN_TOKEN
