@@ -13,4 +13,4 @@ resources:
   - ./openebs/ks.yaml
   - ./kopia/ks.yaml
   - ./democratic/ks.yaml
-  # - ./garage/ks.yaml
+  - ./garage/ks.yaml
