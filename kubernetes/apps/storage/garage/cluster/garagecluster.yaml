@@ -59,4 +59,4 @@ spec:
 
   layoutManagement:
     autoApply: true
-    minNodesHealthy: 2 # Wait for 2/3 nodes before applying layout
+    minNodesHealthy: 1 # Wait for 2/3 nodes before applying layout
