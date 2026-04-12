@@ -43,9 +43,10 @@ spec:
 
   # How remote clusters reach this cluster's nodes
   publicEndpoint:
-    type: LoadBalancer
-    loadBalancer:
-      perNode: true # Each node gets its own LB for direct routing
+    type: ExternalIP
+    externalIP:
+      addresses:
+        garage-0: "192.168.10.51:3901"
 
   # Remote clusters in other K8s clusters
   # Nodes are auto-discovered via Admin API
