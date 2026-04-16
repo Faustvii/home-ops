@@ -61,6 +61,8 @@ spec:
             value: "garage"
           - name: RCLONE_CONFIG_S3_FORCE_PATH_STYLE
             value: "true"
+          - name: RCLONE_CONFIG_S3_NO_CHECK_BUCKET
+            value: "true"
 
         volumeMounts:
           - name: output
