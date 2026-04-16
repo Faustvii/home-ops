@@ -16,3 +16,4 @@ resources:
   - ./seerr/ks.yaml
   - ./ntfy/ks.yaml
   - ./crucix/ks.yaml
+  - ./crd-schema-publisher/ks.yaml

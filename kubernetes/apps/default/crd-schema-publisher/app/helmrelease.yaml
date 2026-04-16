@@ -1,0 +1,79 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: crd-schema-publisher
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: crd-schema-publisher
+  interval: 1h
+  values:
+    extraVolumes:
+      - name: rclone-tmp
+        emptyDir: {}
+
+    # rclone sidecar — syncs the shared output volume to S3-compatible storage.
+    # The "output" volume is the chart's default emptyDir.
+    extraContainers:
+      - name: rclone
+        image: ghcr.io/rclone/rclone:1.73.4
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            # Wait for the publisher to complete its first extraction
+            while [ ! -f /data/index.html ]; do sleep 5; done
+
+            while true; do
+              rclone sync /data s3:${RCLONE_S3_BUCKET} --checksum --verbose --transfers 4
+              sleep 60
+            done
+        env:
+          # -- rclone S3-compatible remote configuration via env vars.
+          # See provider examples in the header comment for provider/endpoint values.
+          - name: RCLONE_CONFIG_S3_TYPE
+            value: "s3"
+          - name: RCLONE_CONFIG_S3_PROVIDER
+            value: "Other" # <-- your provider (AWS, Minio, Cloudflare, GCS, or Other)
+          - name: RCLONE_CONFIG_S3_ENDPOINT
+            value: "s3.us-west-002.backblazeb2.com" # <-- your endpoint (omit for AWS)
+          # Suppress default config file lookup — all config is via RCLONE_CONFIG_* env vars
+          - name: RCLONE_CONFIG
+            value: ""
+          - name: RCLONE_CONFIG_S3_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                name: crd-schemas-key
+                key: endpoint
+          - name: RCLONE_CONFIG_S3_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: crd-schemas-key
+                key: access-key-id
+          - name: RCLONE_CONFIG_S3_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: crd-schemas-key
+                key: secret-access-key
+          - name: RCLONE_S3_BUCKET
+            value: crd-schemas
+
+        volumeMounts:
+          - name: output
+            mountPath: /data
+            readOnly: true
+          - name: rclone-tmp
+            mountPath: /tmp
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            memory: 64Mi
+        securityContext:
+          runAsUser: 65534
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: ["ALL"]
