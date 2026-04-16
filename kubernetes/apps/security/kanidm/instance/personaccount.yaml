@@ -1,0 +1,14 @@
+---
+apiVersion: kaniop.rs/v1beta1
+kind: KanidmPersonAccount
+metadata:
+  name: faust
+  namespace: security
+spec:
+  kanidmRef:
+    name: kanidm
+    namespace: security
+  personAttributes:
+    displayname: faust
+    mail:
+      - faust@${SECRET_DOMAIN}

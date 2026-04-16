@@ -13,3 +13,4 @@ resources:
   - ./infisical/ks.yaml
   - ./external-secrets/ks.yaml
   - ./pocket-id/ks.yaml
+  - ./kanidm/ks.yaml
