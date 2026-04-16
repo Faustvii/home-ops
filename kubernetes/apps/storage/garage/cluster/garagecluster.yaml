@@ -36,6 +36,10 @@ spec:
     bindPort: 3900
     region: garage
 
+  webApi:
+    bindPort: 3902
+    rootDomain: .web.garage.${SECRET_DOMAIN}
+
   admin:
     enabled: true
     bindPort: 3903
