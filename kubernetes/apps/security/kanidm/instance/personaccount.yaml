@@ -12,3 +12,17 @@ spec:
     displayname: faust
     mail:
       - faust@${SECRET_DOMAIN}
+---
+apiVersion: kaniop.rs/v1beta1
+kind: KanidmPersonAccount
+metadata:
+  name: god
+  namespace: security
+spec:
+  kanidmRef:
+    name: kanidm
+    namespace: security
+  personAttributes:
+    displayname: god
+    mail:
+      - god@${SECRET_DOMAIN}
