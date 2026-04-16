@@ -10,3 +10,6 @@ spec:
     namespace: storage
   quotas:
     maxSize: 1Gi
+  website:
+    enabled: true
+    indexDocument: index.html
