@@ -35,8 +35,6 @@ spec:
             value: "s3"
           - name: RCLONE_CONFIG_S3_PROVIDER
             value: "Other" # <-- your provider (AWS, Minio, Cloudflare, GCS, or Other)
-          - name: RCLONE_CONFIG_S3_ENDPOINT
-            value: "s3.us-west-002.backblazeb2.com" # <-- your endpoint (omit for AWS)
           # Suppress default config file lookup — all config is via RCLONE_CONFIG_* env vars
           - name: RCLONE_CONFIG
             value: ""
