@@ -4,5 +4,6 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./garagecluster.yaml
+  - ./httproute-buckets.yaml
   # - ./truenas-node.yaml
   - ./rpc-service.yaml
