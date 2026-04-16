@@ -9,6 +9,6 @@ spec:
     name: garage
     namespace: storage
   bucketPermissions:
-    - bucketRef: crd-schemas
+    - bucketRef: schemas
       read: true
       write: true
