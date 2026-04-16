@@ -6,6 +6,6 @@ metadata:
 spec:
   kanidmRef:
     name: kanidm
-  name: idm_all_persons
+  kanidmName: idm_all_persons
   accountPolicy:
     credentialTypeMinimum: passkey
