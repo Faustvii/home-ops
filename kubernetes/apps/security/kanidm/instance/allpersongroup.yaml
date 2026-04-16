@@ -1,0 +1,8 @@
+---
+apiVersion: kaniop.rs/v1alpha1
+kind: KanidmGroup
+metadata:
+  name: idm_all_persons
+spec:
+  accountPolicy:
+    credentialTypeMinimum: passkey

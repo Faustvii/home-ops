@@ -7,3 +7,4 @@ resources:
   - ./httproute.yaml
   - ./kanidm.yaml
   - ./personaccount.yaml
+  - ./allpersongroup.yaml
