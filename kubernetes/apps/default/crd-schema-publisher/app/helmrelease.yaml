@@ -55,6 +55,12 @@ spec:
                 key: secret-access-key
           - name: RCLONE_S3_BUCKET
             value: crd-schemas
+          - name: RCLONE_CONFIG_S3_REGION
+            value: "garage"
+          - name: RCLONE_CONFIG_S3_LOCATION_CONSTRAINT
+            value: "garage"
+          - name: RCLONE_CONFIG_S3_FORCE_PATH_STYLE
+            value: "true"
 
         volumeMounts:
           - name: output
