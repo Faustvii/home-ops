@@ -23,9 +23,9 @@ spec:
           - |
             # Wait for the publisher to complete its first extraction
             while [ ! -f /data/index.html ]; do sleep 5; done
-
+            echo "RCLONE_S3_BUCKET=${RCLONE_S3_BUCKET}"
             while true; do
-              rclone sync /data s3:${RCLONE_S3_BUCKET} --checksum --verbose --transfers 4
+              rclone sync /data s3:${RCLONE_S3_BUCKET?missing bucket} --checksum --verbose --transfers 4
               sleep 60
             done
         env:
