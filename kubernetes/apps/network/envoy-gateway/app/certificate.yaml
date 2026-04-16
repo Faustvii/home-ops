@@ -7,6 +7,8 @@ spec:
   dnsNames:
     - "${SECRET_DOMAIN}"
     - "*.${SECRET_DOMAIN}"
+    - "web.garage.${SECRET_DOMAIN}"
+    - "*.web.garage.${SECRET_DOMAIN}"
   duration: 160h
   issuerRef:
     name: letsencrypt-production
