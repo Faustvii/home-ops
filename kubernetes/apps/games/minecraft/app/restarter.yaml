@@ -11,12 +11,22 @@ spec:
       backoffLimit: 1
       template:
         spec:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            fsGroup: 65532
+            fsGroupChangePolicy: OnRootMismatch
           restartPolicy: Never
           serviceAccountName: mc-restarter-sa
           activeDeadlineSeconds: 300
           containers:
             - name: mc-restarter
               image: ghcr.io/faustvii/containers/playground:main
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: { drop: ["ALL"] }
               resources:
                 requests:
                   cpu: 10m

@@ -19,6 +19,14 @@ spec:
     - --cluster_mode=emulated
     - --default_lua_flags=allow-undeclared-keys
   networkPolicyEnabled: false
+
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    runAsGroup: 65532
+    fsGroup: 65532
+    fsGroupChangePolicy: OnRootMismatch
+
   resources:
     requests:
       cpu: 100m

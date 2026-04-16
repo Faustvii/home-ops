@@ -36,6 +36,10 @@ spec:
       repository: ghcr.io/itzg/mc-router
       tag: 1.42.0@sha256:14a9eedcce5955ade0ef0e4c954b45ecdbff55aac1564e484d59d0836b05c5d1
       pullPolicy: IfNotPresent
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities: { drop: ["ALL"] }
 
     extraEnv:
       WEBHOOK_REQUIRE_USER: "true"

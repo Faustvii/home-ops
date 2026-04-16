@@ -23,6 +23,10 @@ spec:
         strategy: RollingUpdate
         containers:
           app:
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             image:
               repository: ghcr.io/jlschuler99/svc-router
               pullPolicy: IfNotPresent
