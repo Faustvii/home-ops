@@ -21,6 +21,8 @@ cniConfig:
 nodes:
   - hostname: "talos-01"
     ipAddress: "192.168.10.10"
+    nodeLabels:
+      topology.kubernetes.io/gpus: amd
     installDiskSelector:
       serial: "50026B7383F0C77C"
     machineSpec:
@@ -39,6 +41,9 @@ nodes:
             - siderolabs/zfs
     kernelModules:
       - name: zfs
+      - name: amdgpu
+        parameters:
+          - ppfeaturemask=0xffffffff
     patches:
       - "@./patches/storage/talos-01.yaml"
     networkInterfaces:
