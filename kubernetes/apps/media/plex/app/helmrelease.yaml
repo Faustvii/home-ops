@@ -50,16 +50,12 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: [ "ALL" ] }
             resources:
-              claims:
-                - name: gpu
               requests:
                 cpu: 100m
+                amd.com/gpu: "1"
               limits:
                 memory: 16Gi
     defaultPodOptions:
-      resourceClaims:
-        - name: gpu
-          resourceClaimTemplateName: plex
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
