@@ -48,18 +48,18 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: [ "ALL" ] }
             resources:
-              # claims:
-              #   - name: gpu
+              claims:
+                - name: gpu
               requests:
                 cpu: 100m
               limits:
                 memory: 16Gi
     defaultPodOptions:
-      # resourceClaims:
-      #   - name: gpu
-      #     resourceClaimTemplateName: plex
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: plex
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -86,8 +86,8 @@ spec:
           - name: envoy-external
             namespace: network
         rules:
-          - # Ref: https://forums.plex.tv/t/external-srt-subtitles-are-not-working-w-reverse-proxy/886540
-            backendRefs:
+          # Ref: https://forums.plex.tv/t/external-srt-subtitles-are-not-working-w-reverse-proxy/886540
+          - backendRefs:
               - identifier: app
                 port: *port
             filters:
@@ -104,7 +104,8 @@ spec:
                 port: *port
     persistence:
       config:
-        existingClaim: "{{ .Release.Name }}"
+        type: emptyDir
+        # existingClaim: "{{ .Release.Name }}"
       media:
         existingClaim: plex-media-nfs-pvc
       tmp:
