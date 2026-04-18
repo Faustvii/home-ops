@@ -55,6 +55,8 @@ spec:
                 amd.com/gpu: "1"
               limits:
                 memory: 16Gi
+                amd.com/gpu: "1"
+
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
