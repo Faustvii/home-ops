@@ -5,7 +5,7 @@ metadata:
   name: garage
 spec:
   replicas: 1
-  image: dxflrs/garage:v2.2.0
+  image: dxflrs/garage:v2.3.0
 
   # Zone for this cluster - used for fault tolerance
   zone: eu-west-1
