@@ -31,6 +31,10 @@
       ],
       separateMajorMinor: true,
       separateMinorPatch: true
+    },
+    {
+      "matchPackageNames": ["ghcr.io/pando85/helm-charts/kaniop"],
+      "changelogUrl": "https://github.com/pando85/kaniop"
     }
   ],
 }
