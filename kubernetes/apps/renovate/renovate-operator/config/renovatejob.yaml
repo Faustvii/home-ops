@@ -26,7 +26,7 @@ spec:
     requests:
       cpu: 100m
       memory: 128Mi
-  schedule: "@hourly"
+  schedule: "0 */3 * * *"
   secretRef: renovate-secret
   webhook:
     enabled: true
