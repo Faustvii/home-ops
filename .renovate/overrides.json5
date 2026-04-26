@@ -35,6 +35,10 @@
     {
       "matchPackageNames": ["ghcr.io/pando85/helm-charts/kaniop"],
       "sourceUrl": "https://github.com/pando85/kaniop"
+    },
+    {
+      "matchPackageNames": ["mirror.gcr.io/envoyproxy/envoy"],
+      "sourceUrl": "https://github.com/envoyproxy/envoy"
     }
   ],
 }
