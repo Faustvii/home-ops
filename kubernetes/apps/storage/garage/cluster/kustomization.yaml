@@ -8,3 +8,4 @@ resources:
   - ./garagekey.yaml
   # - ./truenas-node.yaml
   - ./rpc-service.yaml
+  - ./s3-service.yaml

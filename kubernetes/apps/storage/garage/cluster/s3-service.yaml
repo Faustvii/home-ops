@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: garage-s3-lb
+  namespace: storage
+  annotations:
+    lbipam.cilium.io/ips: "192.168.10.52"
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/instance: garage
+    app.kubernetes.io/name: garage
+  ports:
+    - port: 3900
+      targetPort: 3900
