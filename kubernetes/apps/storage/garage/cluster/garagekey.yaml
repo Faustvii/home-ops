@@ -1,0 +1,14 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/rajsinghtech/garage-operator/refs/heads/main/schemas/garagekey_v1alpha1.json
+apiVersion: garage.rajsingh.info/v1alpha1
+kind: GarageKey
+metadata:
+  name: truenas-key
+spec:
+  clusterRef:
+    name: garage
+    namespace: storage
+  allBuckets:
+    read: true
+    write: true
+    owner: true
