@@ -8,7 +8,9 @@ spec:
   clusterRef:
     name: garage
     namespace: storage
-  allBuckets:
-    read: true
-    write: true
-    owner: true
+  # allBuckets:
+  #   read: true
+  #   write: true
+  #   owner: true
+  permissions:
+    createBucket: true
