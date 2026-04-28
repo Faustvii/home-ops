@@ -25,6 +25,9 @@
     "prEditedNotification",
     "prIgnoreNotification",
   ],
+  registryAliases: {
+    "mirror.gcr.io": "docker.io",
+  },
   flux: {
     managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
   },
