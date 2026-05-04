@@ -17,7 +17,7 @@ spec:
     # The "output" volume is the chart's default emptyDir.
     extraContainers:
       - name: rclone
-        image: ghcr.io/rclone/rclone:1.73.5
+        image: ghcr.io/rclone/rclone:1.74.0
         command: ["/bin/sh", "-c"]
         args:
           - |
