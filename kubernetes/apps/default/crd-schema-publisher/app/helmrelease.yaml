@@ -21,16 +21,23 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            # Wait for the publisher to complete its first extraction
-            while [ ! -f /data/index.html ]; do
+            # Wait for the publisher to complete its first successful build.
+            # If this path never appears, the sidecar stays fail-closed and
+            # does not delete remote content.
+            while [ ! -f /data/current/index.html ]; do
               sleep 5;
-              echo "Waiting for publisher to extract schemas..."
+              echo "Waiting for publisher to complete its first successful build..."
             done
 
             while true; do
-              rclone sync /data s3:$${RCLONE_S3_BUCKET} --checksum --verbose --transfers 4
+              if [ ! -f /data/current/index.html ]; then
+                sleep 5
+                continue
+              fi
+              rclone sync /data/current s3:$${RCLONE_S3_BUCKET} --exclude "/_meta/**" --checksum --verbose --transfers 4
               sleep 60
             done
+
         env:
           # -- rclone S3-compatible remote configuration via env vars.
           # See provider examples in the header comment for provider/endpoint values.
