@@ -8,6 +8,8 @@ spec:
     kind: OCIRepository
     name: *app
   interval: 1h
+  install:
+    crds: CreateReplace
   values:
     metrics:
       enabled: true
