@@ -18,10 +18,13 @@ spec:
   personNamespaceSelector: {}
   serviceAccountNamespaceSelector: {}
 
+  domainAppearance:
+    displayName: "faust hub"
+
   storage:
     volumeClaimTemplate:
       spec:
-        accessModes: [ ReadWriteOnce ]
+        accessModes: [ReadWriteOnce]
         resources:
           requests:
             storage: 100Mi
