@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/rajsinghtech/garage-operator/refs/heads/main/schemas/garagenode_v1beta1.json
 apiVersion: garage.rajsingh.info/v1beta1
 kind: GarageNode
 metadata:

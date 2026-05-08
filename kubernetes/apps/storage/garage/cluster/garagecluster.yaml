@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/rajsinghtech/garage-operator/refs/heads/main/schemas/garagecluster_v1alpha1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/rajsinghtech/garage-operator/refs/heads/main/schemas/garagecluster_v1beta1.json
 apiVersion: garage.rajsingh.info/v1beta1
 kind: GarageCluster
 metadata:
@@ -13,7 +13,7 @@ spec:
   replication:
     factor: 2
     consistencyMode: degraded
-    zoneRedundancy: "Maximum"
+    zoneRedundancyMode: "Maximum"
 
   storage:
     metadata:
@@ -41,7 +41,6 @@ spec:
     rootDomain: .web.garage.${SECRET_DOMAIN}
 
   admin:
-    enabled: true
     bindPort: 3903
     adminTokenSecretRef:
       key: GARAGE_ADMIN_TOKEN
