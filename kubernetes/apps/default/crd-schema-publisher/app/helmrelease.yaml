@@ -22,7 +22,10 @@ spec:
         args:
           - |
             # Wait for the publisher to complete its first extraction
-            while [ ! -f /data/index.html ]; do sleep 5; done
+            while [ ! -f /data/index.html ]; do
+              sleep 5;
+              echo "Waiting for publisher to extract schemas..."
+            done
 
             while true; do
               rclone sync /data s3:$${RCLONE_S3_BUCKET} --checksum --verbose --transfers 4
