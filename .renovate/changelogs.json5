@@ -10,15 +10,6 @@
       description: "Changelog URL for Spegel",
       matchPackageNames: ["/spegel/"],
       changelogUrl: "https://github.com/spegel-org/spegel/blob/main/CHANGELOG.md",
-    },
-    {
-      description: "Changelog URL for Kanidm",
-      matchPackageNames: [
-        "mirror.gcr.io/kanidm/server",
-        "docker.io/kanidm/server",
-        "kanidm/server"
-      ],
-      changelogUrl: "https://github.com/kanidm/kanidm/releases",
-    },
+    }
   ],
 }
