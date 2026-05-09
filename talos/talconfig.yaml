@@ -33,6 +33,12 @@ nodes:
         extraKernelArgs:
           - pcie_aspm=off # Disable PCIe ASPM
           - talos.dashboard.disabled=1 # Disable Talos Dashboard
+            # mitigate copy fail; CVE-2026-31431
+            # https://copy.fail
+          - initcall_blacklist=algif_aead_init
+            # mitigate dirty frag, CVE-2026-43284 & CVE-2026-43500
+            # https://github.com/V4bel/dirtyfrag
+          - module_blacklist=esp4,esp6,rxrpc
         systemExtensions:
           officialExtensions:
             - siderolabs/amd-ucode
