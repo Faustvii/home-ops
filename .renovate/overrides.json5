@@ -39,7 +39,7 @@
     {
       "matchPackageNames": ["mirror.gcr.io/kanidm/server"],
       "sourceUrl": "https://github.com/kanidm/kanidm",
-      "extractVersion": "^v?(?<version>\\d+\\.\\d+\\.\\d+)$"
+      "extractVersion": "^v?(?<version>.+)$"
     },
     {
       "matchPackageNames": ["mirror.gcr.io/envoyproxy/envoy"],
