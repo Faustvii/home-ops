@@ -37,9 +37,16 @@
       "sourceUrl": "https://github.com/pando85/kaniop"
     },
     {
-      "matchPackageNames": ["mirror.gcr.io/kanidm/server"],
-      "sourceUrl": "https://github.com/kanidm/kanidm",
-      "extractVersion": "^v?(?<version>.+)$"
+      description: "Normalize Kanidm source mapping and tag parsing",
+      matchDatasources: ["docker"],
+      matchPackageNames: [
+        "mirror.gcr.io/kanidm/server",
+        "docker.io/kanidm/server",
+        "kanidm/server"
+      ],
+      sourceUrl: "https://github.com/kanidm/kanidm",
+      extractVersion: "^v?(?<version>\\d+\\.\\d+\\.\\d+(?:[-+].+)?)$",
+      versioning: "semver-coerced"
     },
     {
       "matchPackageNames": ["mirror.gcr.io/envoyproxy/envoy"],

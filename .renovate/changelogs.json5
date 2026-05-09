@@ -13,7 +13,11 @@
     },
     {
       description: "Changelog URL for Kanidm",
-      matchPackageNames: ["mirror.gcr.io/kanidm/server"],
+      matchPackageNames: [
+        "mirror.gcr.io/kanidm/server",
+        "docker.io/kanidm/server",
+        "kanidm/server"
+      ],
       changelogUrl: "https://github.com/kanidm/kanidm/releases",
     },
   ],
