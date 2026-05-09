@@ -37,6 +37,10 @@
       "sourceUrl": "https://github.com/pando85/kaniop"
     },
     {
+      "matchPackageNames": ["mirror.gcr.io/kanidm/server"],
+      "sourceUrl": "https://github.com/kanidm/kanidm"
+    },
+    {
       "matchPackageNames": ["mirror.gcr.io/envoyproxy/envoy"],
       "sourceUrl": "https://github.com/envoyproxy/envoy"
     }
