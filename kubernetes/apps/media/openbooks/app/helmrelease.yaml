@@ -50,6 +50,21 @@ spec:
                 memory: 256Mi
               limits:
                 memory: 1Gi
+    defaultPodOptions:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: |-
+          [{
+            "name": "vpn",
+            "namespace": "network",
+            "ips": ["192.168.90.14/24"],
+            "mac": "02:14:a6:de:a9:df"
+          }]
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         controller: *app
