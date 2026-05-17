@@ -97,7 +97,7 @@ spec:
         existingClaim: *app
 
     serviceAnnotations:
-      mc-router.itzg.me/externalServerName: "mcchunk.${SECRET_DOMAIN}"
+      mc-router.itzg.me/externalServerName: "chunk.${SECRET_DOMAIN}"
       lbipam.cilium.io/ips: "192.168.10.32"
     serviceLabels:
       io.cilium/ippool: public
