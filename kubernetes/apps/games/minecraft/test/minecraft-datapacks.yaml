@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: minecraft-datapacks-chunklock
+data:
+  datapacks.txt: |
+    https://github.com/Faustvii/minds_packs/releases/download/v0.0.3-mc1.21.11/MindsAdvancements_v0.0.3_mc_1.21.11_dp.zip
+    https://github.com/Faustvii/minds_packs/releases/download/v0.0.3-mc1.21.11/MindsDeepcutting_v0.0.3_mc_1.21.11_dp.zip
+    https://github.com/Faustvii/minds_packs/releases/download/v0.0.3-mc1.21.11/MindsGhasts_v0.0.3_mc_1.21.11_dp.zip
+    https://github.com/Faustvii/minds_packs/releases/download/v0.0.3-mc1.21.11/MindsMemories_v0.0.3_mc_1.21.11_dp.zip
+    https://cdn.modrinth.com/data/Z5JdfNas/versions/jhE0yXs7/chunklock_2.1.0.zip?mr_download_reason=standalone

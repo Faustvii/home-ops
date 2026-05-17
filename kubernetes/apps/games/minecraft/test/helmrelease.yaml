@@ -27,7 +27,7 @@ spec:
     terminationGracePeriodSeconds: 90
     deploymentAnnotations:
       secret.reloader.stakater.com/reload: &secret minecraft-secret
-      configmap.reloader.stakater.com/reload: "minecraft-datapacks"
+      configmap.reloader.stakater.com/reload: "minecraft-datapacks-chunklock"
     image:
       repository: ghcr.io/itzg/minecraft-server
       tag: 2026.5.2-java25@sha256:5476619d049f4c0e2764532b345da1db4c154b4294bcc16d9c3b8d5f4b0d9923
@@ -76,7 +76,7 @@ spec:
       - volumes:
           - name: datapacks
             configMap:
-              name: minecraft-datapacks
+              name: minecraft-datapacks-chunklock
 
         volumeMounts:
           - name: datapacks
@@ -97,7 +97,7 @@ spec:
         existingClaim: *app
 
     serviceAnnotations:
-      mc-router.itzg.me/externalServerName: "mctest.${SECRET_DOMAIN}"
+      mc-router.itzg.me/externalServerName: "mcchunk.${SECRET_DOMAIN}"
       lbipam.cilium.io/ips: "192.168.10.32"
     serviceLabels:
       io.cilium/ippool: public
@@ -107,17 +107,16 @@ spec:
       version: 1.21.11
       type: FABRIC
       difficulty: hard
-      whitelist: "liope"
+      whitelist: "liope,djonn,inebuni"
       ops: "liope"
       pvp: true
       motd: "Testing 1..2..3"
-      worldSaveName: "Wonderland"
+      worldSaveName: "Chunklock"
       viewDistance: 16
-      levelSeed: "5143877906783391683"
       maxPlayers: 24
-      resourcePackUrl: "https://github.com/Faustvii/minds_packs/releases/download/v0.0.2-mc1.21.11/MindsResources_v0.0.2_mc_1.21.11_rp.zip"
-      resourcePackSha: "d25b960c398c9ad111de8c42316b6f6bb48f9d05" # sha-1 digest in lowercase hexadecimal
-      resourcePackEnforce: true
+      # resourcePackUrl: "https://github.com/Faustvii/minds_packs/releases/download/v0.0.2-mc1.21.11/MindsResources_v0.0.2_mc_1.21.11_rp.zip"
+      # resourcePackSha: "d25b960c398c9ad111de8c42316b6f6bb48f9d05" # sha-1 digest in lowercase hexadecimal
+      # resourcePackEnforce: true
       rcon:
         enabled: true
         embedded: true
@@ -132,14 +131,6 @@ spec:
             embedded: true
             type: LoadBalancer
             port: 24454
-        - name: bluemap
-          containerPort: 8100
-          protocol: TCP
-          service:
-            enabled: true
-            embedded: false
-            type: ClusterIP
-            port: 8100
         - name: metrics
           containerPort: 25585
           protocol: TCP
@@ -155,7 +146,7 @@ spec:
         downloadDependencies: required
         allowedVersionType: alpha
         projects:
-          - bluemap
+          # - bluemap
           - armor-poser
           - audioplayer
           - fabric-api
