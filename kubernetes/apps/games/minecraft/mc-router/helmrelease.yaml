@@ -69,8 +69,8 @@ spec:
             cpu: 1
             memory: 1Gi
 
-
     minecraftRouter:
+      connectionRateLimit: 5
       defaultServer:
         host: "192.168.10.31"
         port: 25565
