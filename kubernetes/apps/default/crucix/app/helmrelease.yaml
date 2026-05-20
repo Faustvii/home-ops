@@ -17,7 +17,7 @@ spec:
           app:
             image:
               repository: ghcr.io/calesthio/crucix
-              tag: latest@sha256:a1377f74855b0720d7440728136e35206774da545836de23531857004002a05d
+              tag: latest@sha256:67c5244b6acf216708882b93581038356e99adf76b6d98f0de4b13cfee201a17
             env:
               TZ: "${TZ}"
             probes:
