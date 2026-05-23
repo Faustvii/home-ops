@@ -6,7 +6,7 @@ spec:
   domain: idm.${SECRET_DOMAIN}
   tlsSecretName: kanidm-tls
 
-  image: mirror.gcr.io/kanidm/server:1.10.2@sha256:5d671b5ecb47bc0b5f37d3306f9e7b9b387998bdf5aa451d76a4e764cc05f0fb
+  image: mirror.gcr.io/kanidm/server:1.10.3@sha256:d0ff76d6ec6d292d5710bd6ec801d9d5ccf12e3cdcdfe4d122efa5a351a97cbe
 
   replicaGroups:
     - name: default
