@@ -1,22 +1,13 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: [
-    "config:recommended",
-    "docker:enableMajor",
-    "helpers:pinGitHubActionDigests",
-    ":automergeBranch",
-    ":dependencyDashboard",
-    ":disableRateLimiting",
-    ":semanticCommits",
+    "github>home-operations/renovate-presets#1.3.1",
     "github>Faustvii/home-ops//.renovate/autoMerge.json5",
     "github>Faustvii/home-ops//.renovate/changelogs.json5",
     "github>Faustvii/home-ops//.renovate/groups.json5",
     "github>Faustvii/home-ops//.renovate/labels.json5",
-    "github>Faustvii/home-ops//.renovate/overrides.json5",
-    "github>Faustvii/home-ops//.renovate/semanticCommits.json5",
-    "github>Faustvii/home-ops//.renovate/grafanadashboards.json5",
-    "github>Faustvii/home-ops//.renovate/minecraft.json5",
-    "github>Faustvii/home-ops//.renovate/customManagers.json5",
+    "github>Faustvii/home-ops//.renovate/talos.json5",
+    "github>Faustvii/home-ops//.renovate/managers/minecraft.json5",
   ],
   dependencyDashboard: true,
   dependencyDashboardTitle: "Renovate Dashboard 🤖",
@@ -25,22 +16,4 @@
     "prEditedNotification",
     "prIgnoreNotification",
   ],
-  registryAliases: {
-    "mirror.gcr.io": "docker.io",
-  },
-  flux: {
-    managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
-  },
-  helmfile: {
-    managerFilePatterns: [
-      "/(^|/)helmfile\\.ya?ml(?:\\.gotmpl)?(?:\\.j2)?$/",
-      "/(^|/)helmfile\\.d/.+\\.ya?ml(?:\\.gotmpl)?(?:\\.j2)?$/",
-    ],
-  },
-  kubernetes: {
-    managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
-  },
-  kustomize: {
-    managerFilePatterns: ["/^kustomization\\.ya?ml(?:\\.j2)?$/"],
-  },
 }
