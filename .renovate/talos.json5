@@ -1,0 +1,16 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  packageRules: [
+    {
+      description: "Separate Major, Minor and Patch for Talos Installer",
+      matchDatasources: [
+        "docker"
+      ],
+      matchPackageNames: [
+        "ghcr.io/siderolabs/installer"
+      ],
+      separateMajorMinor: true,
+      separateMinorPatch: true
+    }
+  ],
+}
