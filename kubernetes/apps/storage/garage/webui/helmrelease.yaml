@@ -54,7 +54,7 @@ spec:
         annotations:
           gatus.home-operations.com/enabled: "false"
         hostnames:
-          - "garage.${SECRET_DOMAIN}"
+          - "garage.${SECRET_DOMAIN:=cluster.local}"
         parentRefs:
           - name: envoy-internal
             namespace: network

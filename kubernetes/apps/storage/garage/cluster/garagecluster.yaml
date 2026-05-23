@@ -32,13 +32,13 @@ spec:
       type: ClusterIP
 
   s3Api:
-    rootDomain: .s3.garage.${SECRET_DOMAIN}
+    rootDomain: .s3.garage.${SECRET_DOMAIN:=cluster.local}
     bindPort: 3900
     region: garage
 
   webApi:
     bindPort: 3902
-    rootDomain: .web.garage.${SECRET_DOMAIN}
+    rootDomain: .web.garage.${SECRET_DOMAIN:=cluster.local}
 
   admin:
     bindPort: 3903
