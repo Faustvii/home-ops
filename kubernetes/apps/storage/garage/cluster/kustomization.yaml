@@ -9,3 +9,4 @@ resources:
   # - ./truenas-node.yaml
   - ./rpc-service.yaml
   - ./s3-service.yaml
+  - ./garagereferencegrant.yaml
