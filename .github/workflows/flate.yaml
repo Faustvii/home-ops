@@ -1,0 +1,101 @@
+---
+name: "Flate"
+
+on:
+  pull_request:
+    branches: ["main"]
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  filter:
+    name: Flate - Filter
+    runs-on: ubuntu-latest
+    outputs:
+      changed-files: ${{ steps.changed-files.outputs.changed_files }}
+    steps:
+      - name: Get Changed Files
+        id: changed-files
+        uses: bjw-s-labs/action-changed-files@a9a36fb08ce06db9b02fbd8026cc2c0945eb9841 # v0.6.0
+        with:
+          patterns: kubernetes/**/*
+
+  flate:
+    if: ${{ needs.filter.outputs.changed-files != '[]' }}
+    needs: filter
+    name: Flate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    strategy:
+      matrix:
+        kind:
+          - helmrelease
+          - kustomization
+      fail-fast: false
+    steps:
+      - name: Checkout Pull Request Branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: pull
+          persist-credentials: false
+          sparse-checkout: kubernetes/
+
+      - name: Checkout Default Branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          path: default
+          persist-credentials: false
+          sparse-checkout: kubernetes/
+
+      - name: Setup flate
+        uses: home-operations/flate/action@664c5a4fe7775c208540980f1e8c3d2a26ec2555 # 0.1.17
+        with:
+          # renovate: datasource=github-tags depName=home-operations/flate
+          version: 0.1.17
+
+      - name: Run flate test
+        env:
+          KIND: ${{ matrix.kind }}
+        run: flate test "$KIND" --path ./pull --path-orig ./default
+
+      - name: Run flate diff
+        id: diff
+        env:
+          KIND: ${{ matrix.kind }}
+        run: |
+          {
+            echo 'diff<<EOF'
+            flate diff "$KIND" --path ./pull --path-orig ./default
+            echo 'EOF'
+          } >> $GITHUB_OUTPUT
+
+      - if: ${{ steps.diff.outputs.diff != '' }}
+        name: Add Comment
+        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
+        with:
+          header: ${{ github.event.pull_request.number }}/kubernetes/${{ matrix.kind }}
+          message: |-
+            ```diff
+            ${{ steps.diff.outputs.diff }}
+
+  success:
+    if: ${{ !cancelled() }}
+    needs:
+      - flate
+    name: Flate - Success
+    runs-on: ubuntu-latest
+    steps:
+      - name: Any jobs failed?
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: exit 1
+
+      - name: All jobs passed or skipped?
+        if: ${{ !(contains(needs.*.result, 'failure')) }}
+        run: echo "All jobs passed or skipped" && echo "${{ toJSON(needs.*.result) }}"
