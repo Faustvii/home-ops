@@ -55,10 +55,10 @@ jobs:
           sparse-checkout: kubernetes/
 
       - name: Setup flate
-        uses: home-operations/flate/action@2e8f4c8f439cf99c03a0f7ec64affa8d458b3ae0 # 0.1.25
+        uses: home-operations/flate/action@47758c3a4b028e8f68ddcdd7f2223423849cf8b2 # 0.1.31
         with:
           # renovate: datasource=github-tags depName=home-operations/flate
-          version: 0.1.25
+          version: 0.1.31
 
       - name: Run flate test
         env:
