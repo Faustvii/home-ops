@@ -37,5 +37,14 @@
       },
       minimumGroupSize: 5,
     },
+    {
+      description: "Flate Group",
+      groupName: "flate",
+      matchPackageNames: ["/flate/"],
+      minimumGroupSize: 2,
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
   ],
 }
