@@ -10,6 +10,9 @@ spec:
     - port: smartctl-metrics
       interval: 60s
       scrapeTimeout: 30s
+      relabelings:
+        - targetLabel: instance
+          replacement: truenas
       path: /metrics
     - port: node-exporter-metrics
       interval: 30s
