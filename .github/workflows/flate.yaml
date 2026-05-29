@@ -63,7 +63,7 @@ jobs:
       - name: Run flate test
         env:
           KIND: ${{ matrix.kind }}
-        run: flate test "$KIND" --allow-missing-secrets --path ./pull --path-orig ./default
+        run: flate test "$KIND" --allow-missing-secrets
 
       - name: Run flate diff
         id: diff
@@ -72,7 +72,7 @@ jobs:
         run: |
           {
             echo 'diff<<EOF'
-            flate diff "$KIND" --allow-missing-secrets --path ./pull --path-orig ./default
+            flate diff "$KIND" --allow-missing-secrets
             echo 'EOF'
           } >> $GITHUB_OUTPUT
 
