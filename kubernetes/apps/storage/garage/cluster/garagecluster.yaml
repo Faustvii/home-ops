@@ -1,9 +1,10 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/rajsinghtech/garage-operator/refs/heads/main/schemas/garagecluster_v1beta2.json
-apiVersion: garage.rajsingh.info/v1beta2
+# yaml-language-server: $schema=https://raw.githubusercontent.com/rajsinghtech/garage-operator/refs/heads/main/schemas/garagecluster_v1beta1.json
+apiVersion: garage.rajsingh.info/v1beta1
 kind: GarageCluster
 metadata:
   name: garage
 spec:
+  replicas: 1
   image: dxflrs/garage:v2.3.0
 
   # Zone for this cluster - used for fault tolerance
@@ -15,11 +16,6 @@ spec:
     zoneRedundancyMode: "Maximum"
 
   storage:
-    replicas: 2
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: DoNotSchedule
     metadata:
       size: 10Gi
     data:
