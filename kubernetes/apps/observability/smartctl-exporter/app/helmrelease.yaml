@@ -13,6 +13,8 @@ spec:
     fullnameOverride: *app
     serviceMonitor:
       enabled: true
+      attachMetadata:
+        node: true
       relabelings:
         - sourceLabels: [__meta_kubernetes_endpoint_node_name]
           targetLabel: instance
