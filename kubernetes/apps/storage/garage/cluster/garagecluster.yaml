@@ -16,6 +16,10 @@ spec:
 
   storage:
     replicas: 2
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
     metadata:
       size: 10Gi
     data:
