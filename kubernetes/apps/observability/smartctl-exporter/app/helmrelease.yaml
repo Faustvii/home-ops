@@ -16,9 +16,11 @@ spec:
       attachMetadata:
         node: true
       relabelings:
-        - sourceLabels: [__meta_kubernetes_endpoint_node_name]
+        - action: replace
           targetLabel: instance
-        - sourceLabels: [__meta_kubernetes_endpoint_node_name]
+          sourceLabels: [__meta_kubernetes_pod_node_name]
+        - action: replace
           targetLabel: node
+          sourceLabels: [__meta_kubernetes_pod_node_name]
     prometheusRules:
       enabled: false
