@@ -64,7 +64,7 @@
       description: "Talos Group",
       groupName: "talos",
       matchPackageNames: [
-        "/siderolabs/"
+        "/siderolabs/", "/talos/"
       ],
       minimumGroupSize: 2,
       group: {
