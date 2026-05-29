@@ -12,6 +12,7 @@ spec:
   values:
     controllers:
       amd-device-plugin:
+        type: daemonset
         containers:
           app:
             image:
