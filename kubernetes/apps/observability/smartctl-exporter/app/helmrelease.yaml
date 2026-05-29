@@ -21,6 +21,6 @@ spec:
           sourceLabels: [__meta_kubernetes_pod_node_name]
         - action: replace
           targetLabel: node
-          sourceLabels: [__meta_kubernetes_pod_node_name]
+          replacement: wedidit
     prometheusRules:
       enabled: false
