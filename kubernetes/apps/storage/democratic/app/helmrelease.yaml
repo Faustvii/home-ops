@@ -64,3 +64,5 @@ spec:
           dirPermissionsMode: "0770"
           dirPermissionsUser: 0
           dirPermissionsGroup: 0
+          nodeAffinityTopology:
+            - key: topology.kubernetes.io/hostname
