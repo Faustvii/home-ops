@@ -64,7 +64,7 @@
       description: "Talos Group",
       groupName: "talos",
       matchPackageNames: [
-        "aqua:siderolabs/talos", "ghcr.io/siderolabs/installer"
+        "/siderolabs/"
       ],
       minimumGroupSize: 2,
       group: {
