@@ -63,12 +63,14 @@ jobs:
       - name: Run flate test
         env:
           KIND: ${{ matrix.kind }}
+          FLATE_PATH: ./kubernetes/flux/cluster
         run: flate test "$KIND" --allow-missing-secrets
 
       - name: Run flate diff
         id: diff
         env:
           KIND: ${{ matrix.kind }}
+          FLATE_PATH: ./kubernetes/flux/cluster
         run: |
           {
             echo 'diff<<EOF'
