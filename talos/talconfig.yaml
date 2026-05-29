@@ -72,25 +72,59 @@ nodes:
         vlans:
           - vlanId: 90
             dhcp: false
-  # - hostname: "talos-02"
-  #   ipAddress: "192.168.10.11"
-  #   installDisk: "/dev/sda"
-  #   machineSpec:
-  #     secureboot: false
-  #   talosImageURL: factory.talos.dev/installer/686aee2d00e456079d6a81b4ea79f3fd5d5b58e264cae1ed559c5992afb9df3b
-  #   controlPlane: true
-  #   networkInterfaces:
-  #     - deviceSelector:
-  #         hardwareAddr: "08:00:27:0c:85:f5"
-  #       dhcp: false
-  #       addresses:
-  #         - "192.168.10.11/24"
-  #       routes:
-  #         - network: "0.0.0.0/0"
-  #           gateway: "192.168.10.1"
-  #       mtu: 1500
-  #       vip:
-  #         ip: "192.168.10.20"
+  - hostname: "talos-02"
+    ipAddress: "192.168.10.11"
+    nodeLabels:
+      topology.kubernetes.io/gpus: amd
+    installDiskSelector:
+      serial: "S436NA0NA18451"
+    machineSpec:
+      secureboot: false
+    controlPlane: true
+    schematic:
+      customization:
+        extraKernelArgs:
+          - pcie_aspm=off # Disable PCIe ASPM
+          - talos.dashboard.disabled=1 # Disable Talos Dashboard
+            # mitigate copy fail; CVE-2026-31431
+            # https://copy.fail
+          - initcall_blacklist=algif_aead_init
+            # mitigate dirty frag, CVE-2026-43284 & CVE-2026-43500
+            # https://github.com/V4bel/dirtyfrag
+          - module_blacklist=esp4,esp6,rxrpc
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/amd-ucode
+            - siderolabs/amdgpu
+            - siderolabs/nfsd
+            - siderolabs/nut-client
+            - siderolabs/zfs
+    kernelModules:
+      - name: zfs
+      - name: amdgpu
+        parameters:
+          - ppfeaturemask=0xffffffff
+    patches:
+      - "@./patches/storage/talos-02.yaml"
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          deviceSelectors:
+            - driver: igc
+              hardwareAddr: "38:05:25:36:ab:*"
+          mode: active-backup
+        dhcp: false
+        addresses:
+          - "192.168.10.11/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "192.168.10.1"
+        mtu: 1500
+        vip:
+          ip: "192.168.10.20"
+        vlans:
+          - vlanId: 90
+            dhcp: false
   # - hostname: "talos-03"
   #   ipAddress: "192.168.10.12"
   #   installDisk: "/dev/sda"
