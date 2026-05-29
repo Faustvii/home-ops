@@ -1,10 +1,9 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/rajsinghtech/garage-operator/refs/heads/main/schemas/garagecluster_v1beta1.json
-apiVersion: garage.rajsingh.info/v1beta1
+# yaml-language-server: $schema=https://raw.githubusercontent.com/rajsinghtech/garage-operator/refs/heads/main/schemas/garagecluster_v1beta2.json
+apiVersion: garage.rajsingh.info/v1beta2
 kind: GarageCluster
 metadata:
   name: garage
 spec:
-  replicas: 1
   image: dxflrs/garage:v2.3.0
 
   # Zone for this cluster - used for fault tolerance
@@ -16,6 +15,7 @@ spec:
     zoneRedundancyMode: "Maximum"
 
   storage:
+    replicas: 2
     metadata:
       size: 10Gi
     data:
@@ -63,4 +63,4 @@ spec:
 
   layoutManagement:
     autoApply: true
-    minNodesHealthy: 1 # Wait for 2/3 nodes before applying layout
+    minNodesHealthy: 2 # Wait for 2/2 nodes before applying layout
