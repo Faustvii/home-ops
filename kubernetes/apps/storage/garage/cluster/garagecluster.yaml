@@ -3,6 +3,8 @@ apiVersion: garage.rajsingh.info/v1beta2
 kind: GarageCluster
 metadata:
   name: garage
+  annotations:
+    kustomize.toolkit.fluxcd.io/ssa: Merge
 spec:
   image: dxflrs/garage:v2.3.0
 
@@ -15,7 +17,7 @@ spec:
     zoneRedundancyMode: "Maximum"
 
   storage:
-    replicas: 3
+    replicas: 2
     metadata:
       size: 10Gi
     data:
