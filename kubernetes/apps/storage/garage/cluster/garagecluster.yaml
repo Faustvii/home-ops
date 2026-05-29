@@ -21,14 +21,15 @@ spec:
         topologyKey: kubernetes.io/hostname
         whenUnsatisfiable: DoNotSchedule
     metadata:
+      storageClassName: openebs-zfspv
       size: 10Gi
     data:
+      storageClassName: openebs-zfspv
       size: 100Gi
 
   network:
     rpcBindPort: 3901
     # Shared RPC secret - MUST be same across all clusters
-    # rpcPublicAddr: "192.168.10.51:3901"
     rpcSecretRef:
       key: GARAGE_RPC_SECRET
       name: garage-cluster
