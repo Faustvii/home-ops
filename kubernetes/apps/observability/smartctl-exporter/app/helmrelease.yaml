@@ -18,9 +18,11 @@ spec:
       relabelings:
         - action: replace
           targetLabel: instance
-          sourceLabels: [__meta_kubernetes_pod_node_name]
+          sourceLabels:
+            - __meta_kubernetes_pod_node_name
         - action: replace
           targetLabel: node
-          replacement: wedidit
+          sourceLabels:
+            - __meta_kubernetes_pod_node_name
     prometheusRules:
       enabled: false
