@@ -9,5 +9,5 @@ components:
 
 resources:
   - ./namespace.yaml
-  - ./wyoming-whisper/ks.yaml
-  - ./wyoming-piper/ks.yaml
+  # - ./wyoming-whisper/ks.yaml
+  # - ./wyoming-piper/ks.yaml
