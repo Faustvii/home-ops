@@ -35,4 +35,4 @@ spec:
       sourceName: ${APP}
     storageClassName: ${VOLSYNC_STORAGECLASS:=openebs-zfspv}
     cacheStorageClassName: ${VOLSYNC_CACHE_SNAPSHOTCLASS:=openebs-zfspv}
-    volumeSnapshotClassName: ${VOLSYNC_SNAPSHOTCLASS:=openebs-zfspv-snapshot}
+    volumeSnapshotClassName: ${VOLSYNC_SNAPSHOTCLASS:=openebs-zfs-snapshot}
