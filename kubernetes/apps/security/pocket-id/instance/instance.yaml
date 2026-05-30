@@ -23,6 +23,8 @@ spec:
   userManagement:
     allowOwnAccountEdit: true
     allowUserSignups: "disabled"
+  ui:
+    appName: "FaustID"
   route:
     enabled: true
     parentRefs:
