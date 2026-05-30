@@ -28,6 +28,13 @@ spec:
         disablePassword: false
         passwordSecret:
           name: bookarr-postgres
+      - name: pocket-id
+        login: true
+        ensure: present
+        superuser: false
+        disablePassword: false
+        passwordSecret:
+          name: pocket-id-postgres
 
     services:
       additional:
