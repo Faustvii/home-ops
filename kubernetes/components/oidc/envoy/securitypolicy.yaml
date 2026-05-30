@@ -11,7 +11,7 @@ spec:
       name: ${APP}
   oidc:
     provider:
-      issuer: https://pocket-id.${SECRET_DOMAIN}
+      issuer: https://idm.${SECRET_DOMAIN}
     clientIDRef:
       name: ${APP}-oidc-credentials
     clientSecret:
