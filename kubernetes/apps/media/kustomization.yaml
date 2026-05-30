@@ -14,5 +14,5 @@ resources:
   - ./pvcs/ks.yaml
   - ./booklore/ks.yaml
   - ./bookarr/ks.yaml
-  # - ./openbooks/ks.yaml
+  - ./openbooks/ks.yaml
   - ./plex/ks.yaml
