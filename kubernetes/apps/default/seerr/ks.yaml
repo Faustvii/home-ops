@@ -15,9 +15,6 @@ spec:
     substitute:
       APP: seerr
       VOLSYNC_CAPACITY: 5Gi
-      VOLSYNC_STORAGECLASS: democratic-csi-hostpath
-      VOLSYNC_CACHE_SNAPSHOTCLASS: democratic-csi-hostpath
-      VOLSYNC_SNAPSHOTCLASS: csi-democratic-csi-hostpath
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
