@@ -9,7 +9,7 @@ spec:
   components:
     - ../../../../components/volsync
   dependsOn:
-    - name: kanidm
+    - name: pocket-id
       namespace: security
   path: ./kubernetes/apps/default/radarr/app
   postBuild:
