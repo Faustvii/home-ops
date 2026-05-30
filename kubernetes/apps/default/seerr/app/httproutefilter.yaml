@@ -3,7 +3,7 @@
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: HTTPRouteFilter
 metadata:
-  name: static-status
+  name: static-401
 spec:
   directResponse:
     contentType: application/json
@@ -12,9 +12,5 @@ spec:
       type: Inline
       inline: |
         {
-          "version": "9.9.9",
-          "commitTag": "fded4a06c9de8a677622445a66e2898327c6f00d",
-          "updateAvailable": false,
-          "commitsBehind": 0,
-          "restartRequired": false
+          "error": "authentication_required"
         }
