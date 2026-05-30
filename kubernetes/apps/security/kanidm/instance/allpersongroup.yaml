@@ -15,7 +15,7 @@ kind: KanidmGroup
 metadata:
   name: admin
 spec:
-  kanidmName: idm_admin
+  kanidmName: idm_admins
   kanidmRef:
     name: kanidm
   members:
