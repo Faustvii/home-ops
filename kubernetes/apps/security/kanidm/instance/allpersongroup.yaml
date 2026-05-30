@@ -9,3 +9,14 @@ spec:
   kanidmName: idm_all_persons
   accountPolicy:
     credentialTypeMinimum: passkey
+---
+apiVersion: kaniop.rs/v1beta1
+kind: KanidmGroup
+metadata:
+  name: admin
+spec:
+  kanidmName: idm_admin
+  kanidmRef:
+    name: kanidm
+  members:
+    - faust
