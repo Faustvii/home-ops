@@ -10,9 +10,9 @@ components:
 resources:
   - ./namespace.yaml
   - ./echo/ks.yaml
-  - ./radarr/ks.yaml
+  # - ./radarr/ks.yaml
   - ./mailpit/ks.yaml
   - ./seerr/ks.yaml
-  - ./ntfy/ks.yaml
-  - ./crucix/ks.yaml
+  # - ./ntfy/ks.yaml
+  # - ./crucix/ks.yaml
   - ./crd-schema-publisher/ks.yaml
