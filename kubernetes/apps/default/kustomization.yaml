@@ -12,7 +12,7 @@ resources:
   - ./echo/ks.yaml
   - ./radarr/ks.yaml
   - ./mailpit/ks.yaml
-  - ./seerr/ks.yaml
+  # - ./seerr/ks.yaml
   - ./ntfy/ks.yaml
   - ./crucix/ks.yaml
   - ./crd-schema-publisher/ks.yaml
