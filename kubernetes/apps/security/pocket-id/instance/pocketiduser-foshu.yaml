@@ -1,0 +1,18 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/dist/schemas/pocketiduser_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDUser
+metadata:
+  name: foshu
+  annotations:
+    pocketid.internal/delete-from-pocket-id: "true"
+spec:
+  username:
+    value: foshu
+  firstName:
+    value: foshu
+  displayName:
+    value: foshu
+  email:
+    value: foshu@${SECRET_DOMAIN}
+  locale: en

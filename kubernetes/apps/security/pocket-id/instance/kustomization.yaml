@@ -6,3 +6,4 @@ resources:
   - ./externalsecret.yaml
   - ./instance.yaml
   - ./pocketiduser-faust.yaml
+  - ./pocketiduser-foshu.yaml
