@@ -6,5 +6,6 @@ resources:
   - ./certificate.yaml
   - ./httproute.yaml
   - ./kanidm.yaml
+  - ./mutatingadmissionpolicy.yaml
   - ./personaccount.yaml
   - ./allpersongroup.yaml

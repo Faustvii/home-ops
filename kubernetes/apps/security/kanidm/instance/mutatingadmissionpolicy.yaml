@@ -1,0 +1,45 @@
+---
+# Adds a 'client-secret' key (copy of 'CLIENT_SECRET') to kaniop-managed OAuth2
+# credential secrets so that Envoy Gateway SecurityPolicy OIDC can reference them
+# directly. Envoy requires the key name 'client-secret' which is hardcoded and
+# cannot be configured; kaniop produces 'CLIENT_SECRET'. See:
+# https://github.com/pando85/kaniop/issues/563
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingAdmissionPolicy
+metadata:
+  name: kaniop-oauth2-client-secret-alias
+spec:
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["secrets"]
+        operations: ["CREATE", "UPDATE"]
+  matchConditions:
+    - name: has-kaniop-oauth2-labels
+      expression: >-
+        object.metadata.?labels[?"app.kubernetes.io/name"].orValue("") == "kanidm" &&
+        object.metadata.?labels[?"app.kubernetes.io/managed-by"].orValue("") == "kaniop-oauth2"
+    - name: has-client-secret
+      expression: >-
+        object.data["CLIENT_SECRET"] != null
+  reinvocationPolicy: IfNeeded
+  mutations:
+    - patchType: JSONPatch
+      jsonPatch:
+        expression: >-
+          [
+            JSONPatch{
+              op: "add",
+              path: "/data/client-secret",
+              value: object.data["CLIENT_SECRET"]
+            }
+          ]
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingAdmissionPolicyBinding
+metadata:
+  name: kaniop-oauth2-client-secret-alias
+spec:
+  policyName: kaniop-oauth2-client-secret-alias
+  validationActions: [Deny]
