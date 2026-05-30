@@ -18,6 +18,7 @@ spec:
         key: uri
   analyticsDisabled: true
   versionCheckDisabled: true
+  fileBackend: database
   metrics:
     enabled: true
   userManagement:
