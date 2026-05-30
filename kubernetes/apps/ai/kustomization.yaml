@@ -6,5 +6,5 @@ namespace: ai
 components:
   - ../../components/sops
 resources:
-  - ./moltis/ks.yaml
+  # - ./moltis/ks.yaml
   - ./namespace.yaml
