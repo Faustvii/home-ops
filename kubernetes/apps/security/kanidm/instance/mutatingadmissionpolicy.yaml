@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.36.0/mutatingadmissionpolicy-admissionregistration-v1.json
 # Adds a 'client-secret' key (copy of 'CLIENT_SECRET') to kaniop-managed OAuth2
 # credential secrets so that Envoy Gateway SecurityPolicy OIDC can reference them
 # directly. Envoy requires the key name 'client-secret' which is hardcoded and
@@ -36,10 +37,10 @@ spec:
             }
           ]
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.36.0/mutatingadmissionpolicybinding-admissionregistration-v1.json
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingAdmissionPolicyBinding
 metadata:
   name: kaniop-oauth2-client-secret-alias
 spec:
   policyName: kaniop-oauth2-client-secret-alias
-  validationActions: [Deny]
