@@ -11,6 +11,11 @@ spec:
         name: pocket-id-secret
         key: ENCRYPTION_KEY
   appUrl: https://pocket-id.${SECRET_DOMAIN}
+  databaseUrl:
+    valueFrom:
+      secretKeyRef:
+        name: pocket-id-postgres
+        key: uri
   analyticsDisabled: true
   versionCheckDisabled: true
   metrics:
