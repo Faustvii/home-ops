@@ -14,3 +14,8 @@ spec:
     url: ${OIDC_IMAGE_URL:=${OIDC_IMAGE_HOST:=https://cdn.jsdelivr.net/gh/selfhst/icons/svg}/${OIDC_IMAGE_NAME:=${APP}}.svg}
   redirectUrl:
     - https://${APP}.${SECRET_DOMAIN}${OIDC_CALLBACK_PATH:=/oauth2/callback}
+  scopeMap:
+    - group: ${APP}-users
+      scopes: [openid, profile, email, groups]
+    - group: ${OIDC_ADMIN_GROUP:=admins}
+      scopes: [openid, profile, email, groups]

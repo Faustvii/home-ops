@@ -6,4 +6,5 @@ components:
 resources:
   - ./helmrelease.yaml
   - ./ocirepository.yaml
-  - ./kanidmgroup.yaml
+# patches:
+#   - path: ./kanidmgroup.yaml
