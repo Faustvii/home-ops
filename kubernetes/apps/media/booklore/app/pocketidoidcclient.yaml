@@ -34,4 +34,11 @@ spec:
   origin: https://${APP}.${SECRET_DOMAIN}
   redirectUrl:
     - https://${APP}.${SECRET_DOMAIN}${OIDC_CALLBACK_PATH:=/oauth2/callback}
+  scopeMap:
+    - group: ${APP}-users
+      scopes:
+        - openid
+        - profile
+        - email
+        - groups
   # Optionally add more fields (scopeMap, claimMap, etc) as needed
