@@ -5,17 +5,11 @@ kind: Kustomization
 metadata:
   name: openbooks
 spec:
-  components:
-    - ../../../../components/volsync
-  dependsOn:
-    - name: volsync
-      namespace: storage
   interval: 1h
   path: ./kubernetes/apps/media/openbooks/app
   postBuild:
     substitute:
       APP: openbooks
-      VOLSYNC_CAPACITY: 15Gi
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
