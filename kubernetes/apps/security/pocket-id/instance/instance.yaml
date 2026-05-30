@@ -26,6 +26,7 @@ spec:
     allowUserSignups: "disabled"
   ui:
     appName: "FaustID"
+    homePageUrl: /settings/apps
   route:
     enabled: true
     parentRefs:
