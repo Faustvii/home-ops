@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: snapshot-controller
       namespace: kube-system
-    - name: democratic
+    - name: openebs
       namespace: storage
   interval: 1h
   path: ./kubernetes/apps/storage/volsync/app
