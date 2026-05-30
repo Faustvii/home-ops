@@ -10,7 +10,7 @@ components:
 
 resources:
   - ./namespace.yaml
-  - ./continuwuity/ks.yaml
+  # - ./continuwuity/ks.yaml
 
   # - ./livekit/ks.yaml
   # - ./heisenbridge/ks.yaml
