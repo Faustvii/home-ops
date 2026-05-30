@@ -9,4 +9,4 @@ components:
 
 resources:
   - ./namespace.yaml
-  - ./minecraft/ks.yaml
+  # - ./minecraft/ks.yaml
