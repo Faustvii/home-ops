@@ -20,7 +20,7 @@ spec:
           extensionRef:
             group: gateway.envoyproxy.io
             kind: HTTPRouteFilter
-            name: static-401
+            name: static-status
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/httproute_v1.json
 apiVersion: gateway.networking.k8s.io/v1

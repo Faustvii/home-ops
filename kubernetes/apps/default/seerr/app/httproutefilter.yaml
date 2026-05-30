@@ -3,14 +3,18 @@
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: HTTPRouteFilter
 metadata:
-  name: static-401
+  name: static-status
 spec:
   directResponse:
     contentType: application/json
-    statusCode: 401
+    statusCode: 200
     body:
       type: Inline
       inline: |
         {
-          "error": "authentication_required"
+          "version": "9.9.9",
+          "commitTag": "fded4a06c9de8a677622445a66e2898327c6f00d",
+          "updateAvailable": false,
+          "commitsBehind": 0,
+          "restartRequired": false
         }
