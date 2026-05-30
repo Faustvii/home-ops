@@ -4,6 +4,8 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: seerr-status-deny
+  annotations:
+    gatus.home-operations.com/enabled: "false"
 spec:
   parentRefs:
     - name: envoy-external
@@ -27,6 +29,8 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: seerr-status-allow
+  annotations:
+    gatus.home-operations.com/enabled: "false"
 spec:
   parentRefs:
     - name: envoy-external
