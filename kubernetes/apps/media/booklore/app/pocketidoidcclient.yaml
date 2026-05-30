@@ -34,6 +34,8 @@ spec:
   origin: https://${APP}.${SECRET_DOMAIN}
   redirectUrl:
     - https://${APP}.${SECRET_DOMAIN}${OIDC_CALLBACK_PATH:=/oauth2/callback}
+  image:
+    url: ${OIDC_IMAGE_URL:=${OIDC_IMAGE_HOST:=https://cdn.jsdelivr.net/gh/selfhst/icons/svg}/${OIDC_IMAGE_NAME:=${APP}}.svg}
   scopeMap:
     - group: ${APP}-users
       scopes:
