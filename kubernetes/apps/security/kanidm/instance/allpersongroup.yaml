@@ -2,11 +2,20 @@
 apiVersion: kaniop.rs/v1beta1
 kind: KanidmGroup
 metadata:
-  name: home-users
+  name: idm-all-persons-policy
+spec:
+  kanidmRef:
+    name: kanidm
+  kanidmName: idm_all_persons
+  accountPolicy:
+    credentialTypeMinimum: passkey
+---
+apiVersion: kaniop.rs/v1beta1
+kind: KanidmGroup
+metadata:
+  name: admins
 spec:
   kanidmRef:
     name: kanidm
   members:
     - faust
-  accountPolicy:
-    credentialTypeMinimum: passkey
