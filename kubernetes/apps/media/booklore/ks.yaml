@@ -8,8 +8,8 @@ spec:
   components:
     - ../../../../components/volsync
   dependsOn:
-    - name: pocket-id
-      namespace: security
+    # - name: pocket-id
+    #   namespace: security
     - name: volsync
       namespace: storage
   interval: 1h

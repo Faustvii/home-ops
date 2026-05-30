@@ -8,9 +8,9 @@ spec:
   interval: 1h
   components:
     - ../../../../components/volsync
-  dependsOn:
-    - name: pocket-id
-      namespace: security
+  # dependsOn:
+  #   - name: pocket-id
+  #     namespace: security
   path: ./kubernetes/apps/default/radarr/app
   postBuild:
     substitute:
