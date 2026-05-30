@@ -10,7 +10,7 @@ spec:
       secretKeyRef:
         name: pocket-id-secret
         key: ENCRYPTION_KEY
-  appUrl: https://pocket-id.${SECRET_DOMAIN}
+  appUrl: https://idm.${SECRET_DOMAIN}
   databaseUrl:
     valueFrom:
       secretKeyRef:
