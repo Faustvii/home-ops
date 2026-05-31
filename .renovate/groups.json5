@@ -63,6 +63,7 @@
     {
       description: "Talos Group",
       groupName: "talos",
+      groupSlug: "patch-talos",
       matchDatasources: [
         "docker",
         "github-tags",

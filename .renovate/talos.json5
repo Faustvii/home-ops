@@ -3,6 +3,12 @@
   packageRules: [
     {
       description: "Separate Major, Minor and Patch for Talos Installer",
+      groupName: "talos",
+      groupSlug: "patch-talos",
+      minimumGroupSize: 2,
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
       matchDatasources: [
         "docker"
       ],
