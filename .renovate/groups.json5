@@ -63,14 +63,10 @@
     {
       description: "Talos Group",
       groupName: "talos",
-      matchDatasources: [
-        "aqua",
-        "docker",
-        "custom.talos-factory",
-      ],
       matchPackageNames: [
         "aqua:siderolabs/talos",
         "ghcr.io/siderolabs/installer",
+        "siderolabs/talos",
       ],
       matchDepNames: [
         "aqua:siderolabs/talos",
