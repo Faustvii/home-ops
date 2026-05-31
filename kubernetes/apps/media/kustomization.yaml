@@ -16,3 +16,4 @@ resources:
   - ./bookarr/ks.yaml
   - ./openbooks/ks.yaml
   - ./plex/ks.yaml
+  - ./nfs-connector/ks.yaml

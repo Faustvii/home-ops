@@ -1,0 +1,39 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nfs-connector
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: nfs-connector
+  interval: 1h
+  values:
+    controllers:
+      nfs-connector:
+        type: daemonset
+        containers:
+          app:
+            image:
+              repository: alpine
+              tag: "3.21"
+            command: ["sleep", "infinity"]
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 1m
+                memory: 8Mi
+              limits:
+                memory: 16Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+    persistence:
+      media:
+        existingClaim: plex-media-nfs-pvc
