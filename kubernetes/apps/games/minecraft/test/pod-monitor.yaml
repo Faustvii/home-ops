@@ -3,7 +3,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: &app minecraft
+  name: &app minecraft-test
   labels:
     metrics: *app
 spec:
@@ -16,5 +16,5 @@ spec:
     - port: metrics
       relabelings:
         - action: replace
-          replacement: wonderland
+          replacement: chunk-lock
           targetLabel: instance

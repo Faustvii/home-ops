@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./minecraft-datapacks.yaml
+  - ./pod-monitor.yaml
