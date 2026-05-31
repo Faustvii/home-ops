@@ -18,3 +18,6 @@ spec:
         - action: replace
           replacement: chunk-lock
           targetLabel: instance
+        - action: replace
+          replacement: minecraft
+          targetLabel: job
