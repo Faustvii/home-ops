@@ -63,8 +63,13 @@
     {
       description: "Talos Group",
       groupName: "talos",
-      matchPackageNames: [
-        "/siderolabs/", "/talos/"
+      matchDatasources: [
+        "docker",
+        "custom.talos-factory",
+      ],
+      matchDepNames: [
+        "ghcr.io/siderolabs/installer",
+        "siderolabs/talos",
       ],
       minimumGroupSize: 2,
       group: {
