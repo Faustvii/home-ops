@@ -68,6 +68,10 @@
         "docker",
         "custom.talos-factory",
       ],
+      matchPackageNames: [
+        "aqua:siderolabs/talos",
+        "ghcr.io/siderolabs/installer",
+      ],
       matchDepNames: [
         "aqua:siderolabs/talos",
         "ghcr.io/siderolabs/installer",
