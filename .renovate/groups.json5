@@ -69,6 +69,7 @@
         "custom.talos-factory",
       ],
       matchDepNames: [
+        "aqua:siderolabs/talos",
         "ghcr.io/siderolabs/installer",
         "siderolabs/talos",
       ],
