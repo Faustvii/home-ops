@@ -68,7 +68,7 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 20Gi
-      VOLSYNC_SCHEDULE: "0 3 */10 * *"
+      VOLSYNC_SCHEDULE: "* * * * *"
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
@@ -100,7 +100,7 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 20Gi
-      VOLSYNC_SCHEDULE: "15 3 7 * *"
+      VOLSYNC_SCHEDULE: "* * * * *"
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
