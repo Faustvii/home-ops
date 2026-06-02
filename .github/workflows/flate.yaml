@@ -46,17 +46,11 @@ jobs:
           persist-credentials: false
 
       - name: Setup flate
-        uses: home-operations/flate/action@90c0478740457fe22b4063a5c51689045c721f57 # 0.1.36
+        uses: home-operations/flate/action@20a1136f27b21974591bb6ad319d31b858e6fa3e # 0.2.3
         with:
           cache: true
           # renovate: datasource=github-tags depName=home-operations/flate
-          version: 0.1.36
-
-      - name: Run flate test
-        env:
-          KIND: ${{ matrix.kind }}
-          FLATE_PATH: ./kubernetes/flux/cluster
-        run: flate test "$KIND" --allow-missing-secrets
+          version: 0.2.3
 
       - name: Run flate diff
         id: diff
@@ -66,7 +60,7 @@ jobs:
         run: |
           {
             echo 'diff<<EOF'
-            flate diff "$KIND" --allow-missing-secrets
+            flate diff "$KIND" --allow-missing-secrets -o github
             echo 'EOF'
           } >> $GITHUB_OUTPUT
 
