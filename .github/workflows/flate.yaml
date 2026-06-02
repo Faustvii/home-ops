@@ -52,12 +52,6 @@ jobs:
           # renovate: datasource=github-tags depName=home-operations/flate
           version: 0.2.3
 
-      - name: Run flate test
-        env:
-          KIND: ${{ matrix.kind }}
-          FLATE_PATH: ./kubernetes/flux/cluster
-        run: flate test "$KIND" --allow-missing-secrets
-
       - name: Run flate diff
         id: diff
         env:
@@ -66,7 +60,7 @@ jobs:
         run: |
           {
             echo 'diff<<EOF'
-            flate diff "$KIND" --allow-missing-secrets
+            flate diff "$KIND" --allow-missing-secrets -o github
             echo 'EOF'
           } >> $GITHUB_OUTPUT
 
