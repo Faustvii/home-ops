@@ -63,14 +63,14 @@
     {
       description: "Talos Group",
       groupName: "talos",
-      groupSlug: "patch-talos",
       matchDatasources: [
         "docker",
-        "github-tags",
+        "github-releases"
       ],
       matchPackageNames: [
-        "siderolabs/talos",
-        "/^(?:ghcr\\.io/)?siderolabs/installer$/",
+        "ghcr.io/siderolabs/installer",
+        "ghcr.io/siderolabs/talosctl",
+        "/factory\\.talos\\.dev/"
       ],
       minimumGroupSize: 2,
       group: {

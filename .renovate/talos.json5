@@ -3,17 +3,17 @@
   packageRules: [
     {
       description: "Separate Major, Minor and Patch for Talos Installer",
-      groupName: "talos",
-      groupSlug: "patch-talos",
-      minimumGroupSize: 2,
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
       matchDatasources: [
-        "docker"
+        "docker",
+        "github-releases"
       ],
       matchPackageNames: [
-        "ghcr.io/siderolabs/installer"
+        "ghcr.io/siderolabs/installer",
+        "ghcr.io/siderolabs/talosctl",
+        "/factory\\.talos\\.dev/"
       ],
       separateMajorMinor: true,
       separateMinorPatch: true
