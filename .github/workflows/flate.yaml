@@ -46,11 +46,11 @@ jobs:
           persist-credentials: false
 
       - name: Setup flate
-        uses: home-operations/flate/action@39f44bd8bc9f11ba5321cecbdfc04398a568f4d0 # v0.3.3
+        uses: home-operations/flate/action@54bf38b3e9f0ffa27838559f05254c593af228a3 # v0.4.4
         with:
           cache: true
           # renovate: datasource=github-tags depName=home-operations/flate
-          version: v0.3.3
+          version: v0.4.4
 
       - name: Run flate diff
         id: diff
