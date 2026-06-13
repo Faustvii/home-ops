@@ -53,7 +53,8 @@
       description: "Flate Group",
       groupName: "flate",
       matchPackageNames: [
-        "/flate/"
+        "home-operations/flate",
+        "github:home-operations/flate"
       ],
       minimumGroupSize: 2,
       group: {
