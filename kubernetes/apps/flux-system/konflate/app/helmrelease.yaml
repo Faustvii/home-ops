@@ -14,6 +14,13 @@ spec:
       repo: github://faustvii/home-ops
       mcp: true
       statusChecks: true
+      prComments: true
+      prCommentTemplate: |
+          ## konflate · #{{ .PR.Number }} — {{ .PR.Title }}
+
+          {{ .Summary }}
+
+          _Rendered `{{ .PR.HeadSHA }}`
     secret:
       existingSecret: konflate-webhook-token-secret
     httpRoute:
