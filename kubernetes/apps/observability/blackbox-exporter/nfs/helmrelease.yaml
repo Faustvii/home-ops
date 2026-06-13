@@ -14,7 +14,6 @@ spec:
     securityContext:
       readOnlyRootFilesystem: true
       allowPrivilegeEscalation: false
-      capabilities: {add: ["NET_RAW"]}
     resources:
       limits:
         cpu: 100m
