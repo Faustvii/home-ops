@@ -16,11 +16,9 @@ spec:
       statusChecks: true
       prComments: true
       prCommentTemplate: |
-          ## konflate · #{{ .PR.Number }} — {{ .PR.Title }}
+        ## konflate · #{{ .PR.Number }} — {{ .PR.Title }}
 
-          {{ .Summary }}
-
-          _Rendered `{{ .PR.HeadSHA }}`
+        {{ .Summary }}
     secret:
       existingSecret: konflate-webhook-token-secret
     httpRoute:
