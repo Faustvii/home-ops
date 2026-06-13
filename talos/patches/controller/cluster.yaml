@@ -1,14 +1,17 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
 cluster:
   allowSchedulingOnControlPlanes: true
   apiServer:
-    admissionControl:
-      $$patch: delete
     extraArgs:
       # https://kubernetes.io/docs/tasks/extend-kubernetes/configure-aggregation-layer/
-      enable-aggregator-routing: true
+      enable-aggregator-routing: "true"
+      feature-gates: HPAScaleToZero=true
+    image: registry.k8s.io/kube-apiserver:v1.36.1
   controllerManager:
     extraArgs:
       bind-address: 0.0.0.0
+      feature-gates: HPAScaleToZero=true
+    image: registry.k8s.io/kube-controller-manager:v1.36.1
   coreDNS:
     disabled: true
   etcd:
@@ -18,6 +21,25 @@ cluster:
       - 192.168.10.0/24
   proxy:
     disabled: true
+    image: registry.k8s.io/kube-proxy:v1.36.1
   scheduler:
+    image: registry.k8s.io/kube-scheduler:v1.36.1
+    config:
+      apiVersion: kubescheduler.config.k8s.io/v1
+      kind: KubeSchedulerConfiguration
+      profiles:
+        - schedulerName: default-scheduler
+          plugins:
+            score:
+              disabled:
+                - name: ImageLocality
+          pluginConfig:
+            - name: PodTopologySpread
+              args:
+                defaultingType: List
+                defaultConstraints:
+                  - maxSkew: 1
+                    topologyKey: kubernetes.io/hostname
+                    whenUnsatisfiable: ScheduleAnyway
     extraArgs:
       bind-address: 0.0.0.0

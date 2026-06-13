@@ -151,7 +151,6 @@ patches:
   - "@./patches/global/machine-kubelet.yaml"
   - "@./patches/global/machine-network.yaml"
   - "@./patches/global/machine-sysctls.yaml"
-  - "@./patches/global/machine-time.yaml"
   - "@./patches/global/machine-nut.yaml"
 
 # Controller patches

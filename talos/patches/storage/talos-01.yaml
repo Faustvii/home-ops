@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/main/pkg/machinery/config/schemas/config.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
 apiVersion: v1alpha1
 kind: UserVolumeConfig
 name: local-hostpath
@@ -8,7 +8,7 @@ provisioning:
   minSize: 10GB
 
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/main/pkg/machinery/config/schemas/config.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
 apiVersion: v1alpha1
 kind: RawVolumeConfig
 name: openebs-zpool
