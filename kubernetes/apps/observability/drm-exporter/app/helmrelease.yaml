@@ -12,6 +12,12 @@ spec:
   values:
     config:
       logLevel: info
+    hostAccess:
+      devDri: /dev/dri
+    securityContext:
+      capabilities:
+        drop:
+          - ALL
     monitoring:
       serviceMonitor:
         enabled: true
