@@ -32,6 +32,7 @@ spec:
     remediation:
       retries: 3
   values:
+    replicaCount: 2
     image:
       repository: ghcr.io/itzg/mc-router
       tag: 1.43.1@sha256:b4f4c50ba90ab2ea93cff96b7cba1c1d7d41f3e580ce20d989e4d6744f054a53
@@ -70,7 +71,7 @@ spec:
             memory: 1Gi
 
     minecraftRouter:
-      connectionRateLimit: 5
+      connectionRateLimit: 10  # Max number of connections to allow per second
       defaultServer:
         host: "192.168.10.31"
         port: 25565
