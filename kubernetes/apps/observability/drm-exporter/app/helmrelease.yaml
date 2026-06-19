@@ -18,6 +18,8 @@ spec:
       capabilities:
         drop:
           - ALL
+        add:
+          - PERFMON
     monitoring:
       serviceMonitor:
         enabled: true
