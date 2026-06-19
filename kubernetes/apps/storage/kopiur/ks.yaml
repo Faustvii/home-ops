@@ -17,7 +17,7 @@ spec:
   path: "./kubernetes/apps/storage/kopiur/app"
   prune: true
   sourceRef:
-    kind: OCIRepository
+    kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: storage
@@ -39,7 +39,7 @@ spec:
   path: "./kubernetes/apps/storage/kopiur/repository"
   prune: true
   sourceRef:
-    kind: OCIRepository
+    kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: storage
