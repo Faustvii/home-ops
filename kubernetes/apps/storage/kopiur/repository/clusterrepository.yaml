@@ -15,7 +15,7 @@ spec:
   encryption:
     passwordSecretRef:
       name: kopiur-nas-secret
-      namespace: kopiur-system
+      namespace: storage
       key: KOPIA_PASSWORD
   create:
     enabled: true
