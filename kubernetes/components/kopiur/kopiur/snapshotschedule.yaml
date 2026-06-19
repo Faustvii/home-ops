@@ -10,3 +10,4 @@ spec:
   schedule:
     cron: H * * * *
     jitter: 2m
+    runOnCreate: false
