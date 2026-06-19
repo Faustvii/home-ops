@@ -22,3 +22,4 @@ resources:
   - ./vpa/ks.yaml
   - ./goldilocks/ks.yaml
   - ./truenas-exporter/ks.yaml
+  - ./drm-exporter/ks.yaml
