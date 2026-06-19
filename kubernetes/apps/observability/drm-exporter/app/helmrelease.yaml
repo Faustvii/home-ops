@@ -14,7 +14,8 @@ spec:
       logLevel: info
     hostAccess:
       devDri: /dev/dri
-      sys: /sys
+    securityContext:
+      privileged: true
     monitoring:
       serviceMonitor:
         enabled: true
