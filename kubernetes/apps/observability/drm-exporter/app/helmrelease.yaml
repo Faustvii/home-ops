@@ -11,7 +11,7 @@ spec:
   dependsOn: []
   values:
     config:
-      logLevel: info
+      logLevel: debug
     hostAccess:
       devDri: /dev/dri
     securityContext:
