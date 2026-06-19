@@ -5,6 +5,8 @@ kind: Kustomization
 metadata:
   name: qui
 spec:
+  components:
+    - ../../../../components/kopiur
   dependsOn:
     - name: openebs
       namespace: storage

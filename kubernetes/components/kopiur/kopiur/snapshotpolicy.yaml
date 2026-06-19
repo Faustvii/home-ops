@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kopiur.home-operations.com/snapshotpolicy_v1alpha1.json
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: SnapshotPolicy
+metadata:
+  name: "${APP}"
+spec:
+  copyMethod: Snapshot
+  credentialProjection:
+    enabled: true
+  repository:
+    kind: ClusterRepository
+    name: ${KOPIUR_REPOSITORY:=nas}
+  retention:
+    keepHourly: 24
+    keepDaily: 7
+  sources:
+    - pvc:
+        name: ${KOPIUR_PVC:=${APP}}
+  volumeSnapshotClassName: ${KOPIUR_SNAPSHOTCLASS:=openebs-zfs-snapshot}
+  verification:
+    quick:
+      cron: 0 5 * * *
+      jitter: 2m
+
