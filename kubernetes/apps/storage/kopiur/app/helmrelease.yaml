@@ -41,6 +41,9 @@ spec:
         type: RuntimeDefault
     secretProjection:
       enabled: true
+    features:
+      credentialProjection:
+        enabled: true
     webhook:
       tls:
         mode: self
