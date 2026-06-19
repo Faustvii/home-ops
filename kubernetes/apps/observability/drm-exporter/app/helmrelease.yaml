@@ -16,6 +16,7 @@ spec:
       devDri: /dev/dri
     securityContext:
       privileged: true
+      allowPrivilegeEscalation: true
     monitoring:
       serviceMonitor:
         enabled: true
