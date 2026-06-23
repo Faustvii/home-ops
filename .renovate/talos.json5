@@ -13,6 +13,7 @@
       matchPackageNames: [
         "ghcr.io/siderolabs/installer",
         "ghcr.io/siderolabs/talosctl",
+        "siderolabs/talos",
         "/factory\\.talos\\.dev/"
       ],
       separateMajorMinor: true,
