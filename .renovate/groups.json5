@@ -66,7 +66,8 @@
       groupName: "talos",
       matchDatasources: [
         "docker",
-        "github-releases"
+        "github-releases",
+        "custom.talos-factory"
       ],
       matchPackageNames: [
         "ghcr.io/siderolabs/installer",
