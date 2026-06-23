@@ -9,6 +9,7 @@
       matchDatasources: [
         "docker",
         "github-releases",
+        "github-tags",
         "custom.talos-factory"
       ],
       matchPackageNames: [
