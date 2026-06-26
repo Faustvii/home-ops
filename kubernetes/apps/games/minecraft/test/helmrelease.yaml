@@ -160,6 +160,7 @@ spec:
           - ferrite-core
           - lithium
           - servercore
+          - jade
           # not updated yet for 1.21.11
           # - fabricexporter
           # - async
