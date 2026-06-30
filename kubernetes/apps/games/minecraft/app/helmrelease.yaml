@@ -64,6 +64,7 @@ spec:
     extraEnv:
       TZ: "Europe/Paris"
       ENABLE_ROLLING_LOGS: true
+      HIDE_ONLINE_PLAYERS: true
       UID: 1000
       GID: 1000
       MAX_MEMORY: 8G
