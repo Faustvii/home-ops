@@ -9,13 +9,6 @@
       changelogUrl: "https://github.com/cloudflare/cloudflared/blob/master/RELEASE_NOTES",
     },
     {
-      description: "Changelog URL for Spegel",
-      matchPackageNames: [
-        "/spegel/"
-      ],
-      changelogUrl: "https://github.com/spegel-org/spegel/blob/main/CHANGELOG.md",
-    },
-    {
       description: "Source URL for Kaniop",
       matchPackageNames: [
         "ghcr.io/pando85/helm-charts/kaniop"
