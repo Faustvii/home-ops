@@ -7,13 +7,13 @@ metadata:
 spec:
   components:
     - ../../../../components/nfs-scaler
-    # - ../../../../components/volsync
+    - ../../../../components/volsync
   interval: 1h
   path: ./kubernetes/apps/media/plex/app
   postBuild:
     substitute:
       APP: plex
-      VOLSYNC_CAPACITY: 50Gi
+      VOLSYNC_CAPACITY: 100Gi
       VOLSYNC_SCHEDULE: "0 0 31 2 *"
     substituteFrom:
       - name: cluster-secrets
