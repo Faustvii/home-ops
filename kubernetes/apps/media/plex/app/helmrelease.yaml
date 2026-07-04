@@ -23,6 +23,7 @@ spec:
               TZ: ${TZ}
               PLEX_ADVERTISE_URL: https://plex.${SECRET_DOMAIN},https://plex.${SECRET_DOMAIN_1},http://192.168.10.60:32400,http://plex.default.svc.cluster.local:32400
               PLEX_NO_AUTH_NETWORKS: 192.168.10.0/24
+              disableGDM: false
             probes:
               liveness:
                 enabled: true
@@ -73,6 +74,36 @@ spec:
         ports:
           http:
             port: *port
+          dlna-tcp:
+            enabled: false
+            port: 32469
+            targetPort: 32469
+            protocol: TCP
+          dlna-udp:
+            enabled: false
+            port: 1900
+            targetPort: 1900
+            protocol: UDP
+          gdm1:
+            enabled: false
+            port: 32410
+            targetPort: 32410
+            protocol: UDP
+          gdm2:
+            enabled: false
+            port: 32412
+            targetPort: 32412
+            protocol: UDP
+          gdm3:
+            enabled: false
+            port: 32413
+            targetPort: 32413
+            protocol: UDP
+          gdm4:
+            enabled: false
+            port: 32414
+            targetPort: 32414
+            protocol: UDP
     route:
       app:
         annotations:
