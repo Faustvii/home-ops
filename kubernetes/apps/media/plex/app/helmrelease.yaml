@@ -102,8 +102,7 @@ spec:
                 port: *port
     persistence:
       config:
-        type: emptyDir
-        # existingClaim: "{{ .Release.Name }}"
+        existingClaim: "{{ .Release.Name }}"
       media:
         existingClaim: plex-media-nfs-pvc
       tmp:
