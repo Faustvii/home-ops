@@ -80,6 +80,7 @@ spec:
             path: /identity
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.${SECRET_DOMAIN_1}"
         parentRefs:
           - name: envoy-external
             namespace: network
