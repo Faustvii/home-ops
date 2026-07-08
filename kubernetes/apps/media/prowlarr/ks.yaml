@@ -7,11 +7,15 @@ metadata:
 spec:
   components:
     - ../../../../components/volsync
+    - ../../../../components/sops
   interval: 1h
   path: ./kubernetes/apps/media/prowlarr/app
   postBuild:
     substitute:
       APP: prowlarr
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   sourceRef:
     kind: GitRepository
