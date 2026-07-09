@@ -52,61 +52,8 @@ spec:
       WEBHOOK_REQUIRE_USER: "true"
       WEBHOOK_URL: "http://mc-router-voice.games.svc.cluster.local:8080/event"
 
-    extraDeploy:
-      - |
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-          name: mc-router-voice
-          namespace: {{ .Release.Namespace }}
-        spec:
-          replicas: 1
-          selector:
-            matchLabels:
-              app: mc-router-voice
-          template:
-            metadata:
-              labels:
-                app: mc-router-voice
-            spec:
-              containers:
-                - name: voice-router
-                  image: "ghcr.io/jlschuler99/svc-router:0.0.2"
-                  imagePullPolicy: IfNotPresent
-                  ports:
-                    - containerPort: 8080
-                      name: api
-                    - containerPort: 24454
-                      name: voice
-                      protocol: UDP
-                  resources:
-                    requests:
-                      cpu: 10m
-                      memory: 64Mi
-                    limits:
-                      cpu: 1
-                      memory: 1Gi
-      - |
-        apiVersion: v1
-        kind: Service
-        metadata:
-          name: mc-router-voice
-          namespace: {{ .Release.Namespace }}
-        spec:
-          selector:
-            app: mc-router-voice
-          ports:
-            - name: api
-              port: 8080
-              targetPort: api
-              protocol: TCP
-            - name: voice
-              port: 24454
-              targetPort: voice
-              protocol: UDP
-
     minecraftRouter:
-      connectionRateLimit: 10  # Max number of connections to allow per second
+      connectionRateLimit: 10 # Max number of connections to allow per second
       defaultServer:
         host: "192.168.10.31"
         port: 25565
