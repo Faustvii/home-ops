@@ -10,4 +10,4 @@ components:
 resources:
   - ./namespace.yaml
   - ./minecraft/ks.yaml
-  # - ./mc-router/ks.yaml
+  - ./mc-router/ks.yaml
