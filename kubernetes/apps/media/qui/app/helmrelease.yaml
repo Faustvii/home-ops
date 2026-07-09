@@ -68,7 +68,8 @@ spec:
             namespace: network
     persistence:
       config:
-        existingClaim: "{{ .Release.Name }}"
+        type: emptyDir
+        # existingClaim: "{{ .Release.Name }}"
       # media:
       #   type: nfs
       #   server: isos.${SECRET_DOMAIN}
