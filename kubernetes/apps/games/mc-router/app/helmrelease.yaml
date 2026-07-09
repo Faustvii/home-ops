@@ -52,7 +52,7 @@ spec:
     controllers:
       router:
         strategy: RollingUpdate
-        replicas: 1
+        replicas: 2
         serviceAccount:
           identifier: mc-router
         containers:
