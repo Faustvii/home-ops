@@ -42,6 +42,7 @@ spec:
           subjects:
             - identifier: mc-router-voice
     defaultPodOptions:
+      automountServiceAccountToken: true
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
@@ -52,6 +53,8 @@ spec:
       router:
         strategy: RollingUpdate
         replicas: 1
+        serviceAccount:
+          identifier: mc-router-voice
         containers:
           mc-router:
             securityContext:
