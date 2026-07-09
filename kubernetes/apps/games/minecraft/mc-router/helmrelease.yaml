@@ -52,7 +52,7 @@ spec:
       WEBHOOK_REQUIRE_USER: "true"
       WEBHOOK_URL: "http://mc-router-voice.games.svc.cluster.local:8080/event"
 
-    extradeploy:
+    extraDeploy:
       - name: voice-router
         image: "ghcr.io/jlschuler99/svc-router:0.0.2"
         imagePullPolicy: IfNotPresent
