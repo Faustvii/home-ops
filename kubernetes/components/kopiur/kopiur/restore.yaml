@@ -5,13 +5,17 @@ kind: Restore
 metadata:
   name: ${APP}
 spec:
+  policy:
+    onMissingSnapshot: Continue # default for fromPolicy — empty volume if none
+  mover:
+    securityContext:
+      runAsUser: ${KOPIUR_PUID:=1000}
+      runAsGroup: ${KOPIUR_PGID:=1000}
   source:
     fromPolicy:
       name: ${APP}
       offset: 0 # 0 = latest snapshot
   target:
     populator: {}
-  policy:
-    onMissingSnapshot: Continue # default for fromPolicy — empty volume if none
   credentialProjection:
     enabled: true
