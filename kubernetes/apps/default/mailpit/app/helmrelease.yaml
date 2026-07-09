@@ -17,7 +17,7 @@ spec:
           app:
             image:
               repository: ghcr.io/axllent/mailpit
-              tag: v1.30.3@sha256:956d688cbd13dca36c72d8e94c34d6d1cdf4a005aa6aa4ff6edaaac56c34d8df
+              tag: v1.30.4@sha256:5a49a77c5bdbe7c5474450b4f46348d09949df3695257729c93a30369382d4f6
             env:
               MP_MAX_MESSAGES: 5000
               MP_SMTP_AUTH_ACCEPT_ANY: 1
