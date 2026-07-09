@@ -52,8 +52,6 @@ spec:
       router:
         strategy: RollingUpdate
         replicas: 1
-        serviceAccount:
-          identifier: mc-router-voice
         containers:
           mc-router:
             securityContext:
