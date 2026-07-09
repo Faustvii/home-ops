@@ -3,12 +3,12 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: mc-router-voice
+  name: mc-router
 spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: mc-router-voice
+    name: mc-router
   dependsOn: []
   install:
     remediation:
@@ -19,11 +19,11 @@ spec:
       retries: 3
   values:
     serviceAccount:
-      mc-router-voice:
+      mc-router:
         enabled: true
     rbac:
       roles:
-        mc-router-voice:
+        mc-router:
           type: ClusterRole
           rules:
             - apiGroups: [""]
@@ -33,14 +33,14 @@ spec:
               resources: ["statefulsets", "statefulsets/scale"]
               verbs: ["watch", "list", "get", "update", "patch"]
       bindings:
-        mc-router-voice:
+        mc-router:
           type: ClusterRoleBinding
           roleRef:
             apiGroup: rbac.authorization.k8s.io
             kind: ClusterRole
-            identifier: mc-router-voice
+            identifier: mc-router
           subjects:
-            - identifier: mc-router-voice
+            - identifier: mc-router
     defaultPodOptions:
       automountServiceAccountToken: true
       securityContext:
@@ -54,7 +54,7 @@ spec:
         strategy: RollingUpdate
         replicas: 1
         serviceAccount:
-          identifier: mc-router-voice
+          identifier: mc-router
         containers:
           mc-router:
             securityContext:
@@ -97,7 +97,7 @@ spec:
       router:
         type: LoadBalancer
         annotations:
-          lbipam.cilium.io/ips: 192.168.10.33
+          lbipam.cilium.io/ips: 192.168.10.30
           external-dns.alpha.kubernetes.io/hostname: mc.${SECRET_DOMAIN}, minecraft.${SECRET_DOMAIN}
         ports:
           minecraft:
