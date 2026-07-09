@@ -18,6 +18,29 @@ spec:
     remediation:
       retries: 3
   values:
+    serviceAccount:
+      mc-router-voice:
+        enabled: true
+    rbac:
+      roles:
+        mc-router-voice:
+          type: ClusterRole
+          rules:
+            - apiGroups: [""]
+              resources: ["services"]
+              verbs: ["watch", "list"]
+            - apiGroups: ["apps"]
+              resources: ["statefulsets", "statefulsets/scale"]
+              verbs: ["watch", "list", "get", "update", "patch"]
+      bindings:
+        mc-router-voice:
+          type: ClusterRoleBinding
+          roleRef:
+            apiGroup: rbac.authorization.k8s.io
+            kind: ClusterRole
+            identifier: mc-router-voice
+          subjects:
+            - identifier: mc-router-voice
     defaultPodOptions:
       securityContext:
         runAsUser: 1000
@@ -28,8 +51,32 @@ spec:
     controllers:
       router:
         strategy: RollingUpdate
+        replicas: 1
+        serviceAccount:
+          identifier: mc-router-voice
         containers:
-          app:
+          mc-router:
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            image:
+              repository: ghcr.io/itzg/mc-router
+              tag: 1.44.0@sha256:74c0f682cb45a1ac7ac25082c63f236bd6b04395508ad41d5825fd8cc8828b8f
+              pullPolicy: IfNotPresent
+            env:
+              IN_KUBE_CLUSTER: "true"
+              API_BINDING: ":8081"
+              PORT: "25565"
+              CONNECTION_RATE_LIMIT: "10"
+              DEFAULT: "192.168.10.31:25565"
+              WEBHOOK_REQUIRE_USER: "true"
+              WEBHOOK_URL: "http://localhost:8080/event"
+              # AUTO_SCALE_UP: "true"
+              # AUTO_SCALE_DOWN: "true"
+              # AUTO_SCALE_DOWN_AFTER: "2h"
+              # AUTO_SCALE_ASLEEP_MOTD: "Server is sleeping. Connecting will wake it -- please give it a moment."
+          svc-router:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -38,14 +85,23 @@ spec:
               repository: ghcr.io/jlschuler99/svc-router
               pullPolicy: IfNotPresent
               tag: 0.0.2
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                cpu: 1
+                memory: 1Gi
     service:
       router:
+        type: LoadBalancer
         annotations:
           lbipam.cilium.io/ips: 192.168.10.33
-        type: LoadBalancer
+          external-dns.alpha.kubernetes.io/hostname: mc.${SECRET_DOMAIN}, minecraft.${SECRET_DOMAIN}
         ports:
-          api:
-            port: 8080
+          minecraft:
+            port: 25565
+            protocol: TCP
           voice:
             port: 24454
             protocol: UDP
