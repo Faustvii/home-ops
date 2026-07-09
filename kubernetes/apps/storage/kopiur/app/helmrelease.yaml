@@ -10,37 +10,33 @@ spec:
     name: kopiur
   interval: 1h
   values:
-    controller:
-      extraVolumes:
-        - name: repo
-          nfs:
-            server: truenas.faust
-            path: /mnt/standard/volsync/kopiur
-      extraVolumeMounts:
-        - name: repo
-          mountPath: /repo
-    grafanaDashboard:
-      enabled: true
-      grafanaOperator:
+    extraVolumes:
+      - name: repo
+        nfs:
+          server: truenas.faust
+          path: /mnt/standard/volsync/kopiur
+    extraVolumeMounts:
+      - name: repo
+        mountPath: /repo
+    monitoring:
+      dashboards:
         enabled: true
-        matchLabels:
-          dashboards: grafana
-    installScope: cluster
-    metrics:
-      serviceMonitor:
-        enabled: true
+        grafanaOperator:
+          enabled: true
+          matchLabels:
+            dashboards: grafana
       prometheusRule:
         enabled: true
+      serviceMonitor:
+        enabled: true
+    installScope: cluster
     podSecurityContext:
-      fsGroup: 1000
-      fsGroupChangePolicy: OnRootMismatch
-      runAsGroup: 1000
       runAsNonRoot: true
+      fsGroup: 1000
+      runAsGroup: 1000
       runAsUser: 1000
-      seccompProfile:
-        type: RuntimeDefault
-    secretProjection:
-      enabled: true
+      fsGroupChangePolicy: OnRootMismatch
+
     features:
       credentialProjection:
         enabled: true

@@ -8,18 +8,24 @@ spec:
   copyMethod: Snapshot
   credentialProjection:
     enabled: true
+  mover:
+    securityContext:
+      runAsUser: ${KOPIUR_PUID:=1000}
+      runAsGroup: ${KOPIUR_PGID:=1000}
   repository:
     kind: ClusterRepository
     name: ${KOPIUR_REPOSITORY:=nas}
   retention:
+    keepLatest: 3
     keepHourly: 24
     keepDaily: 7
+    keepWeekly: 4
   sources:
     - pvc:
         name: ${KOPIUR_PVC:=${APP}}
   volumeSnapshotClassName: ${KOPIUR_SNAPSHOTCLASS:=openebs-zfs-snapshot}
   verification:
     quick:
-      cron: 0 5 * * *
-      jitter: 2m
-
+      schedule:
+        cron: H 3 * * *
+        jitter: 2m
