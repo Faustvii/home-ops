@@ -139,3 +139,7 @@ spec:
         existingClaim: plex-media-nfs-pvc
       tmp:
         type: emptyDir
+      cache:
+        type: emptyDir
+        globalMounts:
+          - path: /home/ubuntu/.cache
