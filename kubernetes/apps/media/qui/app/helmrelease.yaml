@@ -23,6 +23,9 @@ spec:
               QUI__HOST: 0.0.0.0
               QUI__PORT: &port 80
               QUI__LOG_LEVEL: INFO
+              QUI__METRICS_ENABLED: "true"
+              QUI__METRICS_HOST: "0.0.0.0"
+              QUI__METRICS_PORT: &metrics_port 9000
               QUI__TRACKER_ICONS_FETCH_ENABLED: false
               TZ: America/New_York
             probes:
@@ -59,6 +62,12 @@ spec:
         ports:
           http:
             port: *port
+          metrics:
+            port: *metrics_port
+    serviceMonitor:
+      app:
+        endpoints:
+          - port: metrics
     route:
       app:
         hostnames:
