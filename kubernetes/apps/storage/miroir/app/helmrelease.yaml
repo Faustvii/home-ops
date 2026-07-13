@@ -33,10 +33,10 @@ spec:
     nodes:
       talos-01:
         backend: zfs
-        zfsDataset: openebs-zpool/miroir
+        zfsDataset: tank/miroir
       talos-02:
         backend: zfs
-        zfsDataset: openebs-zpool/miroir
+        zfsDataset: tank/miroir
       talos-03:
         backend: lvmthin
         device: /dev/disk/by-partlabel/r-miroir
