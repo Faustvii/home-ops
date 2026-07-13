@@ -38,8 +38,6 @@ spec:
         backend: zfs
         zfsDataset: tank/miroir
       talos-03:
-        backend: lvmthin
-        device: /dev/disk/by-partlabel/r-miroir
     storageClasses:
       - name: miroir-local
         isDefault: false
