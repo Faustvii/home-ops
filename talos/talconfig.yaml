@@ -44,6 +44,7 @@ nodes:
           officialExtensions:
             - siderolabs/amd-ucode
             - siderolabs/amdgpu
+            - siderolabs/drbd
             - siderolabs/nfsd
             - siderolabs/nut-client
             - siderolabs/zfs
@@ -52,6 +53,12 @@ nodes:
       - name: amdgpu
         parameters:
           - ppfeaturemask=0xffffffff
+      - name: dm_thin_pool
+      - name: drbd
+        parameters:
+          - usermode_helper=disabled
+      - name: drbd_transport_tcp
+      - name: nbd
     patches:
       - "@./patches/storage/talos-01.yaml"
     networkInterfaces:
@@ -98,6 +105,7 @@ nodes:
           officialExtensions:
             - siderolabs/amd-ucode
             - siderolabs/amdgpu
+            - siderolabs/drbd
             - siderolabs/nfsd
             - siderolabs/nut-client
             - siderolabs/zfs
@@ -106,6 +114,12 @@ nodes:
       - name: amdgpu
         parameters:
           - ppfeaturemask=0xffffffff
+      - name: dm_thin_pool
+      - name: drbd
+        parameters:
+          - usermode_helper=disabled
+      - name: drbd_transport_tcp
+      - name: nbd
     patches:
       - "@./patches/storage/talos-02.yaml"
     networkInterfaces:
