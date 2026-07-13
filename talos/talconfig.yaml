@@ -39,6 +39,7 @@ nodes:
             # mitigate dirty frag, CVE-2026-43284 & CVE-2026-43500
             # https://github.com/V4bel/dirtyfrag
           - module_blacklist=esp4,esp6,rxrpc
+          - zfs.zfs_arc_max=8589934592 # Cap ZFS ARC at 8GiB
         systemExtensions:
           officialExtensions:
             - siderolabs/amd-ucode
@@ -92,6 +93,7 @@ nodes:
             # mitigate dirty frag, CVE-2026-43284 & CVE-2026-43500
             # https://github.com/V4bel/dirtyfrag
           - module_blacklist=esp4,esp6,rxrpc
+          - zfs.zfs_arc_max=8589934592 # Cap ZFS ARC at 8GiB
         systemExtensions:
           officialExtensions:
             - siderolabs/amd-ucode
