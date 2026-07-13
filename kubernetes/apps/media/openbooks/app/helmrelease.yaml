@@ -30,7 +30,7 @@ spec:
             env:
               TZ: ${TZ}
             args:
-              - --name=k8steken
+              - --name=k8steken --persist
             probes:
               liveness: &probes
                 enabled: true
