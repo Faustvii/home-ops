@@ -127,25 +127,60 @@ nodes:
         vlans:
           - vlanId: 90
             dhcp: false
-  # - hostname: "talos-03"
-  #   ipAddress: "192.168.10.12"
-  #   installDisk: "/dev/sda"
-  #   machineSpec:
-  #     secureboot: false
-  #   talosImageURL: factory.talos.dev/installer/686aee2d00e456079d6a81b4ea79f3fd5d5b58e264cae1ed559c5992afb9df3b
-  #   controlPlane: true
-  #   networkInterfaces:
-  #     - deviceSelector:
-  #         hardwareAddr: "08:00:27:1d:06:2e"
-  #       dhcp: false
-  #       addresses:
-  #         - "192.168.10.12/24"
-  #       routes:
-  #         - network: "0.0.0.0/0"
-  #           gateway: "192.168.10.1"
-  #       mtu: 1500
-  #       vip:
-  #         ip: "192.168.10.20"
+  - hostname: "talos-03"
+    ipAddress: "192.168.10.12"
+    nodeTaints:
+      dedicated: "talos-03:NoSchedule"
+    installDisk: "/dev/vda"
+    machineSpec:
+      secureboot: false
+    controlPlane: true
+    schematic:
+      customization:
+        extraKernelArgs:
+          - pcie_aspm=off # Disable PCIe ASPM
+          - talos.dashboard.disabled=1 # Disable Talos Dashboard
+            # mitigate copy fail; CVE-2026-31431
+            # https://copy.fail
+          - initcall_blacklist=algif_aead_init
+            # mitigate dirty frag, CVE-2026-43284 & CVE-2026-43500
+            # https://github.com/V4bel/dirtyfrag
+          - module_blacklist=esp4,esp6,rxrpc
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/amd-ucode
+            - siderolabs/amdgpu
+            - siderolabs/drbd
+            - siderolabs/nfsd
+            - siderolabs/nut-client
+    kernelModules:
+      - name: dm_thin_pool
+      - name: drbd
+        parameters:
+          - usermode_helper=disabled
+      - name: drbd_transport_tcp
+      - name: nbd
+    patches:
+      - "@./patches/storage/talos-03.yaml"
+      - "@./patches/global/talos-03-kubelet.yaml"
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          deviceSelectors:
+            - hardwareAddr: "00:a0:98:05:d4:96"
+          mode: active-backup
+        dhcp: false
+        addresses:
+          - "192.168.10.12/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "192.168.10.1"
+        mtu: 1500
+        vip:
+          ip: "192.168.10.20"
+        vlans:
+          - vlanId: 90
+            dhcp: false
 
 # Global patches
 patches:

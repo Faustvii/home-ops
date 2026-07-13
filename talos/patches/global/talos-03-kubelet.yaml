@@ -1,0 +1,9 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
+machine:
+  kubelet:
+    extraConfig:
+      registerWithTaints:
+        - key: dedicated
+          value: talos-03
+          effect: NoSchedule
