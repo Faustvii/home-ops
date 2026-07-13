@@ -15,6 +15,7 @@ spec:
       enabled: true
       bbr: true
     bpf:
+      datapathMode: veth
       masquerade: true
       preallocateMaps: true
     bpfClockProbe: true
