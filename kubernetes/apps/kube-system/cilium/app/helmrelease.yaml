@@ -15,7 +15,6 @@ spec:
       enabled: true
       bbr: true
     bpf:
-      datapathMode: netkit
       masquerade: true
       preallocateMaps: true
     bpfClockProbe: true
