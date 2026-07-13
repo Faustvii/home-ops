@@ -85,4 +85,8 @@ spec:
               request: 0s
     persistence:
       books:
-        type: emptyDir
+        enabled: true
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 10Gi
+        storageClass: miroir-replicated
