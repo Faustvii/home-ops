@@ -9,11 +9,14 @@ spec:
   chart:
     spec:
       chart: goldilocks
-      version: 10.4.1
+      version: 10.4.0
       sourceRef:
         kind: HelmRepository
         name: fairwinds-goldilocks
   values:
+    image:
+      repository: us-docker.pkg.dev/fairwinds-ops/oss/goldilocks
+      tag: v4.14.1@sha256:2d84efd26bc0d865c9078997494c96b09b3cbb9021e29fdca684afe53806cce4
     controller:
       enabled: true
       includedNamespaces:
