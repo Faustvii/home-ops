@@ -4,12 +4,10 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: etcd-defrag
-  namespace: kube-system
 spec:
   chartRef:
     kind: OCIRepository
     name: etcd-defrag
-    namespace: flux-system
   interval: 1h
   values:
     defaultPodOptions:
