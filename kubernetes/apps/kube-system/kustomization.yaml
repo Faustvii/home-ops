@@ -19,3 +19,4 @@ resources:
   - ./reflector/ks.yaml
   - ./ksgate/ks.yaml
   - ./amd-device-plugin/ks.yaml
+  - ./etcd/ks.yaml
