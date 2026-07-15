@@ -81,6 +81,11 @@ spec:
         accessMode: ReadWriteOnce
         storageClass: miroir-local
         size: 2Gi
+      magic:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        storageClass: miroir-replicated
+        size: 1Gi
     route:
       app:
         hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
