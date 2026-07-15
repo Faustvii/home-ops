@@ -10,7 +10,6 @@ components:
 resources:
   - ./namespace.yaml
   - ./echo/ks.yaml
-  - ./echo-copy/ks.yaml
   - ./radarr/ks.yaml
   - ./mailpit/ks.yaml
   - ./seerr/ks.yaml
