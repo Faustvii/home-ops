@@ -55,6 +55,11 @@ spec:
                     operator: In
                     values:
                       - talos-03
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: talos-03
+          effect: NoSchedule
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
