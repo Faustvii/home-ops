@@ -54,12 +54,7 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - talos-03
-      tolerations:
-        - key: dedicated
-          operator: Equal
-          value: talos-03
-          effect: NoSchedule
+                      - talos-02
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
