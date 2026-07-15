@@ -24,7 +24,7 @@ spec:
                         app.kubernetes.io/managed-by: envoy-gateway
                     topologyKey: kubernetes.io/hostname
         container:
-          image: mirror.gcr.io/envoyproxy/envoy:v1.38.3
+          image: mirror.gcr.io/envoyproxy/envoy:v1.39.0
           resources:
             requests:
               cpu: 100m
