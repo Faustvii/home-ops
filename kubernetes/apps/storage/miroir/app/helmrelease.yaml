@@ -33,23 +33,17 @@ spec:
     nodes:
       talos-01:
         pools:
-          repl:
-            backend: zfs
-            zfsDataset: tank/miroir
-          local:
+          replicated:
             backend: zfs
             zfsDataset: tank/miroir
       talos-02:
         pools:
-          repl:
-            backend: zfs
-            zfsDataset: tank/miroir
-          local:
+          replicated:
             backend: zfs
             zfsDataset: tank/miroir
       talos-03:
         pools:
-          local:
+          default:
             backend: lvmthin
             device: /dev/disk/by-partlabel/r-miroir
 
@@ -57,13 +51,12 @@ spec:
       - name: miroir-replicated
         isDefault: false
         replicas: 2
+        pools: replicated
         quorum: freeze
-        pool: repl
 
       - name: miroir-local
         isDefault: false
         replicas: 1
-        pool: local
 
     volumeSnapshotClasses:
       - name: miroir-snap
