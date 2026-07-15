@@ -76,11 +76,6 @@ spec:
         endpoints:
           - port: http
     persistence:
-      config:
-        type: persistentVolumeClaim
-        accessMode: ReadWriteOnce
-        storageClass: miroir-local
-        size: 2Gi
       magic:
         type: persistentVolumeClaim
         accessMode: ReadWriteOnce
