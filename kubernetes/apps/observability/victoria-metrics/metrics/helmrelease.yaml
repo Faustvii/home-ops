@@ -159,7 +159,14 @@ spec:
             - port: http-metrics
               scheme: http
     kubeScheduler:
-      enabled: true
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              port: http-metrics
+              scheme: https
+              tlsConfig:
+                insecureSkipVerify: true
     extraRules:
       dockerhub-rules:
         groups:
