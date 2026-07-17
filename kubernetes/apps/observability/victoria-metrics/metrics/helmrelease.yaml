@@ -61,8 +61,6 @@ spec:
             namespace: network
         hostnames: ["alertmanager.${SECRET_DOMAIN}"]
       spec:
-        configReloaderExtraArgs:
-          enableTCP6: "true"
         externalURL: https://alertmanager.${SECRET_DOMAIN}
         disableNamespaceMatcher: true
         storage:
@@ -73,17 +71,11 @@ spec:
                   storage: 1Gi
     vmalert:
       enabled: true
-      spec:
-        extraArgs:
-          enableTCP6: "true"
-        configReloaderExtraArgs:
-          enableTCP6: "true"
     grafana:
       enabled: false
     vmsingle:
       spec:
         extraArgs:
-          enableTCP6: "true"
           maxLabelsPerTimeseries: "40"
           search.maxUniqueTimeseries: "600000"
           search.minStalenessInterval: 5m
@@ -105,10 +97,6 @@ spec:
             cpu: 100m
     vmagent:
       spec:
-        extraArgs:
-          enableTCP6: "true"
-        configReloaderExtraArgs:
-          enableTCP6: "true"
         resources:
           limits:
             cpu: 1
@@ -127,13 +115,31 @@ spec:
           enabled: false
         darwin:
           enabled: false
+    kubelet:
+      vmScrapes:
+        kubelet:
+          enabled: true
+      # vmScrape:
+      #   spec:
+      #     relabelConfigs:
+      #       # This is the same as the chart default, but it explicitly excludes NFD node labels,
+      #       # and talos extension labels, and some others. These don't really provide any value,
+      #       # and they cause cardinality to explode.
+      #       - action: labelmap
+      #         regex: __meta_kubernetes_node_label_(.+)
+      #       - action: labeldrop
+      #         regex: (feature_node|extensions_talos_dev|beta_kubernetes|plan_upgrade_cattle_io|openebs_io).*
+      #       - sourceLabels: [__metrics_path__]
+      #         targetLabel: metrics_path
+      #       - targetLabel: job
+      #         replacement: kubelet
     kube-state-metrics:
       enabled: true
       fullnameOverride: kube-state-metrics
     kubeApiServer:
       enabled: true
     kubeControllerManager:
-      enabled: false
+      enabled: true
     kubeEtcd:
       service:
         selector:
