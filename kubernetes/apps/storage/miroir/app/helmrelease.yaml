@@ -13,11 +13,11 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
-    global:
-      tolerations:
-        - key: dedicated
-          value: talos-03
-          effect: NoSchedule
+    # global:
+    #   tolerations:
+    #     - key: dedicated
+    #       value: talos-03
+    #       effect: NoSchedule
     replicaCount: 2
     monitoring:
       dashboards:
