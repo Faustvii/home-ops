@@ -152,11 +152,7 @@ spec:
             - port: http-metrics
               scheme: http
     kubeScheduler:
-      enabled: false
-    kubeProxy:
-      enabled: false
-    coreDns:
-      enabled: false
+      enabled: true
     extraRules:
       dockerhub-rules:
         groups:
