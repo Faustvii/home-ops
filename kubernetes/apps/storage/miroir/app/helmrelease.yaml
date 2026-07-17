@@ -13,12 +13,10 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
-    # global:
-    #   tolerations:
-    #     - key: dedicated
-    #       value: talos-03
-    #       effect: NoSchedule
     replicaCount: 2
+    autoEvictAfter: 2h
+    drbd:
+      alExtents: 6007
     monitoring:
       dashboards:
         enabled: true
