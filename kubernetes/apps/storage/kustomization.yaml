@@ -14,4 +14,4 @@ resources:
   - ./kopia/ks.yaml
   - ./garage/ks.yaml
   - ./kopiur/ks.yaml
-  - ./miroir/ks.yaml
+  # - ./miroir/ks.yaml
