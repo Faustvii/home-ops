@@ -13,8 +13,6 @@ resources:
   - ./prometheus-operator-crds/ks.yaml
   - ./grafana/ks.yaml
   - ./victoria-metrics/ks.yaml
-  - ./kube-prometheus-stack/ks.yaml
-  - ./victoria-logs/ks.yaml
   - ./fluent-bit/ks.yaml
   - ./gatus/ks.yaml
   - ./blackbox-exporter/ks.yaml
