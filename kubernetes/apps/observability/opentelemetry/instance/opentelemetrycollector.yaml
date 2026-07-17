@@ -24,18 +24,28 @@ spec:
 
     exporters:
       debug: {}
+      otlp_grpc:
+        endpoint: vtsingle-vt-otel.observability.svc.cluster.local:4317
+        compression: gzip
+        tls:
+          insecure: true
+      otlp_http:
+        compression: gzip
+        encoding: proto
+        metrics_endpoint: http://vmsingle-vmks.observability.svc.cluster.local:8428/opentelemetry/v1/metrics
+        logs_endpoint: http://vlsingle-vl.observability.svc.cluster.local:9428/insert/opentelemetry/v1/logs
 
     service:
       pipelines:
         traces:
           receivers: [otlp]
           processors: [memory_limiter]
-          exporters: [debug]
+          exporters: [otlp_grpc]
         logs:
           receivers: [otlp]
           processors: [memory_limiter]
-          exporters: [debug]
+          exporters: [otlp_http]
         metrics:
           receivers: [otlp]
           processors: [memory_limiter, deltatocumulative]
-          exporters: [debug]
+          exporters: [otlp_http]
