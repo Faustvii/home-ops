@@ -19,7 +19,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: victoria-logs
+  name: victoria-logs-vm
 spec:
   dependsOn:
     - name: victoria-metrics-operator
