@@ -30,36 +30,3 @@ spec:
         enabled: true
       prometheusRule:
         enabled: true
-    nodes:
-      talos-01:
-        pools:
-          replicated:
-            backend: zfs
-            zfsDataset: tank/miroir/replicated
-          default:
-            backend: zfs
-            zfsDataset: tank/miroir/local
-      talos-02:
-        pools:
-          replicated:
-            backend: zfs
-            zfsDataset: tank/miroir/replicated
-          default:
-            backend: zfs
-            zfsDataset: tank/miroir/local
-      talos-03:
-        pools:
-          default:
-            backend: lvmthin
-            device: /dev/disk/by-partlabel/r-miroir
-    storageClasses:
-      - name: miroir-replicated
-        replicas: 2
-        pool: replicated
-        quorum: freeze
-      - name: miroir-local
-        replicas: 1
-        pool: default
-
-    volumeSnapshotClasses:
-      - name: miroir-snap
