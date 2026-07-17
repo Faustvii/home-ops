@@ -172,3 +172,13 @@ spec:
                 expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 10m >= 1) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[10m]) == 1
                 labels:
                   severity: critical
+      test-alert-rules:
+        groups:
+          - name: test-alerts
+            rules:
+              - alert: TestAlert
+                annotations:
+                  summary: Temporary test alert for Alertmanager routing validation.
+                expr: vector(1)
+                labels:
+                  severity: error
