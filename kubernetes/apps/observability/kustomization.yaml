@@ -10,9 +10,9 @@ components:
 
 resources:
   - ./namespace.yaml
+  - ./prometheus-operator-crds/ks.yaml
   - ./grafana/ks.yaml
-  - ./kube-prometheus-stack/ks.yaml
-  - ./victoria-logs/ks.yaml
+  - ./victoria-metrics/ks.yaml
   - ./fluent-bit/ks.yaml
   - ./gatus/ks.yaml
   - ./blackbox-exporter/ks.yaml

@@ -3,21 +3,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: victoria-logs
+  name: prometheus-operator-crds
 spec:
-  dependsOn:
-    - name: openebs
-      namespace: storage
-  interval: 1h
-  path: ./kubernetes/apps/observability/victoria-logs/app
-  prune: true
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+  path: ./kubernetes/apps/observability/prometheus-operator-crds/app
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: observability
   wait: false
+  interval: 30m
+  timeout: 5m
