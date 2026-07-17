@@ -5,3 +5,6 @@ kind: Kustomization
 resources:
   - ./ocirepository.yaml
   - ./helmrelease.yaml
+  - ./storageclass.yaml
+  - ./volumesnapshotclass.yaml
+  - ./miroirnode.yaml

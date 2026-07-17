@@ -1,0 +1,39 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/miroir.home-operations.com/miroirnode_v1alpha1.json
+apiVersion: miroir.home-operations.com/v1alpha1
+kind: MiroirNode
+metadata:
+  name: talos-01
+spec:
+  pools:
+    - name: replicated
+      zfs:
+        dataset: tank/miroir/replicated
+    - name: local
+      zfs:
+        dataset: tank/miroir/local
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/miroir.home-operations.com/miroirnode_v1alpha1.json
+apiVersion: miroir.home-operations.com/v1alpha1
+kind: MiroirNode
+metadata:
+  name: talos-02
+spec:
+  pools:
+    - name: replicated
+      zfs:
+        dataset: tank/miroir/replicated
+    - name: local
+      zfs:
+        dataset: tank/miroir/local
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/miroir.home-operations.com/miroirnode_v1alpha1.json
+apiVersion: miroir.home-operations.com/v1alpha1
+kind: MiroirNode
+metadata:
+  name: talos-03
+spec:
+  pools:
+    - name: local
+      lvmthin:
+        device: /dev/disk/by-partlabel/r-miroir
