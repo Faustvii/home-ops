@@ -13,7 +13,7 @@ resources:
   - ./prometheus-operator-crds/ks.yaml
   - ./grafana/ks.yaml
   - ./victoria-metrics/ks.yaml
-  - ./fluent-bit/ks.yaml
+  # - ./fluent-bit/ks.yaml
   - ./gatus/ks.yaml
   - ./blackbox-exporter/ks.yaml
   - ./keda/ks.yaml
