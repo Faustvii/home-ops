@@ -21,3 +21,4 @@ resources:
   - ./amd-device-plugin/ks.yaml
   - ./etcd-defrag/ks.yaml
   - ./drm-exporter/ks.yaml
+  - ./k8s-gpu-dra-driver/ks.yaml
