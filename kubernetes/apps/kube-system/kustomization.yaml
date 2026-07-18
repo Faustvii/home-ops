@@ -20,4 +20,4 @@ resources:
   - ./ksgate/ks.yaml
   - ./amd-device-plugin/ks.yaml
   - ./etcd-defrag/ks.yaml
-  - ./drm-exporter/ks.yaml
+  # - ./drm-exporter/ks.yaml
