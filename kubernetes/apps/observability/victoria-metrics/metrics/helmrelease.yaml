@@ -90,17 +90,17 @@ spec:
               storage: 50Gi
         useDefaultResources: false
         useStrictSecurity: true
-        route:
-          enabled: true
-          parentRefs:
-            - name: envoy-internal
-              namespace: network
-          hostnames: ["vmsingle.${SECRET_DOMAIN}"]
         resources:
           limits:
             memory: 2Gi
           requests:
             cpu: 100m
+      route:
+          enabled: true
+          parentRefs:
+            - name: envoy-internal
+              namespace: network
+          hostnames: ["vmsingle.${SECRET_DOMAIN}"]
     vmagent:
       spec:
         resources:
