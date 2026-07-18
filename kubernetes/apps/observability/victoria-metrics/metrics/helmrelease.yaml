@@ -52,6 +52,9 @@ spec:
         enabled: false
     defaultRules:
       create: true
+      rules:
+        "count:up0":
+          enabled: false
     alertmanager:
       enabled: true
       route:
