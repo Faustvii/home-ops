@@ -6,7 +6,6 @@ metadata:
   name: vt
 spec:
   extraArgs:
-    enableTCP6: "true"
     otlpGRPCListenAddr: ":4317"
     otlpGRPC.tls: "false"
   retentionPeriod: 14d

@@ -5,8 +5,6 @@ kind: VLSingle
 metadata:
   name: vl
 spec:
-  extraArgs:
-    enableTCP6: "true"
   retentionPeriod: 14d
   retentionMaxDiskSpaceUsageBytes: 20GB
   storage:
