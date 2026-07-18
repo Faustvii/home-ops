@@ -20,7 +20,6 @@ resources:
   - ./goldilocks/ks.yaml
   - ./blackbox-exporter/ks.yaml
   - ./smartctl-exporter/ks.yaml
-  - ./drm-exporter/ks.yaml
   - ./truenas-exporter/ks.yaml
   - ./snmp-exporter/ks.yaml
   - ./opentelemetry/ks.yaml

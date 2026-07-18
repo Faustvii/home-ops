@@ -6,10 +6,10 @@ metadata:
   name: drm-exporter
 spec:
   interval: 1h
-  path: ./kubernetes/apps/observability/drm-exporter/app
+  path: ./kubernetes/apps/kube-system/drm-exporter/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: observability
+  targetNamespace: kube-system
