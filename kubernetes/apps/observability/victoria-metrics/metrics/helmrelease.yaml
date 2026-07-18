@@ -40,7 +40,7 @@ spec:
     victoria-metrics-operator:
       enabled: false
     defaultDashboards:
-      enabled: true
+      enabled: false
       grafanaOperator:
         enabled: true
         spec:
