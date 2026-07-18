@@ -90,6 +90,12 @@ spec:
               storage: 50Gi
         useDefaultResources: false
         useStrictSecurity: true
+        route:
+          enabled: true
+          parentRefs:
+            - name: envoy-internal
+              namespace: network
+          hostnames: ["vmsingle.${SECRET_DOMAIN}"]
         resources:
           limits:
             memory: 2Gi
@@ -106,15 +112,7 @@ spec:
         selectAllByDefault: true
         scrapeInterval: 20s
     prometheus-node-exporter:
-      enabled: false
-    nodeExporter:
-      operatingSystems:
-        linux:
-          enabled: false
-        aix:
-          enabled: false
-        darwin:
-          enabled: false
+      enabled: true
     kubelet:
       vmScrapes:
         kubelet:
