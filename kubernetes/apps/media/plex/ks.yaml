@@ -8,6 +8,9 @@ spec:
   components:
     - ../../../../components/nfs-scaler
     - ../../../../components/volsync
+  dependsOn:
+    - name: k8s-gpu-dra-driver
+      namespace: kube-system
   interval: 1h
   path: ./kubernetes/apps/media/plex/app
   postBuild:

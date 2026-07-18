@@ -25,22 +25,18 @@ spec:
               PLEX_NO_AUTH_NETWORKS: 192.168.10.0/24
               disableGDM: false
             probes:
-              liveness:
-                enabled: true
-                spec:
-                  periodSeconds: 30
-                  timeoutSeconds: 5
-                  failureThreshold: 5
-              readiness:
+              liveness: &probes
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
                     path: /identity
                     port: &port 32400
+                  initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 5
-                  failureThreshold: 5
+                  failureThreshold: 3
+              readiness: *probes
               startup:
                 enabled: true
                 spec:
@@ -51,14 +47,17 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
             resources:
+              claims:
+                - name: gpu
               requests:
                 cpu: 100m
-                amd.com/gpu: "1"
               limits:
                 memory: 16Gi
-                amd.com/gpu: "1"
 
     defaultPodOptions:
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: plex
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -137,9 +136,16 @@ spec:
         existingClaim: "{{ .Release.Name }}"
       media:
         existingClaim: plex-media-nfs-pvc
-      tmp:
+      tmpfs:
         type: emptyDir
-      cache:
-        type: emptyDir
-        globalMounts:
-          - path: /home/ubuntu/.cache
+        advancedMounts:
+          plex:
+            app:
+              - path: /config/Library/Application Support/Plex Media Server/Logs
+                subPath: logs
+              - path: /transcode
+                subPath: transcode
+              - path: /tmp
+                subPath: tmp
+              - path: /home/ubuntu/.cache
+                subPath: cache
