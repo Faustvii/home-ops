@@ -18,7 +18,6 @@ resources:
   - ./descheduler/ks.yaml
   - ./reflector/ks.yaml
   - ./ksgate/ks.yaml
-  - ./amd-device-plugin/ks.yaml
   - ./etcd-defrag/ks.yaml
   - ./drm-exporter/ks.yaml
   - ./k8s-gpu-dra-driver/ks.yaml
