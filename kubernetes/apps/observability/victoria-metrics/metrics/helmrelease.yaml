@@ -99,11 +99,11 @@ spec:
           requests:
             cpu: 100m
       route:
-          enabled: true
-          parentRefs:
-            - name: envoy-internal
-              namespace: network
-          hostnames: ["vmsingle.${SECRET_DOMAIN}"]
+        enabled: true
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+        hostnames: ["vmsingle.${SECRET_DOMAIN}"]
     vmagent:
       spec:
         resources:
@@ -114,6 +114,10 @@ spec:
             cpu: 150m
         selectAllByDefault: true
         scrapeInterval: 20s
+        extraArgs:
+          promscrape.dropOriginalLabels: "true"
+          promscrape.streamParse: "true"
+          promscrape.maxScrapeSize: "32MB"
     prometheus-node-exporter:
       enabled: true
     kubelet:
