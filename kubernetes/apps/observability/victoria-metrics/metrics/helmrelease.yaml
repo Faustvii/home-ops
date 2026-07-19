@@ -119,7 +119,6 @@ spec:
         selectAllByDefault: true
         scrapeInterval: 20s
         extraArgs:
-          promscrape.dropOriginalLabels: "true"
           promscrape.streamParse: "true"
           promscrape.maxScrapeSize: "32MB"
     prometheus-node-exporter:
