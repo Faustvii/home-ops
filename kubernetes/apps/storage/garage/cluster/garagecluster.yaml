@@ -9,6 +9,9 @@ spec:
   # Zone for this cluster - used for fault tolerance
   zone: eu-west-1
 
+  monitoring:
+    enabled: true
+
   replication:
     factor: 2
     consistencyMode: degraded
