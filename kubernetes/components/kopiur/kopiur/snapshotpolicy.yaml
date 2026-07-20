@@ -15,6 +15,7 @@ spec:
   repository:
     kind: ClusterRepository
     name: ${KOPIUR_REPOSITORY:=nas}
+  defaultDeletionPolicy: Retain
   retention:
     keepLatest: 3
     keepHourly: 24
@@ -23,7 +24,7 @@ spec:
   sources:
     - pvc:
         name: ${KOPIUR_PVC:=${APP}}
-  volumeSnapshotClassName: ${KOPIUR_SNAPSHOTCLASS:=miroir-snapshot}
+  volumeSnapshotClassName: ${KOPIUR_SNAPSHOTCLASS:=miroir-snap}
   verification:
     quick:
       schedule:
