@@ -23,6 +23,8 @@ spec:
     all: true
   credentialProjection:
     allowed: true
+  server:
+    namespace: storage
   moverDefaults:
     securityContext:
       runAsUser: 1000
