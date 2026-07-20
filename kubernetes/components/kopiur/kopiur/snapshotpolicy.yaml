@@ -23,7 +23,7 @@ spec:
   sources:
     - pvc:
         name: ${KOPIUR_PVC:=${APP}}
-  volumeSnapshotClassName: ${KOPIUR_SNAPSHOTCLASS:=openebs-zfs-snapshot}
+  volumeSnapshotClassName: ${KOPIUR_SNAPSHOTCLASS:=miroir-snapshot}
   verification:
     quick:
       schedule:

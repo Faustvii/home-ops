@@ -5,10 +5,10 @@ kind: Kustomization
 metadata:
   name: qui
 spec:
-  components:
-    - ../../../../components/kopiur
+  # components:
+  #   - ../../../../components/kopiur
   dependsOn:
-    - name: openebs
+    - name: miroir
       namespace: storage
   interval: 1h
   path: ./kubernetes/apps/media/qui/app
