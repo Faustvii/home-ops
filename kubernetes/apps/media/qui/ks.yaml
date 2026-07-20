@@ -5,8 +5,8 @@ kind: Kustomization
 metadata:
   name: qui
 spec:
-  # components:
-  #   - ../../../../components/kopiur
+  components:
+    - ../../../../components/kopiur
   dependsOn:
     - name: miroir
       namespace: storage
