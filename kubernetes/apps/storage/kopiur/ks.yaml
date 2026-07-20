@@ -35,6 +35,10 @@ spec:
       app.kubernetes.io/name: kopiur-repository
   dependsOn:
     - name: kopiur
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   interval: 1h
   path: "./kubernetes/apps/storage/kopiur/repository"
   prune: true
