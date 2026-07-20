@@ -65,6 +65,7 @@ spec:
   remoteClusters:
     - name: garage-eu
       zone: eu-west-2
+      defaultCapacity: 1Ti
       connection:
         adminApiEndpoint: "http://truenas.faust:30190"
 
