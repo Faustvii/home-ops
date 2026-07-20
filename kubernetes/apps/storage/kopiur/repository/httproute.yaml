@@ -1,0 +1,17 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: nas-kopia-ui
+  annotations:
+    gatus.home-operations.com/enabled: "false"
+spec:
+  hostnames:
+    - "kopiur.${SECRET_DOMAIN}"
+  parentRefs:
+    - name: envoy-internal
+      namespace: network
+  rules:
+    - backendRefs:
+        - name: nas-kopia-ui
+          port: 51515
