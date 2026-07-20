@@ -25,6 +25,10 @@ spec:
     allowed: true
   server:
     namespace: storage
+    podSecurityContext:
+      runAsGroup: 1000
+      runAsUser: 1000
+      fsGroup: 1000
   moverDefaults:
     securityContext:
       runAsUser: 1000
