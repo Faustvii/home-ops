@@ -9,6 +9,11 @@ spec:
       namespace: default
     - kind: GarageBucket
       namespace: default
+
+    - kind: GarageKey
+      namespace: database
+    - kind: GarageBucket
+      namespace: database
   to:
     - kind: GarageCluster
       name: garage
