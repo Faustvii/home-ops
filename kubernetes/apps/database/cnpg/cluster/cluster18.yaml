@@ -63,7 +63,7 @@ spec:
     - name: &plugin barman-cloud.cloudnative-pg.io
       isWALArchiver: true
       parameters:
-        barmanObjectName: &store minio-store
+        barmanObjectName: &store garage-store
         serverName: postgres
 
   externalClusters:
