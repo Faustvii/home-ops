@@ -56,14 +56,15 @@ spec:
           updateStrategy: patch
 
   # bootstrap:
-    # recovery:
-    #   source: &src source
+  #   recovery:
+  #     source: &src source
 
   plugins:
     - name: &plugin barman-cloud.cloudnative-pg.io
       isWALArchiver: true
       parameters:
         barmanObjectName: &store minio-store
+        serverName: postgres
 
   externalClusters:
     - name: source
