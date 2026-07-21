@@ -32,6 +32,11 @@ spec:
         tag: "v0.162.9"
         pullPolicy: IfNotPresent
 
+      podSecurityContext:
+        fsGroup: 1000
+      containerSecurityContext:
+        runAsUser: 1000
+
     postgresql:
       enabled: false
       useExistingPostgresSecret:
