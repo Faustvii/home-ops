@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: infisical-standalone
-      version: 1.9.0
+      version: 1.10.0
       sourceRef:
         kind: HelmRepository
         name: infisical
@@ -31,6 +31,11 @@ spec:
         repository: infisical/infisical
         tag: "v0.162.10"
         pullPolicy: IfNotPresent
+
+      podSecurityContext:
+        fsGroup: 1000
+      containerSecurityContext:
+        runAsUser: 1000
 
     postgresql:
       enabled: false
