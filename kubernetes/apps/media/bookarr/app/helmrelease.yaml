@@ -93,6 +93,8 @@ spec:
             subPath: duplicate
           - path: /app/done
             subPath: done
+          - path: /tmp
+            subPath: tmp
 
       #   existingClaim: "{{ .Release.Name }}"
       # media:
