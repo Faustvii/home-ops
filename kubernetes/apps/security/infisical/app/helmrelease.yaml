@@ -29,7 +29,7 @@ spec:
       replicaCount: 1
       image:
         repository: infisical/infisical
-        tag: "v0.162.10"
+        tag: "v0.162.12"
         pullPolicy: IfNotPresent
 
       podSecurityContext:
