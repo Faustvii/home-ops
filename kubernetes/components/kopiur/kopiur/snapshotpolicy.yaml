@@ -15,7 +15,6 @@ spec:
   repository:
     kind: ClusterRepository
     name: ${KOPIUR_REPOSITORY:=nas}
-  defaultDeletionPolicy: Retain
   retention:
     keepLatest: 3
     keepHourly: 24
