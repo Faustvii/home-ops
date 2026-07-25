@@ -19,6 +19,7 @@ spec:
       APP: plex
       VOLSYNC_CAPACITY: 100Gi
       KOPIUR_CAPACITY: 100Gi
+      KOPIUR_SNAPSHOTCLASS: openebs-zfs-snapshot
       # VOLSYNC_SCHEDULE: "0 0 31 2 *"
     substituteFrom:
       - name: cluster-secrets
