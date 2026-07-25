@@ -1,19 +1,18 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
-apiVersion: v1alpha1
-kind: UserVolumeConfig
-name: local-hostpath
-provisioning:
-  diskSelector:
-    match: "!system_disk"
-  minSize: 10GB
-
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
 apiVersion: v1alpha1
 kind: RawVolumeConfig
-name: openebs-zpool
+name: miroir
 provisioning:
   diskSelector:
     match: disk.serial == "S666NE0RB21047"
-  minSize: 256GB
-  maxSize: 256GB
+  minSize: 512GB
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: RawVolumeConfig
+name: miroir-local
+provisioning:
+  diskSelector:
+    match: disk.serial == "50026B7383F0C77C"
+  minSize: 512GB

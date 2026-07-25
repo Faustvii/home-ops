@@ -24,7 +24,7 @@ nodes:
     nodeLabels:
       topology.kubernetes.io/gpus: amd
     installDiskSelector:
-      serial: "50026B7383F0C77C"
+      serial: "S436NA0NA14981"
     machineSpec:
       secureboot: false
     controlPlane: true

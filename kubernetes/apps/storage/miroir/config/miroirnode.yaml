@@ -7,11 +7,12 @@ metadata:
 spec:
   pools:
     - name: replicated
-      zfs:
-        dataset: tank/miroir/replicated
+      lvmthin:
+        device: /dev/disk/by-partlabel/r-miroir
     - name: local
-      zfs:
-        dataset: tank/miroir/local
+      lvmthin:
+        device: /dev/disk/by-partlabel/r-miroir-local
+
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/miroir.home-operations.com/miroirnode_v1alpha1.json
 apiVersion: miroir.home-operations.com/v1alpha1
@@ -21,11 +22,12 @@ metadata:
 spec:
   pools:
     - name: replicated
-      zfs:
-        dataset: tank/miroir/replicated
+      lvmthin:
+        device: /dev/disk/by-partlabel/r-miroir
     - name: local
-      zfs:
-        dataset: tank/miroir/local
+      lvmthin:
+        device: /dev/disk/by-partlabel/r-miroir-local
+
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/miroir.home-operations.com/miroirnode_v1alpha1.json
 apiVersion: miroir.home-operations.com/v1alpha1
