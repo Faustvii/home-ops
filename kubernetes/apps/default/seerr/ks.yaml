@@ -7,14 +7,14 @@ metadata:
 spec:
   components:
     - ../../../../components/nfs-scaler
-    - ../../../../components/volsync
+    - ../../../../components/kopiur
 
   interval: 1h
   path: ./kubernetes/apps/default/seerr/app
   postBuild:
     substitute:
       APP: seerr
-      VOLSYNC_CAPACITY: 5Gi
+      KOPIUR_CAPACITY: 5Gi
     substituteFrom:
       - name: cluster-secrets
         kind: Secret

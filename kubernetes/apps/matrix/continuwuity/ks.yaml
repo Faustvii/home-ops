@@ -10,7 +10,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/volsync
+    - ../../../../components/kopiur
   #   - ../../../components/sops
   #   - ../../../components/alerts
 
@@ -23,7 +23,7 @@ spec:
     substitute:
       APP: *app
       SUBDOMAIN: matrix
-      VOLSYNC_CAPACITY: 8Gi
+      KOPIUR_CAPACITY: 8Gi
     #      VOLSYNC_LOCAL_BUCKET: *app
     substituteFrom:
       - name: cluster-secrets

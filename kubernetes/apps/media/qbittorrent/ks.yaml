@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: multus-networks
       namespace: network
-    - name: openebs
+    - name: miroir
       namespace: storage
   interval: 1h
   path: ./kubernetes/apps/media/qbittorrent/app

@@ -6,14 +6,14 @@ metadata:
   name: wyoming-piper
 spec:
   components:
-    - ../../../../components/volsync
+    - ../../../../components/kopiur
 
   interval: 1h
   path: ./kubernetes/apps/home/wyoming-piper/app
   postBuild:
     substitute:
       APP: wyoming-piper
-      VOLSYNC_CAPACITY: 5Gi
+      KOPIUR_CAPACITY: 5Gi
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
