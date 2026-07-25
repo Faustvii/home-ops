@@ -25,6 +25,9 @@ spec:
     allowed: true
   server:
     namespace: storage
+    auth:
+      insecure:
+        acknowledgeInsecure: true
     podSecurityContext:
       runAsGroup: 1000
       runAsUser: 1000
