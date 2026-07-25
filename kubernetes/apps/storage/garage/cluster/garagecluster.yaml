@@ -28,7 +28,7 @@ spec:
       size: 10Gi
     data:
       storageClassName: miroir-local
-      size: 100Gi
+      size: 300Gi
 
   network:
     rpcBindPort: 3901
