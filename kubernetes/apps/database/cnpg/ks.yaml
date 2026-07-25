@@ -76,3 +76,5 @@ spec:
   dependsOn:
     - name: cnpg
       namespace: *namespace
+    - name: garage
+      namespace: storage
