@@ -13,3 +13,4 @@ spec:
   website:
     enabled: true
     indexDocument: index.html
+  bucketId: bf4f2c27edda227421a48263aceefda7d304871e5e5763c33945a09b76db031d

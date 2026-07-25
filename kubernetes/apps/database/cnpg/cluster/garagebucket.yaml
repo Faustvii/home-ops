@@ -10,4 +10,4 @@ spec:
     namespace: storage
   quotas:
     maxSize: 20Gi
-  globalAlias: postgres
+  bucketId: d8978b371412ace4656ec684a2c9a767ba3c01be2c8884a5e836f2c559cf9b01
