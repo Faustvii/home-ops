@@ -20,41 +20,41 @@ spec:
     namespace: flux-system
   targetNamespace: storage
   wait: true
-# ---
-# # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
-# apiVersion: kustomize.toolkit.fluxcd.io/v1
-# kind: Kustomization
-# metadata:
-#   name: &app garage-cluster
-# spec:
-#   dependsOn:
-#     - name: garage-operator
-#   healthChecks:
-#     - apiVersion: garage.rajsingh.info/v1beta2
-#       kind: GarageCluster
-#       name: garage
-#       namespace: storage
-#   healthCheckExprs:
-#     - apiVersion: garage.rajsingh.info/v1beta2
-#       kind: GarageCluster
-#       failed: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')
-#       current: has(status.phase) && status.phase == 'Running' && has(status.health) && status.health.healthy == true && status.health.status == 'healthy'
-#       inProgress: "!has(status.phase) || status.phase != 'Running' || !has(status.health) || status.health.healthy != true || status.health.status != 'healthy'"
-#   interval: 1h
-#   path: ./kubernetes/apps/storage/garage/cluster
-#   postBuild:
-#     substitute:
-#       APP: *app
-#     substituteFrom:
-#       - name: cluster-secrets
-#         kind: Secret
-#   prune: true
-#   sourceRef:
-#     kind: GitRepository
-#     name: flux-system
-#     namespace: flux-system
-#   targetNamespace: storage
-#   wait: true # gate readiness on GarageCluster health
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app garage-cluster
+spec:
+  dependsOn:
+    - name: garage-operator
+  healthChecks:
+    - apiVersion: garage.rajsingh.info/v1beta2
+      kind: GarageCluster
+      name: garage
+      namespace: storage
+  healthCheckExprs:
+    - apiVersion: garage.rajsingh.info/v1beta2
+      kind: GarageCluster
+      failed: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')
+      current: has(status.phase) && status.phase == 'Running' && has(status.health) && status.health.healthy == true && status.health.status == 'healthy'
+      inProgress: "!has(status.phase) || status.phase != 'Running' || !has(status.health) || status.health.healthy != true || status.health.status != 'healthy'"
+  interval: 1h
+  path: ./kubernetes/apps/storage/garage/cluster
+  postBuild:
+    substitute:
+      APP: *app
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: storage
+  wait: true # gate readiness on GarageCluster health
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
