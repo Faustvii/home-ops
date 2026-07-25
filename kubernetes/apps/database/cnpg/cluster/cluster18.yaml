@@ -56,15 +56,15 @@ spec:
               type: ClusterIP
           updateStrategy: patch
 
-  bootstrap:
-    recovery:
-      source: &src source
+  # bootstrap:
+  #   recovery:
+  #     source: &src source
 
   plugins:
     - name: &plugin barman-cloud.cloudnative-pg.io
       isWALArchiver: true
       parameters:
-        barmanObjectName: &store minio-store
+        barmanObjectName: &store garage-store
         serverName: postgres-v2
 
   externalClusters:
