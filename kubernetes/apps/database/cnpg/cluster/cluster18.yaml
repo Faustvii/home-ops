@@ -65,7 +65,7 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: &store garage-store
-        serverName: postgres-v2
+        serverName: postgres-v1
 
   externalClusters:
     - name: source
@@ -73,7 +73,7 @@ spec:
         name: *plugin
         parameters:
           barmanObjectName: *store
-          serverName: postgres
+          serverName: postgres-v1
 
   monitoring:
     enablePodMonitor: true
