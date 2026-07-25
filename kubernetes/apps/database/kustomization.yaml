@@ -11,5 +11,5 @@ components:
 resources:
   - ./namespace.yaml
   - ./dragonfly/ks.yaml
-  - ./cnpg/ks.yaml
+  # - ./cnpg/ks.yaml
   - ./pgweb/ks.yaml
