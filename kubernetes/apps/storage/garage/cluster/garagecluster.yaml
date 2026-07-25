@@ -24,10 +24,10 @@ spec:
         topologyKey: kubernetes.io/hostname
         whenUnsatisfiable: DoNotSchedule
     metadata:
-      storageClassName: openebs-zfspv
+      storageClassName: miroir-local
       size: 10Gi
     data:
-      storageClassName: openebs-zfspv
+      storageClassName: miroir-local
       size: 100Gi
 
   network:
