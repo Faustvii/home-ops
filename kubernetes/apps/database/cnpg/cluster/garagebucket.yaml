@@ -10,3 +10,4 @@ spec:
     namespace: storage
   quotas:
     maxSize: 20Gi
+  globalAlias: postgres
