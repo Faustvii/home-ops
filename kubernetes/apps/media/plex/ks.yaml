@@ -8,6 +8,7 @@ spec:
   components:
     - ../../../../components/nfs-scaler
     - ../../../../components/volsync
+    - ../../../../components/kopiur/no-pvc
   dependsOn:
     - name: k8s-gpu-dra-driver
       namespace: kube-system
@@ -17,6 +18,7 @@ spec:
     substitute:
       APP: plex
       VOLSYNC_CAPACITY: 100Gi
+      KOPIUR_CAPACITY: 100Gi
       # VOLSYNC_SCHEDULE: "0 0 31 2 *"
     substituteFrom:
       - name: cluster-secrets
