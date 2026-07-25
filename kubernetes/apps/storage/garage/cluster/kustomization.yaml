@@ -7,3 +7,4 @@ resources:
   - ./httproute-buckets.yaml
   - ./garagekey.yaml
   - ./garagereferencegrant.yaml
+  - ./secret.sops.yaml
