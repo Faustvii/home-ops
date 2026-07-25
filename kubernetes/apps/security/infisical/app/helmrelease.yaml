@@ -42,7 +42,7 @@ spec:
       useExistingPostgresSecret:
         enabled: true
         existingConnectionStringSecret:
-          name: infisical-app
+          name: infisical-postgres
           key: uri
 
     redis:
