@@ -7,8 +7,7 @@ metadata:
 spec:
   components:
     - ../../../../components/nfs-scaler
-    - ../../../../components/volsync
-    - ../../../../components/kopiur/no-pvc
+    - ../../../../components/kopiur
   dependsOn:
     - name: k8s-gpu-dra-driver
       namespace: kube-system
@@ -17,10 +16,7 @@ spec:
   postBuild:
     substitute:
       APP: plex
-      VOLSYNC_CAPACITY: 100Gi
       KOPIUR_CAPACITY: 100Gi
-      KOPIUR_SNAPSHOTCLASS: openebs-zfs-snapshot
-      # VOLSYNC_SCHEDULE: "0 0 31 2 *"
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
