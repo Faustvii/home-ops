@@ -42,9 +42,6 @@ spec:
                   secretKeyRef:
                     name: booklore-postgres
                     key: uri
-            envFrom:
-              - secretRef:
-                  name: booklore-secret
             probes:
               liveness: &probes
                 enabled: true
