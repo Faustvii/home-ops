@@ -37,6 +37,13 @@ spec:
         disablePassword: false
         passwordSecret:
           name: pocket-id-postgres
+      - name: booklore
+        login: true
+        ensure: present
+        superuser: false
+        disablePassword: false
+        passwordSecret:
+          name: booklore-postgres
 
     services:
       additional:

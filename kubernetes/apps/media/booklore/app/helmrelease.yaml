@@ -18,27 +18,30 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
     controllers:
       booklore:
         annotations:
           reloader.stakater.com/auto: "true"
-        # pod:
-        #   securityContext:
-        #     runAsNonRoot: false
-        #     runAsUser: 1000
-        #     runAsGroup: 1000
-        #     fsGroup: 1000
-        #     fsGroupChangePolicy: OnRootMismatch
         containers:
           app:
             image:
               repository: ghcr.io/faustvii/booklore
-              tag: v2.1.0@sha256:3fab963d70fb8953461d72d9fe4c7f76eff2f27fe4b914a960fc5e0ee2332bbe
+              tag: v2.1.1@sha256:1cfaa032f04214bd42f71477f1dea20cbf93310c35e4589fa7abac5903ae2885
             env:
               TZ: ${TZ}
-              USER_ID: 1000
-              GROUP_ID: 1000
               BOOKLORE_PORT: &port 6060
+              DATABASE_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: booklore-postgres
+                    key: uri
             envFrom:
               - secretRef:
                   name: booklore-secret
@@ -61,24 +64,6 @@ spec:
                 memory: 256Mi
               limits:
                 memory: 1Gi
-          mariadb:
-            image:
-              repository: lscr.io/linuxserver/mariadb
-              tag: 11.8.8
-            env:
-              TZ: ${TZ}
-              MYSQL_USER: booklore
-              MYSQL_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: booklore-secret
-                    key: DATABASE_PASSWORD
-              MYSQL_DATABASE: booklore
-              MYSQL_ROOT_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: booklore-secret
-                    key: DATABASE_ROOT_PASSWORD
     service:
       app:
         controller: *app
@@ -95,8 +80,6 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
-            timeouts:
-              request: 0s
     persistence:
       config:
         enabled: true
@@ -106,25 +89,7 @@ spec:
             app:
               - path: /app/data
                 subPath: app
-            mariadb:
-              - path: /config
-                subPath: db
       bookdrop:
         type: emptyDir
-      nginx:
-        type: emptyDir
-        sizeLimit: 200Mi
-        advancedMounts:
-          booklore:
-            nginx:
-              - path: /config
-                subPath: config
-              - path: /var/lib/nginx/logs
-                subPath: log
-              - path: /var/lib/nginx/tmp
-                subPath: tmp
-            nginx-config:
-              - path: /config
-                subPath: config
       library:
         type: emptyDir
