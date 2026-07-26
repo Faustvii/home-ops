@@ -25,7 +25,7 @@ spec:
         name: ${KOPIUR_PVC:=${APP}}
   volumeSnapshotClassName: ${KOPIUR_SNAPSHOTCLASS:=miroir-snap}
   staging:
-    storageClassName: ${KOPIUR_STAGINGCLASS:=miroir-replicated-kopiur}
+    storageClassName: ${KOPIUR_STAGINGCLASS:=miroir-replicated-staging}
   verification:
     quick:
       schedule:
