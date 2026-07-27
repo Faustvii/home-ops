@@ -90,5 +90,5 @@ spec:
         type: emptyDir
       library:
         type: emptyDir
-      media:
+      books:
         existingClaim: media-books-nfs-pvc
