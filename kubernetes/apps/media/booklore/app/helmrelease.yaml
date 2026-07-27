@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: ghcr.io/faustvii/booklore
-              tag: v2.2.0@sha256:f2fad089747c309e66a3334168ac22b0e886ff284b564b5586bf466a975323c2
+              tag: v2.2.1@sha256:3775b74a22f73287a79d2c0a152b0eb06711993ad370bb5875731606857d9f84
             env:
               TZ: ${TZ}
               BOOKLORE_PORT: &port 6060
