@@ -53,7 +53,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
     defaultPodOptions:
       annotations:
         instrumentation.opentelemetry.io/inject-sdk: observability/instrumentation
@@ -97,10 +97,5 @@ spec:
             subPath: tmp
 
       #   existingClaim: "{{ .Release.Name }}"
-      # media:
-      #   type: nfs
-      #   server: isos.${SECRET_DOMAIN}
-      #   path: /mnt/linux/isos
-      #   globalMounts:
-      #     - path: /media/isos
-      #       subPath: isos
+      books:
+        existingClaim: media-books-nfs-pvc
