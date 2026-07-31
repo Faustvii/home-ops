@@ -35,7 +35,7 @@ spec:
                 custom: true
                 spec:
                   tcpSocket:
-                    port: &port 20128
+                    port: *port
                   initialDelaySeconds: 10
                   periodSeconds: 30
                   timeoutSeconds: 10
