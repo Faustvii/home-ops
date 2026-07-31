@@ -9,8 +9,12 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: dragonfly
+      namespace: database
   components:
     - ../../../../components/kopiur
+    - ../../../../components/database/dragonfly
   interval: 1h
   path: ./kubernetes/apps/ai/omniroute/app
   postBuild:
