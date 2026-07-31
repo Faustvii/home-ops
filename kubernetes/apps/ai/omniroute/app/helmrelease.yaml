@@ -70,8 +70,8 @@ spec:
           - path: /app/data
             subPath: data
 
-      tmpfs:
-        type: emptyDir
-        globalMounts:
-          - path: /tmp
-            subPath: tmp
+      # tmpfs:
+      #   type: emptyDir
+      #   globalMounts:
+      #     - path: /tmp
+      #       subPath: tmp
