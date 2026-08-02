@@ -23,7 +23,6 @@ spec:
                 podProtections:
                   defaultDisabled:
                     - FailedBarePods
-                    - PodsWithLocalStorage
                     - SystemCriticalPods
             - name: LowNodeUtilization
               args:
