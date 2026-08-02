@@ -15,14 +15,7 @@ spec:
     minRunners: 0
     maxRunners: 3
     containerMode:
-      type: kubernetes
-      kubernetesModeWorkVolumeClaim:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: miroir-local
-        resources:
-          requests:
-            storage: 10Gi
+      type: dind
     controllerServiceAccount:
       name: actions-runner-controller
       namespace: actions-runner-system
@@ -43,9 +36,6 @@ spec:
             image: ghcr.io/home-operations/actions-runner:2.336.0@sha256:281a9a090522fafbf4967f158b8c97d03552b1978b688893c5f7cb1944bc5fe5
             command:
               - /home/runner/run.sh
-            env:
-              - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
-                value: "false"
         securityContext:
           fsGroup: 1001
           fsGroupChangePolicy: OnRootMismatch
