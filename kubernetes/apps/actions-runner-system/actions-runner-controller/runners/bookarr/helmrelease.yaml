@@ -36,6 +36,17 @@ spec:
             operator: Equal
             value: talos-03
             effect: NoSchedule
+        initContainers:
+          - name: disable-ipv6
+            image: docker.io/library/busybox:1.37.0
+            command:
+              - sh
+              - -c
+              - |
+                sysctl -w net.ipv6.conf.all.disable_ipv6=1
+                sysctl -w net.ipv6.conf.default.disable_ipv6=1
+            securityContext:
+              privileged: true
         containers:
           - name: runner
             image: ghcr.io/home-operations/actions-runner:2.336.0@sha256:281a9a090522fafbf4967f158b8c97d03552b1978b688893c5f7cb1944bc5fe5
