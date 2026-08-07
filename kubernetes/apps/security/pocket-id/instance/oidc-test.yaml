@@ -1,0 +1,45 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/dist/schemas/pocketidoidcclient_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: test
+spec:
+  name: test-app
+  launchUrl: https://localhost:7133
+  callbackUrls:
+    - https://localhost:7133/oauth2/callback
+  logoutCallbackUrls:
+    - https://localhost:7133/logout
+  pkceEnabled: false
+  allowedUserGroups:
+    - name: test-users
+  secret:
+    name: test-oidc-credentials
+    keys:
+      clientSecret: client-secret
+      clientID: client-id
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/dist/schemas/pocketidusergroup_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDUserGroup
+metadata:
+  name: test-users
+spec:
+  friendlyName: test-app
+  users:
+    userRefs:
+      - name: faust
+        namespace: security
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/dist/schemas/pocketidusergroup_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDUserGroup
+metadata:
+  name: test-admin-users
+spec:
+  friendlyName: test-app
+  users:
+    userRefs:
+      - name: faust
+        namespace: security
