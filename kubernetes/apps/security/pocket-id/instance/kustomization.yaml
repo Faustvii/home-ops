@@ -7,4 +7,4 @@ resources:
   - ./instance.yaml
   - ./pocketiduser-faust.yaml
   - ./pocketiduser-foshu.yaml
-  - ./oid-test.yaml
+  - ./oidc-test.yaml
