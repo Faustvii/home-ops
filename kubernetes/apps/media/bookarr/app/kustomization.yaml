@@ -6,3 +6,5 @@ resources:
   - ./helmrelease.yaml
   - ./ocirepository.yaml
   - ./externalsecret.yaml
+  - ./pocketidoidcclient.yaml
+  - ./pocketidusergroup.yaml

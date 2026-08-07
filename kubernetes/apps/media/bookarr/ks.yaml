@@ -13,7 +13,11 @@ spec:
   postBuild:
     substitute:
       APP: bookarr
-      VOLSYNC_CAPACITY: 2Gi
+      KOPIUR_CAPACITY: 2Gi
+      OIDC_APP_NAME: Bookarr
+      OIDC_CALLBACK_PATH: /oauth2-callback
+      OIDC_LOGOUT_CALLBACK_PATH: /login
+      OIDC_PROVIDER_LOGOUT_PATH: /logout
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
