@@ -12,3 +12,8 @@ spec:
   values:
     cdi:
       dynamicPath: /run/cdi
+    kubeletPlugin:
+      tolerations:
+        - key: llm-workload
+          operator: Exists
+          effect: NoSchedule
