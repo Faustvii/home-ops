@@ -47,7 +47,7 @@ spec:
       operator: Exists
       effect: NoSchedule
   contextSize: 262144
-  parallelSlots: 3
+  parallelSlots: 2
   flashAttention: true
   jinja: true
   cacheTypeK: q8_0
@@ -58,15 +58,15 @@ spec:
   uBatchSize: 2048
   resources:
     cpu: "500m"
-    memory: 20Gi
+    memory: 28Gi
   endpoint:
     port: 8080
     type: ClusterIP
   extraArgs:
     - --alias
     - self-hosted
-    - --mmproj
-    - /model-source/qwen3.6-35b-a3b/mmproj-Qwen3.6-35B-A3B-uncensored-heretic-Native-MTP-Preserved-APEX-F16.gguf
+    - --image-min-tokens
+    - "1024"
     - --cont-batching
     - --spec-type
     - draft-mtp
@@ -78,14 +78,10 @@ spec:
     - q8_0
     - --spec-draft-type-v
     - q8_0
-    - -sps
-    - "0.75"
     - --cache-prompt
     - --kv-unified
     - --checkpoint-min-step
     - "32768"
-    - --image-min-tokens
-    - "1024"
     - --temp
     - "0.6"
     - --top-p
@@ -95,7 +91,7 @@ spec:
     - --min-p
     - "0"
     - --presence-penalty
-    - "0.5"
+    - "0.2"
     - --repeat-penalty
     - "1.03"
     - --threads
