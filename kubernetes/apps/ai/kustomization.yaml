@@ -9,4 +9,4 @@ resources:
   - ./moltis/ks.yaml
   - ./omniroute/ks.yaml
   - ./namespace.yaml
-  - ./llmkube/ks.yaml
+  # - ./llmkube/ks.yaml
