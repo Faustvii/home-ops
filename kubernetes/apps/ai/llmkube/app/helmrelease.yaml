@@ -49,4 +49,4 @@ spec:
       enabled: true
       size: 100Gi
       storageClass: miroir-replicated
-      accessMode: ReadWriteMany
+      accessMode: ReadWriteOnce
