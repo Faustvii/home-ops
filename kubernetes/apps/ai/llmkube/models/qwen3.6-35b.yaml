@@ -16,7 +16,7 @@ spec:
     gpu:
       enabled: true
       vendor: amd
-      layers: 99
+      layers: -1
       resourceClaims:
         - name: gpu
           resourceClaimTemplateName: llm-amd-gpu
