@@ -28,6 +28,10 @@ spec:
             dashboards: grafana
     nodeSelector:
       topology.kubernetes.io/gpus: amd
+    tolerations:
+      - key: llm-workload
+        operator: Exists
+        effect: NoSchedule
     resources:
       requests:
         cpu: 10m
