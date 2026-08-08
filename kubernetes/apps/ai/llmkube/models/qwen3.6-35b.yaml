@@ -1,15 +1,16 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/model_v1alpha1.json
 apiVersion: inference.llmkube.dev/v1alpha1
 kind: Model
 metadata:
   name: qwen3.6-35b-a3b
 spec:
-  source: hf://deepreinforce-ai/Ornith-1.0-35B-GGUF
+  source: hf://SC117/Qwen3.6-35B-A3B-uncensored-heretic-Native-MTP-Preserved-APEX-GGUF
   files:
-    - Qwen3.6-35B-A3B-UD-Q8_K_XL.gguf
-  mmproj: mmproj-F16.gguf
+    - Qwen3.6-35B-A3B-uncensored-heretic-Native-MTP-Preserved-APEX-I-Balanced.gguf
+  mmproj: mmproj-Qwen3.6-35B-A3B-uncensored-heretic-Native-MTP-Preserved-APEX-F16.gguf
   format: gguf
-  quantization: UD-Q8_K_XL
+  quantization: I-Balanced
   hardware:
     accelerator: rocm
     gpu:
@@ -20,6 +21,7 @@ spec:
         - name: gpu
           resourceClaimTemplateName: llm-amd-gpu
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/inferenceservice_v1alpha1.json
 apiVersion: inference.llmkube.dev/v1alpha1
 kind: InferenceService
 metadata:
@@ -64,7 +66,7 @@ spec:
     - --alias
     - self-hosted
     - --mmproj
-    - /model-source/qwen3.6-35b-a3b/mmproj-F16.gguf
+    - /model-source/qwen3.6-35b-a3b/mmproj-Qwen3.6-35B-A3B-uncensored-heretic-Native-MTP-Preserved-APEX-F16.gguf
     - --cont-batching
     - --spec-type
     - draft-mtp
