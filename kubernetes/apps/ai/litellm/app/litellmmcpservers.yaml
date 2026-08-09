@@ -15,6 +15,8 @@ spec:
         value: http
       - name: TALOS_MCP_HTTP_ADDR
         value: ":8080"
+      - name: TALOS_MCP_LOG_LEVEL
+        value: debug
     volumes:
       - name: talosconfig
         secret:
