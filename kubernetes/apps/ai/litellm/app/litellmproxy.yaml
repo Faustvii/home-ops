@@ -41,6 +41,11 @@ spec:
         secretKeyRef:
           name: litellm
           key: LITELLM_MASTER_KEY
+    - name: DATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          name: "{{ .Release.Name }}-postgres"
+          key: uri
   resources:
     requests:
       cpu: 100m

@@ -14,8 +14,18 @@ spec:
       namespace: database
     - name: litellm-operator
       namespace: ai
+  healthCheckExprs:
+    - apiVersion: dragonflydb.io/v1alpha1
+      kind: Dragonfly
+      failed: status.phase != 'ready'
+      current: status.phase == 'ready'
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      failed: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')
+      current: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
   components:
     - ../../../../components/database/dragonfly
+    - ../../../../components/database/postgres
   interval: 1h
   path: ./kubernetes/apps/ai/litellm/app
   postBuild:
