@@ -10,3 +10,5 @@ resources:
   - ./omniroute/ks.yaml
   - ./namespace.yaml
   - ./llmkube/ks.yaml
+  - ./litellm-operator/ks.yaml
+  - ./litellm/ks.yaml

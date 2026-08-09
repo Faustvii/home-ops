@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmodel_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMModel
+metadata:
+  name: self-hosted-qwen3-6-35b
+spec:
+  modelName: self-hosted
+  params:
+    model: self-hosted/qwen3.6-35b
+    apiBase: http://llama-strix.llm:8080/v1
+    apiKey: selfhosted
+    dropParams: true
+    additional:
+      max_parallel_requests: 2
+      order: 1
+  info:
+    maxInputTokens: 262144
+    maxOutputTokens: 16384
+    supportsFunctionCalling: true
+    supportsVision: true

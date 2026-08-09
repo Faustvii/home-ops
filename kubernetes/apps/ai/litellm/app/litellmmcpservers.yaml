@@ -1,0 +1,58 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: talos-mcp
+spec:
+  alias: talos_mcp
+  workload:
+    # renovate: datasource=docker depName=registry.erwanleboucher.dev/eleboucher/talos-mcp
+    image: registry.erwanleboucher.dev/eleboucher/talos-mcp:0.0.2
+    port: 8080
+    env:
+      - name: TALOS_MCP_TRANSPORT
+        value: http
+      - name: TALOS_MCP_HTTP_ADDR
+        value: ":8080"
+    volumes:
+      - name: talosconfig
+        secret:
+          secretName: talos-mcp-talosconfig
+          defaultMode: 0400
+    volumeMounts:
+      - name: talosconfig
+        mountPath: /var/run/secrets/talos.dev
+        readOnly: true
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: victoria-logs
+spec:
+  alias: victoria_logs
+  workload:
+    image: ghcr.io/victoriametrics/mcp-victorialogs:latest
+    port: 8081
+    env:
+      - name: MCP_SERVER_MODE
+        value: http
+      - name: MCP_LISTEN_ADDR
+        value: :8081
+      - name: MCP_LOG_FORMAT
+        value: json
+      - name: MCP_LOG_LEVEL
+        value: info
+      - name: VL_INSTANCE_ENTRYPOINT
+        value: http://vlsingle-vl.observability.svc.cluster.local:9428
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: sidero
+spec:
+  alias: sidero
+  url: https://docs.siderolabs.com/mcp
+  transport: http
