@@ -8,7 +8,7 @@ spec:
   modelName: self-hosted
   params:
     model: openai/qwen3.6-35b
-    apiBase: http://qwen3.6-35b-strix.ai.svc.cluster.local:8080/v1
+    apiBase: http://qwen3-6-35b-strix.ai.svc.cluster.local:8080/v1
     apiKey: selfhosted
     dropParams: true
     additional:
