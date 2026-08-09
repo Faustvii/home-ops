@@ -1,0 +1,38 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: open-webui
+spec:
+  components:
+    - ../../../../components/database/dragonfly
+    - ../../../../components/kopiur
+  dependsOn:
+    - name: dragonfly
+      namespace: database
+    - name: kopiur
+      namespace: storage
+  healthCheckExprs:
+    - apiVersion: dragonflydb.io/v1alpha1
+      kind: Dragonfly
+      failed: status.phase != 'ready'
+      current: status.phase == 'ready'
+  interval: 1h
+  path: "./kubernetes/apps/ai/open-webui/app"
+  postBuild:
+    substitute:
+      APP: open-webui
+      KOPIUR_CAPACITY: 10Gi
+      OIDC_APP_NAME: chat
+      OIDC_LOGOUT_CALLBACK_PATH: /login
+      OIDC_PROVIDER_LOGOUT_PATH: /logout
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: ai
