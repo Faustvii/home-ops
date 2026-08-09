@@ -7,7 +7,7 @@ metadata:
 spec:
   modelName: self-hosted
   params:
-    model: self-hosted/qwen3.6-35b
+    model: openai/qwen3.6-35b
     apiBase: http://llama-strix.ai.svc.cluster.local:8080/v1
     apiKey: selfhosted
     dropParams: true
