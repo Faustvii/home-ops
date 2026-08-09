@@ -44,6 +44,13 @@ spec:
         disablePassword: false
         passwordSecret:
           name: booklore-postgres
+      - name: litellm
+        login: true
+        ensure: present
+        superuser: false
+        disablePassword: false
+        passwordSecret:
+          name: litellm-postgres
 
     services:
       additional:
