@@ -35,13 +35,13 @@ spec:
           drop:
             - ALL
     metrics:
-      enabled: false
+      enabled: true
     prometheus:
       serviceMonitor:
-        enabled: false
+        enabled: true
         interval: 30s
       inferencePodMonitor:
-        enabled: false
+        enabled: true
         interval: 30s
       prometheusRule:
         enabled: false
