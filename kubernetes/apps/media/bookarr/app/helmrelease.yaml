@@ -22,7 +22,7 @@ spec:
           app:
             image:
               repository: ghcr.io/faustvii/bookarr
-              tag: latest@sha256:ebd51185e9c0771d2118af99aeb1774eb50a4ef76169cffa5b7f41ee2a2b142c
+              tag: latest@sha256:2af9015df360bba3ca197e06e6a677340254f1c163e4682fab21260943a1720f
             env:
               TZ: ${TZ}
               DATABASE__USEPOSTGRES: "true"
