@@ -1,0 +1,119 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/model_v1alpha1.json
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: Model
+metadata:
+  name: qwen3-8b
+spec:
+  source: hf://unsloth/Qwen3-8B-GGUF
+  files:
+    - Qwen3-8B-UD-Q8_K_XL.gguf
+  format: gguf
+  quantization: UD-Q8_K_XL
+  hardware:
+    accelerator: rocm
+    gpu:
+      enabled: true
+      vendor: amd
+      layers: -1
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: llm-amd-gpu
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/inferenceservice_v1alpha1.json
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: InferenceService
+metadata:
+  name: qwen3-8b-strix
+spec:
+  modelRef: qwen3-8b
+  modelCache:
+    claimName: llmkube-strix-cache
+  runtime: llamacpp
+  image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4@sha256:1f52ffa13e1a7674b3651c9a365bc859253399aa47f4d91414cb1dd5316d7d2e
+  rolloutPolicy:
+    # This is the voice-control agent — it needs to be resident, not swapped
+    # out on idle like the 35B reasoning model. Voice commands can't eat a
+    # cold-start penalty waiting for the pool to page it back in.
+    waitForIdle: false
+  command:
+    - llama-server
+  replicas: 1
+  priority: high
+  nodeSelector:
+    kubernetes.io/hostname: talos-04
+    topology.kubernetes.io/gpus: amd
+  tolerations:
+    - key: llm-workload
+      operator: Exists
+      effect: NoSchedule
+  # Qwen3 natively supports 32K; HA Assist rarely needs more than a handful
+  # of turns + ~30 exposed entities (~1-2K tokens), so no need for the 256K
+  # context or aggressive KV budget the 35B reasoning model uses.
+  contextSize: 32768
+  parallelSlots: 4
+  flashAttention: true
+  jinja: true
+  cacheTypeK: q8_0
+  cacheTypeV: q8_0
+  # Voice control should not "think" — thinking mode is too slow for a
+  # sub-2-second response budget. Cap reasoning hard near zero rather than
+  # the 16384 budget used for the coding/reasoning model.
+  reasoningBudget: 0
+  reasoningBudgetMessage: "Answer directly without reasoning."
+  batchSize: 2048
+  uBatchSize: 512
+  resources:
+    cpu: "250m"
+    memory: 12Gi
+  endpoint:
+    port: 8080
+    type: ClusterIP
+  extraArgs:
+    - --alias
+    - qwen3-8b
+    - --cont-batching
+    - --cache-prompt
+    - --kv-unified
+    # Disable thinking mode at the template level too (belt-and-braces
+    # alongside reasoningBudget: 0) — Qwen3's chat template respects this.
+    - --chat-template-kwargs
+    - '{"enable_thinking":false}'
+    # Qwen's own recommended sampler settings for non-thinking mode.
+    - --temp
+    - "0.7"
+    - --top-p
+    - "0.8"
+    - --top-k
+    - "20"
+    - --min-p
+    - "0"
+    - --repeat-penalty
+    - "1.05"
+    - --threads
+    - "8"
+    - --threads-batch
+    - "12"
+    - --load-mode
+    - none
+  probeOverrides:
+    startup:
+      httpGet:
+        path: /health
+        port: 8080
+      periodSeconds: 5
+      failureThreshold: 60
+    liveness:
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 15
+      periodSeconds: 30
+      failureThreshold: 6
+    readiness:
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      failureThreshold: 6
