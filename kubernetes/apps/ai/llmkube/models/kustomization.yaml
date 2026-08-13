@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./pvc-strix-cache.yaml
   - ./qwen3.6-35b.yaml
+  - ./qwen3-8b.yaml
