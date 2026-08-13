@@ -1,0 +1,125 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/model_v1alpha1.json
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: Model
+metadata:
+  name: qwen3.6-35b-a3b-voice
+spec:
+  source: hf://SC117/Qwen3.6-35B-A3B-uncensored-heretic-Native-MTP-Preserved-APEX-GGUF
+  files:
+    - Qwen3.6-35B-A3B-uncensored-heretic-Native-MTP-Preserved-APEX-I-Balanced.gguf
+  mmproj: mmproj-Qwen3.6-35B-A3B-uncensored-heretic-Native-MTP-Preserved-APEX-F16.gguf
+  format: gguf
+  quantization: I-Balanced
+  hardware:
+    accelerator: rocm
+    gpu:
+      enabled: true
+      vendor: amd
+      layers: -1
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: llm-amd-gpu
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/inferenceservice_v1alpha1.json
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: InferenceService
+metadata:
+  name: qwen3.6-35b-a3b-voice
+spec:
+  modelRef: qwen3.6-35b-a3b-voice
+  modelCache:
+    claimName: llmkube-strix-cache
+  runtime: llamacpp
+  image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4@sha256:1f52ffa13e1a7674b3651c9a365bc859253399aa47f4d91414cb1dd5316d7d2e
+  rolloutPolicy:
+    waitForIdle: true
+    idleTimeoutSeconds: 86400
+  command:
+    - llama-server
+  replicas: 1
+  priority: high
+  nodeSelector:
+    kubernetes.io/hostname: talos-04
+    topology.kubernetes.io/gpus: amd
+  tolerations:
+    - key: llm-workload
+      operator: Exists
+      effect: NoSchedule
+  contextSize: 16384
+  parallelSlots: 2
+  flashAttention: true
+  jinja: true
+  cacheTypeK: q8_0
+  cacheTypeV: q8_0
+  reasoningBudget: 0
+  reasoningBudgetMessage: "Answer directly without reasoning."
+  batchSize: 6144
+  uBatchSize: 2048
+  resources:
+    cpu: "500m"
+    memory: 28Gi
+  endpoint:
+    port: 8080
+    type: ClusterIP
+  extraArgs:
+    - --alias
+    - qwen3.6-35b-a3b-voice
+    - --image-min-tokens
+    - "1024"
+    - --cont-batching
+    - --spec-type
+    - draft-mtp
+    - --spec-draft-p-min
+    - "0.75"
+    - --spec-draft-n-max
+    - "3"
+    - --spec-draft-type-k
+    - q8_0
+    - --spec-draft-type-v
+    - q8_0
+    - --cache-prompt
+    - --kv-unified
+    - --checkpoint-min-step
+    - "32768"
+    - --temp
+    - "0.6"
+    - --top-p
+    - "0.95"
+    - --top-k
+    - "20"
+    - --min-p
+    - "0"
+    - --presence-penalty
+    - "0.2"
+    - --repeat-penalty
+    - "1.03"
+    - --threads
+    - "8"
+    - --threads-batch
+    - "12"
+    - --load-mode
+    - none
+    - --reasoning
+    - "off"
+  probeOverrides:
+    startup:
+      httpGet:
+        path: /health
+        port: 8080
+      periodSeconds: 10
+      failureThreshold: 360
+    liveness:
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 30
+      failureThreshold: 6
+    readiness:
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 20
+      periodSeconds: 10
+      failureThreshold: 6
