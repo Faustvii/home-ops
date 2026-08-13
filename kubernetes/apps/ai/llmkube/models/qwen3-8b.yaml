@@ -75,10 +75,8 @@ spec:
     - --cont-batching
     - --cache-prompt
     - --kv-unified
-    # Disable thinking mode at the template level too (belt-and-braces
-    # alongside reasoningBudget: 0) — Qwen3's chat template respects this.
-    - --chat-template-kwargs
-    - '{"enable_thinking":false}'
+    - --reasoning
+    - "off"
     # Qwen's own recommended sampler settings for non-thinking mode.
     - --temp
     - "0.7"
