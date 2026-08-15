@@ -308,4 +308,4 @@ Show the user the created files and get confirmation before committing. Commit s
 - **`readOnlyRootFilesystem: true` without a tmpfs** — apps that write to `/tmp` will crash; mount an emptyDir.
 - **Skipping the sorting conventions** — HelmRelease values follow `.agents/instructions/sorting.instructions.md`.
 - **Adding a CiliumNetworkPolicy by default** — only some apps lock down ingress; copy `searxng`'s if the user asks for one.
-- **Adding `wait`, `commonMetadata`, or `timeout` boilerplate to `ks.yaml`** — leave these out by default; only add when there is a concrete need.
+- **Adding `wait`, `commonMetadata`, or `timeout` to `ks.yaml`** — all three are boilerplate now. Leave `wait` unset unless another Kustomization depends on this one and it has no `healthChecks` (then, and only then, `wait: true`).
