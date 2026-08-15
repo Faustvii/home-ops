@@ -9,5 +9,7 @@ machine:
       enabled: true
       allowedRoles:
         - os:admin
+        - os:reader
       allowedKubernetesNamespaces:
         - system-upgrade
+        - ai
