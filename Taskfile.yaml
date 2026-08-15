@@ -32,3 +32,7 @@ tasks:
     preconditions:
       - test -f {{.KUBECONFIG}}
       - which flux
+
+  flate:
+    desc: Runs Flate Test against the current repository to ensure that all files are formatted correctly
+    cmd: flate test all --allow-missing-secrets --no-progress
