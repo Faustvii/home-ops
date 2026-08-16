@@ -23,11 +23,11 @@ spec:
             fsGroupChangePolicy: OnRootMismatch
         containers:
           app:
+            workingDir: /tmp
             image:
               repository: ghcr.io/autobrr/dashbrr
               tag: v0.5.1
             env:
-              DASHBRR__CONFIG_PATH: /data/config.toml
               TZ: ${TZ}
             probes:
               liveness:
