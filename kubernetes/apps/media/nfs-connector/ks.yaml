@@ -3,13 +3,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: nfs-connector
+  name: &app nfs-connector
+  namespace: &namespace media
 spec:
   interval: 1h
   path: ./kubernetes/apps/media/nfs-connector/app
   postBuild:
     substitute:
-      APP: nfs-connector
+      APP: *app
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
@@ -18,5 +19,4 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: media
-  wait: false
+  targetNamespace: *namespace

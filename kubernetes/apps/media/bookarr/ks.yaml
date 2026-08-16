@@ -3,7 +3,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: bookarr
+  name: &app bookarr
+  namespace: &namespace media
 spec:
   interval: 1h
   path: ./kubernetes/apps/media/bookarr/app
@@ -12,7 +13,7 @@ spec:
 
   postBuild:
     substitute:
-      APP: bookarr
+      APP: *app
       KOPIUR_CAPACITY: 2Gi
       OIDC_APP_NAME: Bookarr
       OIDC_LOGOUT_CALLBACK_PATH: /login
@@ -25,5 +26,4 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: media
-  wait: false
+  targetNamespace: *namespace

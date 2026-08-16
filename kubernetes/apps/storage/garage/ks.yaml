@@ -4,6 +4,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app garage-operator
+  namespace: &namespace storage
 spec:
   interval: 1h
   path: ./kubernetes/apps/storage/garage/operator
@@ -18,7 +19,7 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: storage
+  targetNamespace: *namespace
   wait: true
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
@@ -26,6 +27,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app garage-cluster
+  namespace: &namespace storage
 spec:
   dependsOn:
     - name: garage-operator
@@ -52,7 +54,7 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: storage
+  targetNamespace: *namespace
   wait: true # gate readiness on GarageCluster health
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
@@ -60,6 +62,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app garage-webui
+  namespace: &namespace storage
 spec:
   dependsOn:
     - name: garage-cluster
@@ -76,5 +79,5 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: storage
+  targetNamespace: *namespace
   wait: false # no flux ks dependents

@@ -4,10 +4,8 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app minecraft
+  namespace: &namespace games
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   components:
     - ../../../../components/kopiur
   interval: 1h
@@ -25,21 +23,17 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: games
-  timeout: 5m
-  wait: false
+  targetNamespace: *namespace
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app minecraft-test
+  namespace: &namespace games
 spec:
   dependsOn:
     - name: minecraft
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   components:
     - ../../../../components/kopiur
   interval: 1h
@@ -57,6 +51,4 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: games
-  timeout: 5m
-  wait: false
+  targetNamespace: *namespace

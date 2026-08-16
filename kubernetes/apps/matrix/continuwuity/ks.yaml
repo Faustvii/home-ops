@@ -6,9 +6,6 @@ metadata:
   name: &app continuwuity
   namespace: &namespace matrix
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   components:
     - ../../../../components/kopiur
   #   - ../../../components/sops
@@ -35,4 +32,3 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m

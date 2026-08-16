@@ -6,10 +6,6 @@ metadata:
   name: &app cnpg
   namespace: &namespace database
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  components: []
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
@@ -24,7 +20,6 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -33,10 +28,6 @@ metadata:
   name: &app plugin-barman-cloud
   namespace: &namespace database
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  components: []
   interval: 1h
   retryInterval: 2m
   path: ./kubernetes/apps/database/cnpg/plugin-barman-cloud
@@ -46,7 +37,6 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
   dependsOn:
     - name: cnpg
       namespace: *namespace
@@ -59,10 +49,6 @@ metadata:
   name: &app cluster
   namespace: &namespace database
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  components: []
   interval: 1h
   retryInterval: 2m
   path: ./kubernetes/apps/database/cnpg/cluster
@@ -72,7 +58,6 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
   dependsOn:
     - name: cnpg
       namespace: *namespace

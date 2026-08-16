@@ -3,7 +3,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: blackbox-exporter-nfs
+  name: &app blackbox-exporter-nfs
+  namespace: &namespace observability
 spec:
   interval: 1h
   path: ./kubernetes/apps/observability/blackbox-exporter/nfs
@@ -12,14 +13,14 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: observability
-  wait: false
+  targetNamespace: *namespace
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: blackbox-exporter-vpn
+  name: &app blackbox-exporter-vpn
+  namespace: &namespace observability
 spec:
   dependsOn:
     - name: multus-networks
@@ -31,5 +32,4 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: observability
-  wait: false
+  targetNamespace: *namespace

@@ -3,7 +3,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: volsync
+  name: &app volsync
+  namespace: &namespace storage
 spec:
   dependsOn:
     - name: snapshot-controller
@@ -17,14 +18,15 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: storage
+  targetNamespace: *namespace
   wait: true
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: volsync-maintenance
+  name: &app volsync-maintenance
+  namespace: &namespace storage
 spec:
   dependsOn:
     - name: volsync
@@ -35,5 +37,4 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: storage
-  wait: false
+  targetNamespace: *namespace

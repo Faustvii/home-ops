@@ -6,10 +6,6 @@ metadata:
   name: &app reflector
   namespace: &namespace kube-system
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  components: []
   interval: 1h
   path: ./kubernetes/apps/kube-system/reflector/app
   postBuild:
@@ -23,5 +19,3 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
-  wait: false

@@ -3,7 +3,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: miroir
+  name: &app miroir
+  namespace: &namespace storage
 spec:
   interval: 1h
   path: ./kubernetes/apps/storage/miroir/app
@@ -13,14 +14,14 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: storage
-  wait: false
+  targetNamespace: *namespace
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: miroir-config
+  name: &app miroir-config
+  namespace: &namespace storage
 spec:
   dependsOn:
     - name: miroir
@@ -31,5 +32,5 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: storage
+  targetNamespace: *namespace
   wait: true

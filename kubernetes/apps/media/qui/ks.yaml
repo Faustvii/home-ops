@@ -3,7 +3,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: qui
+  name: &app qui
+  namespace: &namespace media
 spec:
   components:
     - ../../../../components/kopiur
@@ -14,7 +15,7 @@ spec:
   path: ./kubernetes/apps/media/qui/app
   postBuild:
     substitute:
-      APP: qui
+      APP: *app
       VOLSYNC_CAPACITY: 2Gi
     substituteFrom:
       - name: cluster-secrets
@@ -24,5 +25,4 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: media
-  wait: false
+  targetNamespace: *namespace

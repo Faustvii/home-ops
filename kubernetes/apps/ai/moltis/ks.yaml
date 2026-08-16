@@ -6,9 +6,6 @@ metadata:
   name: &app moltis
   namespace: &namespace ai
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   components:
     - ../../../../components/kopiur
   interval: 1h
@@ -26,4 +23,3 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m

@@ -3,7 +3,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: litellm-operator
+  name: &app litellm-operator
+  namespace: &namespace ai
 spec:
   interval: 1h
   path: "./kubernetes/apps/ai/litellm-operator/app"
@@ -12,5 +13,5 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: ai
+  targetNamespace: *namespace
   wait: true
