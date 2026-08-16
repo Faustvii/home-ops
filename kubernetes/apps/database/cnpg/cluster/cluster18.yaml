@@ -15,42 +15,42 @@ spec:
     size: 20Gi
     resizeInUseVolumes: false
   managed:
-    roles:
-      - name: infisical
-        login: true
-        ensure: present
-        superuser: false
-        disablePassword: false
-        passwordSecret:
-          name: infisical-postgres
-      - name: bookarr
-        login: true
-        ensure: present
-        superuser: false
-        disablePassword: false
-        passwordSecret:
-          name: bookarr-postgres
-      - name: pocket-id
-        login: true
-        ensure: present
-        superuser: false
-        disablePassword: false
-        passwordSecret:
-          name: pocket-id-postgres
-      - name: booklore
-        login: true
-        ensure: present
-        superuser: false
-        disablePassword: false
-        passwordSecret:
-          name: booklore-postgres
-      - name: litellm
-        login: true
-        ensure: present
-        superuser: false
-        disablePassword: false
-        passwordSecret:
-          name: litellm-postgres
+    # roles:
+    #   - name: infisical
+    #     login: true
+    #     ensure: present
+    #     superuser: false
+    #     disablePassword: false
+    #     passwordSecret:
+    #       name: infisical-postgres
+    #   - name: bookarr
+    #     login: true
+    #     ensure: present
+    #     superuser: false
+    #     disablePassword: false
+    #     passwordSecret:
+    #       name: bookarr-postgres
+    #   - name: pocket-id
+    #     login: true
+    #     ensure: present
+    #     superuser: false
+    #     disablePassword: false
+    #     passwordSecret:
+    #       name: pocket-id-postgres
+    #   - name: booklore
+    #     login: true
+    #     ensure: present
+    #     superuser: false
+    #     disablePassword: false
+    #     passwordSecret:
+    #       name: booklore-postgres
+    #   - name: litellm
+    #     login: true
+    #     ensure: present
+    #     superuser: false
+    #     disablePassword: false
+    #     passwordSecret:
+    #       name: litellm-postgres
 
     services:
       additional:
