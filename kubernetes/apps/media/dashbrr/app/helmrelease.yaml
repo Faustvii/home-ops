@@ -105,5 +105,3 @@ spec:
           - path: /tmp/data
       tmp:
         type: emptyDir
-        globalMounts:
-          - path: /tmp
