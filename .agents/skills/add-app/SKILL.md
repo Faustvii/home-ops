@@ -48,7 +48,8 @@ kubernetes/apps/<namespace>/<app>/
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: <app>
+  name: &app <app>
+  namespace: &namespace <namespace>
 spec:
   interval: 1h
   path: ./kubernetes/apps/<namespace>/<app>/app
@@ -61,8 +62,10 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: <namespace>
+  targetNamespace: *namespace
 ```
+
+**Anchor convention:** declare `&app` / `&namespace` anchors on `metadata.name` / `metadata.namespace` and reference them everywhere the same value repeats — `targetNamespace: *namespace` (always), and `APP: *app` / `NAMESPACE: *namespace` under `postBuild.substitute` whenever substitutions are present. Mirror `kubernetes/apps/media/prowlarr/ks.yaml` (or `dashbrr`). Never repeat the literal app/namespace string once the anchor is declared.
 
 **`wait`:** omit it for a normal leaf app — it defaults to `false`, and explicit `wait: false` is redundant boilerplate we no longer keep. Only add `wait: true` when *another* Kustomization will `dependsOn` this one AND this Kustomization defines no `healthChecks`/`healthCheckExprs` — that is what gives the dependent a real readiness gate. If this Kustomization does define `healthChecks`, leave `wait` unset (setting `wait: true` would make Flux ignore those checks). Depending on another app (e.g. `kopiur` for persistence) does not by itself call for `wait`.
 
@@ -78,7 +81,8 @@ Do not add `commonMetadata` or `timeout` — both were dropped as boilerplate; t
       namespace: storage
   postBuild:
     substitute:
-      APP: <app>
+      APP: *app
+      NAMESPACE: *namespace
       # Optional overrides, only when defaults don't fit:
       # KOPIUR_CLAIM: <app>-data              # PVC name (default: <app>)
       # KOPIUR_CAPACITY: 15Gi                 # default: 5Gi
@@ -91,7 +95,7 @@ Do not add `commonMetadata` or `timeout` — both were dropped as boilerplate; t
 
 `volsync` is legacy/deprecated for migration purposes. Do not use it for new apps unless explicitly requested.
 
-Add user-specified dependencies to `dependsOn`. Include `postBuild.substitute.APP` whenever any component is used; omit `components`/`postBuild` entirely otherwise.
+Add user-specified dependencies to `dependsOn`. Whenever any component is used, include `postBuild.substitute` with `APP: *app` and `NAMESPACE: *namespace` (referencing the metadata anchors); omit `components`/`postBuild.substitute` entirely otherwise (the anchors on `metadata` and `targetNamespace: *namespace` still stay).
 
 ### app/kustomization.yaml
 
@@ -308,4 +312,5 @@ Show the user the created files and get confirmation before committing. Commit s
 - **`readOnlyRootFilesystem: true` without a tmpfs** — apps that write to `/tmp` will crash; mount an emptyDir.
 - **Skipping the sorting conventions** — HelmRelease values follow `.agents/instructions/sorting.instructions.md`.
 - **Adding a CiliumNetworkPolicy by default** — only some apps lock down ingress; copy `searxng`'s if the user asks for one.
+- **Repeating the literal app/namespace in `ks.yaml` instead of anchors** — declare `&app`/`&namespace` on `metadata` and reference `*app`/`*namespace` in `targetNamespace` and `postBuild.substitute` (see prowlarr/dashbrr).
 - **Adding `wait`, `commonMetadata`, or `timeout` to `ks.yaml`** — all three are boilerplate now. Leave `wait` unset unless another Kustomization depends on this one and it has no `healthChecks` (then, and only then, `wait: true`).
