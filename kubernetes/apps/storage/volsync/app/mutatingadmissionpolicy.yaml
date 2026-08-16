@@ -13,6 +13,14 @@ kind: MutatingAdmissionPolicy
 metadata:
   name: volsync-mover-jitter
 spec:
+  failurePolicy: Fail
+  matchConditions:
+    - expression: >-
+        object.metadata.name.startsWith("volsync-src-")
+      name: has-volsync-job-name-prefix
+    - expression: >-
+        object.metadata.?labels["app.kubernetes.io/created-by"].orValue("") == "volsync"
+      name: has-volsync-created-by-labels
   matchConstraints:
     resourceRules:
       - apiGroups:
@@ -24,18 +32,8 @@ spec:
           - UPDATE
         resources:
           - jobs
-  matchConditions:
-    - name: has-volsync-job-name-prefix
-      expression: >-
-        object.metadata.name.startsWith("volsync-src-")
-    - name: has-volsync-created-by-labels
-      expression: >-
-        object.metadata.?labels["app.kubernetes.io/created-by"].orValue("") == "volsync"
-  failurePolicy: Fail
-  reinvocationPolicy: IfNeeded
   mutations:
-    - patchType: JSONPatch
-      jsonPatch:
+    - jsonPatch:
         expression: >-
           [
             JSONPatch{
@@ -52,3 +50,5 @@ spec:
               }
             }
           ]
+      patchType: JSONPatch
+  reinvocationPolicy: IfNeeded

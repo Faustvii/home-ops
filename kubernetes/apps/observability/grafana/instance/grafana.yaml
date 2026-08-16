@@ -9,8 +9,8 @@ metadata:
 spec:
   config:
     analytics:
-      check_for_updates: "false"
       check_for_plugin_updates: "false"
+      check_for_updates: "false"
       feedback_links_enabled: "false"
       reporting_enabled: "false"
     auth:
@@ -40,18 +40,19 @@ spec:
             - name: grafana
               securityContext:
                 allowPrivilegeEscalation: false
-                readOnlyRootFilesystem: true
                 capabilities: {drop: ["ALL"]}
+                readOnlyRootFilesystem: true
           securityContext:
-            runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
           volumes:
             - name: grafana-data
               persistentVolumeClaim:
                 claimName: grafana-pvc
+  disableDefaultSecurityContext: All
   persistentVolumeClaim:
     spec:
       accessModes:
@@ -59,4 +60,3 @@ spec:
       resources:
         requests:
           storage: 10Gi
-  disableDefaultSecurityContext: All

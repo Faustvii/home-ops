@@ -19,25 +19,25 @@ kind: HelmRelease
 metadata:
   name: &app renovate-operator
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: *app
+  interval: 1h
   values:
     fullnameOverride: *app
+    logging:
+      level: debug
     # rbac:
     #   ownNamespaceOnly: true
     webhook:
       enabled: true
       route:
-        enabled: true
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 404"]
+        enabled: true
         hostnames: ["renovate-webhook.${SECRET_DOMAIN}"]
         parentRefs:
           - name: envoy-external
             namespace: network
             sectionName: https
-    logging:
-      level: debug

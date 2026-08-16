@@ -10,6 +10,13 @@ spec:
     name: qui
   interval: 1h
   values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
     controllers:
       qui:
         annotations:
@@ -21,11 +28,11 @@ spec:
               tag: v1.26.0@sha256:9969375e7375194b89eebc490bd16586b6ff4ff403042f6c4f0585eb0e775eaf
             env:
               QUI__HOST: 0.0.0.0
-              QUI__PORT: &port 80
               QUI__LOG_LEVEL: INFO
               QUI__METRICS_ENABLED: "true"
               QUI__METRICS_HOST: "0.0.0.0"
               QUI__METRICS_PORT: &metrics_port 9000
+              QUI__PORT: &port 80
               QUI__TRACKER_ICONS_FETCH_ENABLED: false
               TZ: America/New_York
             probes:
@@ -33,13 +40,13 @@ spec:
                 enabled: true
                 custom: true
                 spec:
+                  failureThreshold: 3
                   httpGet:
                     path: /health
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
-                  failureThreshold: 3
               readiness: *probes
             resources:
               requests:
@@ -48,15 +55,19 @@ spec:
                 memory: 512Mi
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
               capabilities: {drop: ["ALL"]}
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
+              readOnlyRootFilesystem: true
+    persistence:
+      config:
+        # type: emptyDir
+        existingClaim: "{{ .Release.Name }}"
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
     service:
       app:
         ports:
@@ -68,17 +79,6 @@ spec:
       app:
         endpoints:
           - port: metrics
-    route:
-      app:
-        hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
-        parentRefs:
-          - name: envoy-internal
-            namespace: network
-    persistence:
-      config:
-        # type: emptyDir
-        existingClaim: "{{ .Release.Name }}"
       # media:
       #   type: nfs
       #   server: isos.${SECRET_DOMAIN}

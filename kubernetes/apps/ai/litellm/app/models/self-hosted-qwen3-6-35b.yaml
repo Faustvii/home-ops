@@ -5,17 +5,17 @@ kind: LiteLLMModel
 metadata:
   name: self-hosted-qwen3-6-35b
 spec:
-  modelName: self-hosted
-  params:
-    model: openai/qwen3.6-35b
-    apiBase: http://qwen3-6-35b-strix.ai.svc.cluster.local:8080/v1
-    apiKey: selfhosted
-    dropParams: true
-    additional:
-      max_parallel_requests: 2
-      order: 1
   info:
     maxInputTokens: 262144
     maxOutputTokens: 16384
     supportsFunctionCalling: true
     supportsVision: true
+  modelName: self-hosted
+  params:
+    additional:
+      max_parallel_requests: 2
+      order: 1
+    apiBase: http://qwen3-6-35b-strix.ai.svc.cluster.local:8080/v1
+    apiKey: selfhosted
+    dropParams: true
+    model: openai/qwen3.6-35b

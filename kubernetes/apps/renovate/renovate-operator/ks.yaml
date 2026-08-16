@@ -13,7 +13,6 @@ spec:
       namespace: *namespace
   interval: 1h
   path: ./kubernetes/apps/renovate/renovate-operator/app
-  prune: true
   postBuild:
     substitute:
       APP: *app
@@ -22,6 +21,7 @@ spec:
     substituteFrom:
       - kind: Secret
         name: cluster-secrets
+  prune: true
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
@@ -41,11 +41,11 @@ spec:
       namespace: *namespace
   interval: 1h
   path: ./kubernetes/apps/renovate/renovate-operator/config
-  prune: true
   postBuild:
     substituteFrom:
       - kind: Secret
         name: cluster-secrets
+  prune: true
   retryInterval: 2m
   sourceRef:
     kind: GitRepository

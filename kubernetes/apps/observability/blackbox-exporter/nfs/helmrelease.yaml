@@ -10,10 +10,40 @@ spec:
     name: blackbox-exporter-nfs
   interval: 1h
   values:
+    config:
+      modules:
+        http_2xx:
+          http:
+            follow_redirects: true
+            preferred_ip_protocol: ip4
+            valid_http_versions:
+              - HTTP/1.1
+              - HTTP/2.0
+          prober: http
+          timeout: 5s
+        icmp:
+          icmp:
+            preferred_ip_protocol: ip4
+          prober: icmp
+          timeout: 5s
+        tcp_connect:
+          prober: tcp
+          tcp:
+            preferred_ip_protocol: ip4
+          timeout: 5s
     fullnameOverride: blackbox-exporter-nfs
-    securityContext:
-      readOnlyRootFilesystem: true
-      allowPrivilegeEscalation: false
+    prometheusRule:
+      enabled: true
+      rules:
+        - alert: NfsProbeFailed
+          annotations:
+            summary: |-
+              The probe targeting {{ $labels.instance }} is currently having connectivity issues
+          expr: |-
+            probe_success{service="blackbox-exporter-nfs"} == 0
+          for: 15m
+          labels:
+            severity: critical
     resources:
       limits:
         cpu: 100m
@@ -21,40 +51,10 @@ spec:
       requests:
         cpu: 50m
         memory: 64Mi
-    config:
-      modules:
-        http_2xx:
-          prober: http
-          timeout: 5s
-          http:
-            valid_http_versions:
-              - HTTP/1.1
-              - HTTP/2.0
-            follow_redirects: true
-            preferred_ip_protocol: ip4
-        icmp:
-          prober: icmp
-          timeout: 5s
-          icmp:
-            preferred_ip_protocol: ip4
-        tcp_connect:
-          prober: tcp
-          timeout: 5s
-          tcp:
-            preferred_ip_protocol: ip4
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
     serviceMonitor:
       enabled: true
       selfMonitor:
         enabled: true
-    prometheusRule:
-      enabled: true
-      rules:
-        - alert: NfsProbeFailed
-          expr: |-
-            probe_success{service="blackbox-exporter-nfs"} == 0
-          for: 15m
-          labels:
-            severity: critical
-          annotations:
-            summary: |-
-              The probe targeting {{ $labels.instance }} is currently having connectivity issues

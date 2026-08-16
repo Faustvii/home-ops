@@ -5,8 +5,8 @@ kind: VLSingle
 metadata:
   name: vl
 spec:
-  retentionPeriod: 14d
   retentionMaxDiskSpaceUsageBytes: 20GB
+  retentionPeriod: 14d
   storage:
     accessModes:
       - ReadWriteOnce

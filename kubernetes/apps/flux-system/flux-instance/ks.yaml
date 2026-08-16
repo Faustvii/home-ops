@@ -11,8 +11,8 @@ spec:
   path: ./kubernetes/apps/flux-system/flux-instance/app
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
   prune: true
   sourceRef:
     kind: GitRepository

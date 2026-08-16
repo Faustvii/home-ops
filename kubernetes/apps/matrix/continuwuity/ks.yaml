@@ -19,12 +19,12 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      SUBDOMAIN: matrix
       KOPIUR_CAPACITY: 8Gi
+      SUBDOMAIN: matrix
     #      VOLSYNC_LOCAL_BUCKET: *app
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
   prune: true
   retryInterval: 2m
   sourceRef:

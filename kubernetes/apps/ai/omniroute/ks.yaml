@@ -6,20 +6,20 @@ metadata:
   name: &app omniroute
   namespace: &namespace ai
 spec:
-  dependsOn:
-    - name: dragonfly
-      namespace: database
   components:
     - ../../../../components/kopiur
     - ../../../../components/database/dragonfly
+  dependsOn:
+    - name: dragonfly
+      namespace: database
   interval: 1h
   path: ./kubernetes/apps/ai/omniroute/app
   postBuild:
     substitute:
       APP: *app
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
   prune: true
   retryInterval: 2m
   sourceRef:

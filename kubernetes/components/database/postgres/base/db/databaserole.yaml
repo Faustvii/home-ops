@@ -8,10 +8,10 @@ metadata:
 spec:
   cluster:
     name: postgres
-  name: ${OWNER}
   comment: "${APP} user"
-  login: true
-  superuser: false
   databaseRoleReclaimPolicy: delete
+  login: true
+  name: ${OWNER}
   passwordSecret:
     name: ${APP}-postgres
+  superuser: false

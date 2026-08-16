@@ -6,9 +6,9 @@ metadata:
   name: grafana
 spec:
   endpoints:
-    - port: grafana
+    - honorLabels: true
       path: /metrics
-      honorLabels: true
+      port: grafana
   jobLabel: grafana
   namespaceSelector:
     matchNames:

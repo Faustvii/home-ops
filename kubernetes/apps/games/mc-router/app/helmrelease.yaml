@@ -5,10 +5,10 @@ kind: HelmRelease
 metadata:
   name: mc-router
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: mc-router
+  interval: 1h
   dependsOn: []
   install:
     remediation:
@@ -18,73 +18,46 @@ spec:
     remediation:
       retries: 3
   values:
-    serviceAccount:
-      mc-router:
-        enabled: true
-    rbac:
-      roles:
-        mc-router:
-          type: ClusterRole
-          rules:
-            - apiGroups: [""]
-              resources: ["services"]
-              verbs: ["watch", "list"]
-            - apiGroups: ["apps"]
-              resources: ["statefulsets", "statefulsets/scale"]
-              verbs: ["watch", "list", "get", "update", "patch"]
-      bindings:
-        mc-router:
-          type: ClusterRoleBinding
-          roleRef:
-            apiGroup: rbac.authorization.k8s.io
-            kind: ClusterRole
-            identifier: mc-router
-          subjects:
-            - identifier: mc-router
     defaultPodOptions:
       automountServiceAccountToken: true
       securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
         runAsNonRoot: true
+        runAsUser: 1000
     controllers:
       router:
-        strategy: RollingUpdate
         replicas: 2
         serviceAccount:
           identifier: mc-router
+        strategy: RollingUpdate
         containers:
           mc-router:
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
             image:
+              pullPolicy: IfNotPresent
               repository: ghcr.io/itzg/mc-router
               tag: 1.46.2@sha256:802a6adef1a298fd0557b6c2223b94a7bc06cd16a007315d5ba2f498e72ce5de
-              pullPolicy: IfNotPresent
             env:
-              IN_KUBE_CLUSTER: "true"
               API_BINDING: ":8081"
-              PORT: "25565"
               CONNECTION_RATE_LIMIT: "10"
               DEFAULT: "192.168.10.31:25565"
+              IN_KUBE_CLUSTER: "true"
+              PORT: "25565"
               WEBHOOK_REQUIRE_USER: "true"
               WEBHOOK_URL: "http://localhost:8080/event"
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+              readOnlyRootFilesystem: true
               # AUTO_SCALE_UP: "true"
               # AUTO_SCALE_DOWN: "true"
               # AUTO_SCALE_DOWN_AFTER: "2h"
               # AUTO_SCALE_ASLEEP_MOTD: "Server is sleeping. Connecting will wake it -- please give it a moment."
           svc-router:
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
             image:
-              repository: ghcr.io/jlschuler99/svc-router
               pullPolicy: IfNotPresent
+              repository: ghcr.io/jlschuler99/svc-router
               tag: 0.0.2
             resources:
               requests:
@@ -93,12 +66,36 @@ spec:
               limits:
                 cpu: 1
                 memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+              readOnlyRootFilesystem: true
+    rbac:
+      bindings:
+        mc-router:
+          roleRef:
+            apiGroup: rbac.authorization.k8s.io
+            identifier: mc-router
+            kind: ClusterRole
+          subjects:
+            - identifier: mc-router
+          type: ClusterRoleBinding
+      roles:
+        mc-router:
+          rules:
+            - apiGroups: [""]
+              resources: ["services"]
+              verbs: ["watch", "list"]
+            - apiGroups: ["apps"]
+              resources: ["statefulsets", "statefulsets/scale"]
+              verbs: ["watch", "list", "get", "update", "patch"]
+          type: ClusterRole
     service:
       router:
         type: LoadBalancer
         annotations:
-          lbipam.cilium.io/ips: 192.168.10.30
           external-dns.alpha.kubernetes.io/hostname: mc.${SECRET_DOMAIN}, minecraft.${SECRET_DOMAIN}
+          lbipam.cilium.io/ips: 192.168.10.30
         ports:
           minecraft:
             port: 25565
@@ -106,3 +103,6 @@ spec:
           voice:
             port: 24454
             protocol: UDP
+    serviceAccount:
+      mc-router:
+        enabled: true

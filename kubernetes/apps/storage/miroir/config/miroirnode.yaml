@@ -6,12 +6,12 @@ metadata:
   name: talos-01
 spec:
   pools:
-    - name: replicated
-      lvmthin:
+    - lvmthin:
         device: /dev/disk/by-partlabel/r-miroir
-    - name: local
-      lvmthin:
+      name: replicated
+    - lvmthin:
         device: /dev/disk/by-partlabel/r-miroir-local
+      name: local
 
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/miroir.home-operations.com/miroirnode_v1alpha1.json
@@ -21,12 +21,12 @@ metadata:
   name: talos-02
 spec:
   pools:
-    - name: replicated
-      lvmthin:
+    - lvmthin:
         device: /dev/disk/by-partlabel/r-miroir
-    - name: local
-      lvmthin:
+      name: replicated
+    - lvmthin:
         device: /dev/disk/by-partlabel/r-miroir-local
+      name: local
 
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/miroir.home-operations.com/miroirnode_v1alpha1.json
@@ -36,9 +36,9 @@ metadata:
   name: talos-03
 spec:
   pools:
-    - name: local
-      lvmthin:
+    - lvmthin:
         device: /dev/disk/by-partlabel/r-miroir
+      name: local
 
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/miroir.home-operations.com/miroirnode_v1alpha1.json
@@ -48,6 +48,6 @@ metadata:
   name: talos-04
 spec:
   pools:
-    - name: local
-      lvmthin:
+    - lvmthin:
         device: /dev/disk/by-partlabel/r-miroir
+      name: local

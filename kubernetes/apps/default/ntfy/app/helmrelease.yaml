@@ -5,13 +5,25 @@ kind: HelmRelease
 metadata:
   name: &app ntfy
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: ntfy
+  interval: 1h
   values:
+
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 568
+        runAsGroup: 568
+        runAsNonRoot: true
+        runAsUser: 568
+        seccompProfile:
+          type: RuntimeDefault
     controllers:
       ntfy:
+        type: statefulset
+        statefulset:
+          podManagementPolicy: Parallel
         containers:
           app:
             image:
@@ -19,20 +31,20 @@ spec:
               tag: v2.27.0@sha256:f2419f405127afa868f10985c1a41449e673477cee1eb19994339a5ae8b592e7
             args: ["serve"]
             env:
-              TZ: ${TZ}
               NTFY_LOG_LEVEL: INFO
+              TZ: ${TZ}
             probes:
               liveness: &probes
                 enabled: true
                 custom: true
                 spec:
+                  failureThreshold: 3
                   httpGet:
                     path: /v1/health
                     port: &port 8080
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
-                  failureThreshold: 3
               readiness: *probes
             resources:
               requests:
@@ -46,29 +58,21 @@ spec:
                 drop:
                   - ALL
               readOnlyRootFilesystem: true
-        statefulset:
-          podManagementPolicy: Parallel
-        type: statefulset
 
-    defaultPodOptions:
-      securityContext:
-        fsGroup: 568
-        runAsGroup: 568
-        runAsNonRoot: true
-        runAsUser: 568
-        seccompProfile:
-          type: RuntimeDefault
+    persistence:
+      config:
+        type: configMap
+        enabled: true
+        name: ntfy-configmap # overriden by kustomizeconfig
+        globalMounts:
+          - path: /etc/ntfy/server.yml
+            subPath: server.yaml
 
-    service:
-      app:
-        forceRename: *app
-        controller: *app
-        ports:
-          http:
-            port: 80
-            targetPort: *port
-          metrics:
-            port: 9090
+      data:
+        existingClaim: *app
+
+      cache:
+        type: emptyDir
 
     route:
       app:
@@ -81,27 +85,23 @@ spec:
               - identifier: app
                 port: 80
 
+    service:
+      app:
+        controller: *app
+        forceRename: *app
+        ports:
+          http:
+            port: 80
+            targetPort: *port
+          metrics:
+            port: 9090
+
     serviceMonitor:
       app:
-        serviceName: *app
         endpoints:
-          - port: metrics
-            scheme: http
+          - interval: 1m
             path: /metrics
-            interval: 1m
+            port: metrics
+            scheme: http
             scrapeTimeout: 10s
-
-    persistence:
-      config:
-        enabled: true
-        name: ntfy-configmap # overriden by kustomizeconfig
-        type: configMap
-        globalMounts:
-          - path: /etc/ntfy/server.yml
-            subPath: server.yaml
-
-      data:
-        existingClaim: *app
-
-      cache:
-        type: emptyDir
+        serviceName: *app

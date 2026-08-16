@@ -10,14 +10,19 @@ spec:
     name: kopiur
   interval: 1h
   values:
+    extraVolumeMounts:
+      - mountPath: /repo
+        name: repo
     extraVolumes:
       - name: repo
         nfs:
-          server: truenas.faust
           path: /mnt/standard/volsync/kopiur
-    extraVolumeMounts:
-      - name: repo
-        mountPath: /repo
+          server: truenas.faust
+
+    features:
+      credentialProjection:
+        enabled: true
+    installScope: cluster
     monitoring:
       dashboards:
         enabled: true
@@ -29,19 +34,14 @@ spec:
         enabled: true
       serviceMonitor:
         enabled: true
-    installScope: cluster
     podSecurityContext:
-      runAsNonRoot: true
       fsGroup: 1000
-      runAsGroup: 1000
-      runAsUser: 1000
       fsGroupChangePolicy: OnRootMismatch
-
-    features:
-      credentialProjection:
-        enabled: true
+      runAsGroup: 1000
+      runAsNonRoot: true
+      runAsUser: 1000
     webhook:
-      tls:
-        mode: self
       serviceMonitor:
         enabled: true
+      tls:
+        mode: self

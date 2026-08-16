@@ -5,6 +5,10 @@ kind: Probe
 metadata:
   name: nfs-tcp
 spec:
+  metricRelabelings:
+    - action: replace
+      replacement: blackbox-exporter-nfs
+      targetLabel: service
   module: tcp_connect
   prober:
     url: blackbox-exporter-nfs.observability.svc.cluster.local:9115
@@ -12,7 +16,3 @@ spec:
     staticConfig:
       static:
         - truenas.faust:2049
-  metricRelabelings:
-    - targetLabel: service
-      replacement: blackbox-exporter-nfs
-      action: replace

@@ -10,43 +10,43 @@ spec:
     name: llmkube
   interval: 30m
   values:
-    namespace: ai
-    crds:
-      install: true
-      keep: true
     controllerManager:
-      replicaCount: 1
       leaderElection:
         enabled: false
-      resources:
-        requests:
-          cpu: 10m
-          memory: 78Mi
-        limits:
-          memory: 90Mi
       podSecurityContext:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
+      replicaCount: 1
+      resources:
+        limits:
+          memory: 90Mi
+        requests:
+          cpu: 10m
+          memory: 78Mi
       securityContext:
-        readOnlyRootFilesystem: true
         allowPrivilegeEscalation: false
         capabilities:
           drop:
             - ALL
+        readOnlyRootFilesystem: true
+    crds:
+      install: true
+      keep: true
     metrics:
       enabled: true
+    modelCache:
+      accessMode: ReadWriteOnce
+      enabled: true
+      size: 100Gi
+      storageClass: miroir-replicated
+    namespace: ai
     prometheus:
-      serviceMonitor:
-        enabled: true
-        interval: 30s
       inferencePodMonitor:
         enabled: true
         interval: 30s
       prometheusRule:
         enabled: false
-    modelCache:
-      enabled: true
-      size: 100Gi
-      storageClass: miroir-replicated
-      accessMode: ReadWriteOnce
+      serviceMonitor:
+        enabled: true
+        interval: 30s

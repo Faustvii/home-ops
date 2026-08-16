@@ -12,6 +12,11 @@ spec:
   dependsOn:
     - name: cnpg
       namespace: database
+  healthChecks:
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Database
+      name: postgres-${APP}
+      namespace: *namespace
   interval: 1h
   path: ./kubernetes/components/database/postgres/base/db
   postBuild:
@@ -19,11 +24,6 @@ spec:
       APP: *app
       OWNER: ${DATABASE_OWNER:=${APP}}
       emptyArray: "[]"
-  healthChecks:
-    - name: postgres-${APP}
-      namespace: *namespace
-      kind: Database
-      apiVersion: postgresql.cnpg.io/v1
   prune: true
   retryInterval: 2m
   sourceRef:

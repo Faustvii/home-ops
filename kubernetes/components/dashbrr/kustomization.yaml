@@ -3,8 +3,8 @@
 apiVersion: kustomize.config.k8s.io/v1alpha1
 kind: Component
 patches:
-  - target:
-      kind: HelmRelease
+  - path: ./base/patch.yaml
+    target:
       group: helm.toolkit.fluxcd.io
+      kind: HelmRelease
       version: v2
-    path: ./base/patch.yaml

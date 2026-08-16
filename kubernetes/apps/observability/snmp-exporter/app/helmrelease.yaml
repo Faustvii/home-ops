@@ -14,15 +14,15 @@ spec:
     serviceMonitor:
       enabled: true
       params:
-        - name: apcups
+        - auth:
+            - public_v2
           module:
             - apcups
+          name: apcups
           target: 192.168.1.106
-          auth:
-            - public_v2
       path: /snmp
-      scrapeTimeout: 10s
       relabelings:
         - sourceLabels:
             - __param_target
           targetLabel: instance
+      scrapeTimeout: 10s

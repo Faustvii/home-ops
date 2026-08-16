@@ -5,15 +5,15 @@ metadata:
   name: letsencrypt-production
 spec:
   acme:
-    server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-production
     profile: shortlived
+    server: https://acme-v02.api.letsencrypt.org/directory
     solvers:
       - dns01:
           cloudflare:
             apiTokenSecretRef:
-              name: cert-manager-secret
               key: api-token
+              name: cert-manager-secret
         selector:
           dnsZones: ["${SECRET_DOMAIN}"]

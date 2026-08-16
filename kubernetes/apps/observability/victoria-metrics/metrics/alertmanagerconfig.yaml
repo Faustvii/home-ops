@@ -5,49 +5,49 @@ kind: AlertmanagerConfig
 metadata:
   name: alertmanager
 spec:
-  route:
-    receiver: blackhole
-    repeatInterval: 12h
-    groupBy:
-      - alertname
-      - cluster
-      - job
-    routes:
-      - receiver: blackhole
-        matchers:
-          - name: alertname
-            value: InfoInhibitor
-            matchType: =
-      - receiver: discord-general
-        matchers:
-          - name: severity
-            value: error
-            matchType: =
 
   inhibitRules:
     - equal:
         - alertname
         - namespace
       sourceMatch:
-        - name: severity
+        - matchType: =
+          name: severity
           value: critical
-          matchType: =
       targetMatch:
-        - name: severity
+        - matchType: =
+          name: severity
           value: warning
-          matchType: =
 
   receivers:
     - name: blackhole
-    - name: discord-general
-      discordConfigs:
-        - username: Talos
-          apiURL:
-            name: alertmanager-secret
+    - discordConfigs:
+        - apiURL:
             key: discord_general_webhook_url
-    - name: discord-flux
-      discordConfigs:
-        - username: Flux
-          apiURL:
             name: alertmanager-secret
+          username: Talos
+      name: discord-general
+    - discordConfigs:
+        - apiURL:
             key: discord_flux_webhook_url
+            name: alertmanager-secret
+          username: Flux
+      name: discord-flux
+  route:
+    groupBy:
+      - alertname
+      - cluster
+      - job
+    receiver: blackhole
+    repeatInterval: 12h
+    routes:
+      - matchers:
+          - matchType: =
+            name: alertname
+            value: InfoInhibitor
+        receiver: blackhole
+      - matchers:
+          - matchType: =
+            name: severity
+            value: error
+        receiver: discord-general

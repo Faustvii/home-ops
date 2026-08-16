@@ -5,12 +5,12 @@ kind: HelmRelease
 metadata:
   name: &app cnpg
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: *app
+  interval: 1h
   values:
     monitoring:
-      podMonitorEnabled: true
       grafanaDashboard:
         create: false
+      podMonitorEnabled: true

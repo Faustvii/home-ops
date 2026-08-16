@@ -5,18 +5,18 @@ kind: HelmRelease
 metadata:
   name: &app moltis
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: *app
+  interval: 1h
   values:
     defaultPodOptions:
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
     controllers:
       *app :
         type: statefulset
@@ -26,13 +26,6 @@ spec:
             image:
               repository: docker
               tag: 29.7.2-dind@sha256:12e683a161823b2a839aeea999b9d960e6e1f9a97b1679ad6b441982e2d9cf07
-            restartPolicy: Always
-            securityContext:
-              privileged: true
-              runAsNonRoot: false
-              runAsUser: 0
-              runAsGroup: 0
-              allowPrivilegeEscalation: true
             env:
               - name: DOCKER_TLS_CERTDIR
                 value: /certs
@@ -43,27 +36,34 @@ spec:
                 spec: &probeSpec
                   exec:
                     command: ["docker", "info"]
+                  failureThreshold: 60
                   periodSeconds: 2
                   timeoutSeconds: 3
-                  failureThreshold: 60
 
               readiness:
                 enabled: true
                 custom: true
                 spec:
                   <<: *probeSpec
+                  failureThreshold: 3
                   periodSeconds: 5
                   timeoutSeconds: 3
-                  failureThreshold: 3
 
               liveness:
                 enabled: true
                 custom: true
                 spec:
                   <<: *probeSpec
+                  failureThreshold: 3
                   periodSeconds: 20
                   timeoutSeconds: 3
-                  failureThreshold: 3
+            restartPolicy: Always
+            securityContext:
+              allowPrivilegeEscalation: true
+              privileged: true
+              runAsGroup: 0
+              runAsNonRoot: false
+              runAsUser: 0
 
         containers:
           app:
@@ -77,20 +77,20 @@ spec:
               - "13131"
               - --no-tls
             env:
-              TZ: "${TZ}"
+              DOCKER_CERT_PATH: /certs/client
 
-              MOLTIS_NO_TLS: true
+              DOCKER_HOST: tcp://localhost:2376
+              DOCKER_TLS_VERIFY: "1"
               MOLTIS_BEHIND_PROXY: true
 
               MOLTIS_CONFIG_DIR: /config
               MOLTIS_DATA_DIR: /data
 
-              MOLTIS_WEBAUTHN_RP_ID: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+              MOLTIS_NO_TLS: true
               MOLTIS_WEBAUTHN_ORIGIN: "https://{{ .Release.Name }}.${SECRET_DOMAIN}"
 
-              DOCKER_HOST: tcp://localhost:2376
-              DOCKER_CERT_PATH: /certs/client
-              DOCKER_TLS_VERIFY: "1"
+              MOLTIS_WEBAUTHN_RP_ID: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+              TZ: "${TZ}"
             envFrom:
               - secretRef:
                   name: *app
@@ -99,37 +99,17 @@ spec:
                 enabled: true
                 custom: true
                 spec:
+                  failureThreshold: 3
                   httpGet:
                     path: /health
                     port: &port 13131
                   initialDelaySeconds: 10
                   periodSeconds: 30
                   timeoutSeconds: 10
-                  failureThreshold: 3
               readiness: *probe
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-
-    service:
-      app:
-        controller: *app
-        ports:
-          http:
-            port: 80
-            targetPort: *port
-
-    route:
-      main:
-        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
-        parentRefs:
-          - name: envoy-internal
-            namespace: network
-            sectionName: https
-        rules:
-          - backendRefs:
-              - identifier: app
-                port: 80
 
     persistence:
       data:
@@ -149,3 +129,23 @@ spec:
             subPath: home
           - path: /tmp
             subPath: tmp
+
+    route:
+      main:
+        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: 80
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 80
+            targetPort: *port

@@ -8,6 +8,6 @@ spec:
   matchers:
     - name: alertname
       value: KubeHpaMaxedOut
-    - name: horizontalpodautoscaler
+    - matchType: "=~"
+      name: horizontalpodautoscaler
       value: keda-hpa-.*
-      matchType: "=~"

@@ -10,28 +10,28 @@ spec:
     name: home-ops-review-runner
   interval: 1h
   values:
-    githubConfigUrl: https://github.com/Faustvii/home-ops
-    githubConfigSecret: home-ops-review-runner-secret
-    # Serves agent-pr-review
-    minRunners: 1
-    maxRunners: 3
     controllerServiceAccount:
       name: actions-runner-controller
       namespace: actions-runner-system
+    githubConfigSecret: home-ops-review-runner-secret
+    githubConfigUrl: https://github.com/Faustvii/home-ops
+    maxRunners: 3
+    # Serves agent-pr-review
+    minRunners: 1
     template:
       metadata:
         labels:
           runner: *name
       spec:
+        # This runner holds no credentials, so it has no use for an API token either.
+        automountServiceAccountToken: false
         containers:
-          - name: runner
+          - command: ["/home/runner/run.sh"]
             image: ghcr.io/home-operations/actions-runner:2.336.0@sha256:281a9a090522fafbf4967f158b8c97d03552b1978b688893c5f7cb1944bc5fe5
-            command: ["/home/runner/run.sh"]
+            name: runner
             resources:
+              limits:
+                memory: 1Gi
               requests:
                 cpu: 250m
                 memory: 512Mi
-              limits:
-                memory: 1Gi
-        # This runner holds no credentials, so it has no use for an API token either.
-        automountServiceAccountToken: false

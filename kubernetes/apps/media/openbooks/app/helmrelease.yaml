@@ -5,52 +5,19 @@ kind: HelmRelease
 metadata:
   name: &app openbooks
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: openbooks
+  interval: 1h
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
+      strategy: rollback
   values:
-    controllers:
-      openbooks:
-        annotations:
-          reloader.stakater.com/auto: "true"
-        containers:
-          app:
-            image:
-              repository: ghcr.io/evan-buss/openbooks
-              tag: 4.5.0@sha256:3f2e59a75b68950d57cfec5dc2b1b31d6c6b02706097c70b5438499b59fbdea2
-            env:
-              TZ: ${TZ}
-            args:
-              - --persist
-              - --name=k8steken
-            probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /
-                    port: &port 80
-                  initialDelaySeconds: 30
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
-            resources:
-              requests:
-                cpu: 10m
-                memory: 256Mi
-              limits:
-                memory: 1Gi
     defaultPodOptions:
       # annotations:
       #   k8s.v1.cni.cncf.io/networks: |-
@@ -61,17 +28,51 @@ spec:
       #       "mac": "02:14:a6:de:a9:df"
       #     }]
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
-    service:
-      app:
-        controller: *app
-        ports:
-          http:
-            port: *port
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+    controllers:
+      openbooks:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/evan-buss/openbooks
+              tag: 4.5.0@sha256:3f2e59a75b68950d57cfec5dc2b1b31d6c6b02706097c70b5438499b59fbdea2
+            args:
+              - --persist
+              - --name=k8steken
+            env:
+              TZ: ${TZ}
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 3
+                  httpGet:
+                    path: /
+                    port: &port 80
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+    persistence:
+      books:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        enabled: true
+        size: 10Gi
+        storageClass: miroir-replicated
     route:
       app:
         hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
@@ -84,10 +85,9 @@ spec:
                 port: *port
             timeouts:
               request: 0s
-    persistence:
-      books:
-        enabled: true
-        type: persistentVolumeClaim
-        accessMode: ReadWriteOnce
-        size: 10Gi
-        storageClass: miroir-replicated
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port

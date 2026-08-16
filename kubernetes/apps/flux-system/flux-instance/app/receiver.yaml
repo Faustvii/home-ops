@@ -4,10 +4,7 @@ kind: Receiver
 metadata:
   name: github-webhook
 spec:
-  type: github
   events: ["ping", "push"]
-  secretRef:
-    name: github-webhook-token-secret
   resources:
     - apiVersion: source.toolkit.fluxcd.io/v1
       kind: GitRepository
@@ -17,3 +14,6 @@ spec:
       kind: Kustomization
       name: flux-system
       namespace: flux-system
+  secretRef:
+    name: github-webhook-token-secret
+  type: github

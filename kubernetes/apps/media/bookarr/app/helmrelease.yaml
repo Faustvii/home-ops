@@ -10,40 +10,51 @@ spec:
     name: bookarr
   interval: 1h
   values:
+    defaultPodOptions:
+      annotations:
+        instrumentation.opentelemetry.io/inject-sdk: observability/instrumentation
+      imagePullSecrets:
+        - name: docker-registry-ghcr
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
     controllers:
       bookarr:
-        strategy: RollingUpdate
-        rollingUpdate:
-          maxUnavailable: 1
-          maxSurge: 1
         annotations:
           reloader.stakater.com/auto: "true"
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 1
+        strategy: RollingUpdate
         containers:
           app:
             image:
               repository: ghcr.io/faustvii/bookarr
               tag: latest@sha256:2af9015df360bba3ca197e06e6a677340254f1c163e4682fab21260943a1720f
             env:
-              TZ: ${TZ}
-              DATABASE__USEPOSTGRES: "true"
               CACHE__CACHEPATH: /cache/bookarrCache.db
               CONNECTIONSTRINGS__BOOKARRDB:
                 valueFrom:
                   secretKeyRef:
-                    name: bookarr-postgres
                     key: connectionString
+                    name: bookarr-postgres
+              DATABASE__USEPOSTGRES: "true"
+              TZ: ${TZ}
             probes:
               liveness: &probes
                 enabled: true
                 custom: true
                 spec:
+                  failureThreshold: 3
                   httpGet:
                     path: /alive
                     port: &port 8080
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
-                  failureThreshold: 3
               readiness: *probes
             resources:
               requests:
@@ -52,31 +63,8 @@ spec:
                 memory: 2Gi
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-    defaultPodOptions:
-      annotations:
-        instrumentation.opentelemetry.io/inject-sdk: observability/instrumentation
-      imagePullSecrets:
-        - name: docker-registry-ghcr
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-    service:
-      app:
-        ports:
-          http:
-            port: *port
-    route:
-      app:
-        hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
-        parentRefs:
-          - name: envoy-external
-            namespace: network
+              readOnlyRootFilesystem: true
     persistence:
       config:
         type: emptyDir
@@ -99,3 +87,15 @@ spec:
       #   existingClaim: "{{ .Release.Name }}"
       books:
         existingClaim: media-books-nfs-pvc
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+    service:
+      app:
+        ports:
+          http:
+            port: *port

@@ -4,31 +4,20 @@ kind: GarageCluster
 metadata:
   name: garage
 spec:
+
+  admin:
+    adminTokenSecretRef:
+      key: GARAGE_ADMIN_TOKEN
+      name: garage-cluster
+    bindPort: 3903
   image: dxflrs/garage:v2.3.0
 
-  # Zone for this cluster - used for fault tolerance
-  zone: eu-west-1
+  layoutManagement:
+    autoApply: true
+    minNodesHealthy: 2 # Wait for 2/2 nodes before applying layout
 
   monitoring:
     enabled: true
-
-  replication:
-    factor: 2
-    consistencyMode: degraded
-    zoneRedundancyMode: "Maximum"
-
-  storage:
-    replicas: 2
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: DoNotSchedule
-    metadata:
-      storageClassName: miroir-local
-      size: 10Gi
-    data:
-      storageClassName: miroir-local
-      size: 300Gi
 
   network:
     rpcBindPort: 3901
@@ -39,35 +28,46 @@ spec:
     service:
       type: ClusterIP
 
+  # How remote clusters reach this cluster's nodes
+  publicEndpoint:
+    loadBalancer:
+      perNode: true
+    type: LoadBalancer
+
+  # Remote clusters in other K8s clusters
+  # Nodes are auto-discovered via Admin API
+  remoteClusters:
+    - connection:
+        adminApiEndpoint: "http://truenas.faust:30190"
+      name: garage-eu
+      zone: eu-west-2
+
+  replication:
+    consistencyMode: degraded
+    factor: 2
+    zoneRedundancyMode: "Maximum"
+
   s3Api:
-    rootDomain: .s3.garage.${SECRET_DOMAIN:=cluster.local}
     bindPort: 3900
     region: garage
+    rootDomain: .s3.garage.${SECRET_DOMAIN:=cluster.local}
+
+  storage:
+    data:
+      size: 300Gi
+      storageClassName: miroir-local
+    metadata:
+      size: 10Gi
+      storageClassName: miroir-local
+    replicas: 2
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
 
   webApi:
     bindPort: 3902
     rootDomain: .web.garage.${SECRET_DOMAIN:=cluster.local}
 
-  admin:
-    bindPort: 3903
-    adminTokenSecretRef:
-      key: GARAGE_ADMIN_TOKEN
-      name: garage-cluster
-
-  # How remote clusters reach this cluster's nodes
-  publicEndpoint:
-    type: LoadBalancer
-    loadBalancer:
-      perNode: true
-
-  # Remote clusters in other K8s clusters
-  # Nodes are auto-discovered via Admin API
-  remoteClusters:
-    - name: garage-eu
-      zone: eu-west-2
-      connection:
-        adminApiEndpoint: "http://truenas.faust:30190"
-
-  layoutManagement:
-    autoApply: true
-    minNodesHealthy: 2 # Wait for 2/2 nodes before applying layout
+  # Zone for this cluster - used for fault tolerance
+  zone: eu-west-1

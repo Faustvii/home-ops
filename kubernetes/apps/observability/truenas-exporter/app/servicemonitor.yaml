@@ -3,20 +3,20 @@ kind: ServiceMonitor
 metadata:
   name: truenas
 spec:
+  endpoints:
+    - interval: 60s
+      path: /metrics
+      port: smartctl-metrics
+      relabelings:
+        - replacement: truenas
+          targetLabel: instance
+      scrapeTimeout: 30s
+    - interval: 30s
+      path: /metrics
+      port: node-exporter-metrics
+      relabelings:
+        - replacement: node-exporter
+          targetLabel: job
   selector:
     matchLabels:
       app: truenas
-  endpoints:
-    - port: smartctl-metrics
-      interval: 60s
-      scrapeTimeout: 30s
-      relabelings:
-        - targetLabel: instance
-          replacement: truenas
-      path: /metrics
-    - port: node-exporter-metrics
-      interval: 30s
-      path: /metrics
-      relabelings:
-        - targetLabel: job
-          replacement: node-exporter

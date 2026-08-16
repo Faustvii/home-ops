@@ -5,26 +5,26 @@ kind: HelmRelease
 metadata:
   name: &app booklore
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: booklore
+  interval: 1h
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
+      strategy: rollback
   values:
     defaultPodOptions:
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
     controllers:
       booklore:
         annotations:
@@ -35,25 +35,25 @@ spec:
               repository: ghcr.io/faustvii/booklore
               tag: v2.2.3@sha256:c6dabcae4f079dd27ecf648a9be09feda1237d181034c4ea4ba8d4c65754d88f
             env:
-              TZ: ${TZ}
               BOOKLORE_PORT: &port 6060
               DATABASE_URL:
                 valueFrom:
                   secretKeyRef:
-                    name: booklore-postgres
                     key: uri
+                    name: booklore-postgres
+              TZ: ${TZ}
             probes:
               liveness: &probes
                 enabled: true
                 custom: true
                 spec:
+                  failureThreshold: 3
                   httpGet:
                     path: /
                     port: *port
                   initialDelaySeconds: 30
                   periodSeconds: 10
                   timeoutSeconds: 1
-                  failureThreshold: 3
               readiness: *probes
             resources:
               requests:
@@ -61,22 +61,6 @@ spec:
                 memory: 256Mi
               limits:
                 memory: 1Gi
-    service:
-      app:
-        controller: *app
-        ports:
-          http:
-            port: *port
-    route:
-      app:
-        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
-        parentRefs:
-          - name: envoy-internal
-            namespace: network
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
     persistence:
       config:
         enabled: true
@@ -92,3 +76,19 @@ spec:
         type: emptyDir
       books:
         existingClaim: media-books-nfs-pvc
+    route:
+      app:
+        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port

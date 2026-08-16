@@ -6,12 +6,12 @@ metadata:
   name: dragonfly-operator
 spec:
   allowCrossNamespaceImport: true
-  instanceSelector:
-    matchLabels:
-      dashboards: grafana
+  configMapRef:
+    key: grafana-dashboard.json
+    name: dashboard-dragonfly-operator-grafana-dashboard
   datasources:
     - datasourceName: prometheus
       inputName: DS_PROMETHEUS
-  configMapRef:
-    name: dashboard-dragonfly-operator-grafana-dashboard
-    key: grafana-dashboard.json
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana

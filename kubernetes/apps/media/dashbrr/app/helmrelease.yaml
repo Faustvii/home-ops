@@ -10,6 +10,13 @@ spec:
     name: dashbrr
   interval: 30m
   values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
     controllers:
       dashbrr:
         annotations:
@@ -17,17 +24,16 @@ spec:
         pod:
           automountServiceAccountToken: true
           securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
             runAsGroup: 1000
             runAsNonRoot: true
             runAsUser: 1000
-            fsGroup: 1000
-            fsGroupChangePolicy: OnRootMismatch
         initContainers:
           discover:
             image: &image
               repository: ghcr.io/autobrr/dashbrr
               tag: v0.5.1@sha256:7d138a4977c29b0b28692a4826a5ce3b41fb0b4c17454d146a900f8b05d48522
-            workingDir: /config
             args: ["config", "discover", "-k", "-y"]
             env:
               DASHBRR__DB_TYPE: "sqlite"
@@ -43,17 +49,17 @@ spec:
                 memory: 256Mi
             securityContext: &ctx
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
               capabilities:
                 drop:
                   - ALL
+              readOnlyRootFilesystem: true
+            workingDir: /config
         containers:
           app:
-            workingDir: /config
             image: *image
             env:
-              TZ: ${TZ}
               DASHBRR__LOG_LEVEL: trace
+              TZ: ${TZ}
             envFrom:
               - secretRef:
                   name: *app
@@ -64,40 +70,7 @@ spec:
                 enabled: true
             resources: *rs
             securityContext: *ctx
-    defaultPodOptions:
-      securityContext:
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-    rbac:
-      roles:
-        dashbrr-discovery:
-          type: ClusterRole
-          rules:
-            - apiGroups: [""]
-              resources: ["services"]
-              verbs: ["get", "list", "watch"]
-      bindings:
-        dashbrr-discovery:
-          type: ClusterRoleBinding
-          roleRef:
-            identifier: dashbrr-discovery
-          subjects:
-            - identifier: *app
-    service:
-      app:
-        ports:
-          http:
-            port: 8080
-    route:
-      app:
-        hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
-        parentRefs:
-          - name: envoy-internal
-            namespace: network
+            workingDir: /config
     persistence:
       data:
         existingClaim: *app
@@ -108,3 +81,30 @@ spec:
             subPath: data
       tmp:
         type: emptyDir
+    rbac:
+      bindings:
+        dashbrr-discovery:
+          roleRef:
+            identifier: dashbrr-discovery
+          subjects:
+            - identifier: *app
+          type: ClusterRoleBinding
+      roles:
+        dashbrr-discovery:
+          rules:
+            - apiGroups: [""]
+              resources: ["services"]
+              verbs: ["get", "list", "watch"]
+          type: ClusterRole
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+    service:
+      app:
+        ports:
+          http:
+            port: 8080

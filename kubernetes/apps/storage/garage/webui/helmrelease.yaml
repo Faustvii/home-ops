@@ -5,11 +5,18 @@ kind: HelmRelease
 metadata:
   name: garage-webui
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: garage-webui
+  interval: 1h
   values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
     controllers:
       garage-webui:
         annotations:
@@ -20,35 +27,23 @@ spec:
               repository: docker.io/khairul169/garage-webui
               tag: 1.1.0@sha256:17c793551873155065bf9a022dabcde874de808a1f26e648d4b82e168806439c
             env:
-              API_BASE_URL: http://garage.storage.svc.cluster.local:3903
-              S3_ENDPOINT_URL: http://garage.storage.svc.cluster.local:3900
               API_ADMIN_KEY:
                 valueFrom:
                   secretKeyRef:
-                    name: garage-cluster
                     key: GARAGE_ADMIN_TOKEN
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+                    name: garage-cluster
+              API_BASE_URL: http://garage.storage.svc.cluster.local:3903
+              S3_ENDPOINT_URL: http://garage.storage.svc.cluster.local:3900
             resources:
               requests:
                 cpu: 5m
                 memory: 50Mi
               limits:
                 memory: 128Mi
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-    service:
-      app:
-        ports:
-          http:
-            port: 3909
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+              readOnlyRootFilesystem: true
     route:
       app:
         annotations:
@@ -58,3 +53,8 @@ spec:
         parentRefs:
           - name: envoy-internal
             namespace: network
+    service:
+      app:
+        ports:
+          http:
+            port: 3909

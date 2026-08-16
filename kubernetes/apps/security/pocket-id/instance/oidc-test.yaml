@@ -5,20 +5,20 @@ kind: PocketIDOIDCClient
 metadata:
   name: test
 spec:
-  name: test-app
-  launchUrl: https://localhost:7133
-  callbackUrls:
-    - https://localhost:7133/oauth2/callback
-  logoutCallbackUrls:
-    - https://localhost:7133/logout
-  pkceEnabled: false
   allowedUserGroups:
     - name: test-users
+  callbackUrls:
+    - https://localhost:7133/oauth2/callback
+  launchUrl: https://localhost:7133
+  logoutCallbackUrls:
+    - https://localhost:7133/logout
+  name: test-app
+  pkceEnabled: false
   secret:
-    name: test-oidc-credentials
     keys:
-      clientSecret: client-secret
       clientID: client-id
+      clientSecret: client-secret
+    name: test-oidc-credentials
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/dist/schemas/pocketidusergroup_v1alpha1.json
 apiVersion: pocketid.internal/v1alpha1

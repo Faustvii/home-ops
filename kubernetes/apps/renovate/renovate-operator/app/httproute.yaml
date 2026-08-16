@@ -11,10 +11,10 @@ spec:
       namespace: network
       sectionName: https
   rules:
-    - matches:
+    - backendRefs:
+        - name: ${APP}
+          port: 8081
+      matches:
         - path:
             type: PathPrefix
             value: /
-      backendRefs:
-        - name: ${APP}
-          port: 8081

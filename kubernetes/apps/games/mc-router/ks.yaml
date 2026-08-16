@@ -10,8 +10,8 @@ spec:
   path: ./kubernetes/apps/games/mc-router/app
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
   prune: true
   retryInterval: 2m
   sourceRef:

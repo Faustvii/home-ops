@@ -10,9 +10,9 @@ spec:
     matchNames:
       - network
   podMetricsEndpoints:
-    - port: metrics
+    - honorLabels: true
       path: /stats/prometheus
-      honorLabels: true
+      port: metrics
   selector:
     matchLabels:
       app.kubernetes.io/component: proxy
@@ -25,9 +25,9 @@ metadata:
   name: envoy-gateway
 spec:
   endpoints:
-    - port: metrics
+    - honorLabels: true
       path: /metrics
-      honorLabels: true
+      port: metrics
   jobLabel: envoy-gateway
   namespaceSelector:
     matchNames:

@@ -10,20 +10,19 @@ spec:
     enabled: true
   mover:
     securityContext:
-      runAsUser: ${KOPIUR_PUID:=1000}
       runAsGroup: ${KOPIUR_PGID:=1000}
+      runAsUser: ${KOPIUR_PUID:=1000}
   repository:
     kind: ClusterRepository
     name: ${KOPIUR_REPOSITORY:=nas}
   retention:
-    keepLatest: 3
-    keepHourly: 24
     keepDaily: 7
+    keepHourly: 24
+    keepLatest: 3
     keepWeekly: 4
   sources:
     - pvc:
         name: ${KOPIUR_PVC:=${APP}}
-  volumeSnapshotClassName: ${KOPIUR_SNAPSHOTCLASS:=miroir-snap}
   staging:
     storageClassName: ${KOPIUR_STAGINGCLASS:=miroir-replicated-staging}
   verification:
@@ -31,3 +30,4 @@ spec:
       schedule:
         cron: H 3 * * *
         jitter: 2m
+  volumeSnapshotClassName: ${KOPIUR_SNAPSHOTCLASS:=miroir-snap}

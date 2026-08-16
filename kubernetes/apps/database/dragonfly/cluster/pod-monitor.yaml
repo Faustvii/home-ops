@@ -7,10 +7,10 @@ metadata:
   labels:
     metrics: *app
 spec:
+  podMetricsEndpoints:
+  - port: admin
+  podTargetLabels:
+    - app
   selector:
     matchLabels:
       app: *app
-  podTargetLabels:
-    - app
-  podMetricsEndpoints:
-  - port: admin

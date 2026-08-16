@@ -10,49 +10,47 @@ spec:
     name: descheduler
   interval: 1h
   values:
-    kind: Deployment
-    deschedulerPolicyAPIVersion: descheduler/v1alpha2
     deschedulerPolicy:
       metricsProviders:
         - source: KubernetesMetrics
       profiles:
         - name: Default
           pluginConfig:
-            - name: DefaultEvictor
-              args:
+            - args:
                 podProtections:
                   defaultDisabled:
                     - FailedBarePods
                     - SystemCriticalPods
-            - name: LowNodeUtilization
-              args:
+              name: DefaultEvictor
+            - args:
                 metricsUtilization:
                   source: KubernetesMetrics
-                thresholds:
-                  cpu: 20
-                  memory: 20
-                  pods: 20
                 targetThresholds:
                   cpu: 50
                   memory: 50
                   pods: 50
-            - name: RemoveFailedPods
-              args:
+                thresholds:
+                  cpu: 20
+                  memory: 20
+                  pods: 20
+              name: LowNodeUtilization
+            - args:
+                excludeOwnerKinds:
+                  - Job
+                includingInitContainers: true
+                minPodLifetimeSeconds: 1800
                 reasons:
                   - ContainerStatusUnknown
                   - NodeAffinity
                   - NodeShutdown
                   - Terminated
                   - UnexpectedAdmissionError
-                includingInitContainers: true
-                excludeOwnerKinds:
-                  - Job
-                minPodLifetimeSeconds: 1800
+              name: RemoveFailedPods
             - name: RemovePodsViolatingInterPodAntiAffinity
-            - name: RemovePodsViolatingNodeAffinity
-              args:
+            - args:
                 nodeAffinityType:
                   - requiredDuringSchedulingIgnoredDuringExecution
+              name: RemovePodsViolatingNodeAffinity
             - name: RemovePodsViolatingNodeTaints
             - name: RemovePodsViolatingTopologySpreadConstraint
           plugins:
@@ -66,9 +64,11 @@ spec:
                 - RemovePodsViolatingInterPodAntiAffinity
                 - RemovePodsViolatingNodeAffinity
                 - RemovePodsViolatingNodeTaints
+    deschedulerPolicyAPIVersion: descheduler/v1alpha2
+    kind: Deployment
+    leaderElection:
+      enabled: true
     service:
       enabled: true
     serviceMonitor:
-      enabled: true
-    leaderElection:
       enabled: true

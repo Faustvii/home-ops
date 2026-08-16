@@ -5,7 +5,7 @@ kind: HelmRelease
 metadata:
   name: &app reflector
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: *app
+  interval: 1h

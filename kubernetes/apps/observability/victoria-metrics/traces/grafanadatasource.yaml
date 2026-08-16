@@ -5,22 +5,22 @@ kind: GrafanaDatasource
 metadata:
   name: victoriatraces-tempo
 spec:
-  instanceSelector:
-    matchLabels:
-      dashboards: grafana
   datasource:
-    uid: tempo
-    type: tempo
-    name: tempo
     access: proxy
-    url: http://vtsingle-vt.observability.svc.cluster.local:10428/select/tempo
     jsonData:
       serviceMap:
         datasourceUid: prometheus
       tracesToMetrics:
         datasourceUid: prometheus
-        spanStartTimeShift: "-2m"
         spanEndTimeShift: "2m"
+        spanStartTimeShift: "-2m"
         tags:
           - key: service.name
             value: service
+    name: tempo
+    type: tempo
+    uid: tempo
+    url: http://vtsingle-vt.observability.svc.cluster.local:10428/select/tempo
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana

@@ -1,15 +1,15 @@
-base-url: https://${APP}.${SECRET_DOMAIN}
-behind-proxy: true
+
+attachment-cache-dir: /cache/attachments
 
 auth-default-access: deny-all
 auth-file: /data/user.db
-
-attachment-cache-dir: /cache/attachments
+base-url: https://${APP}.${SECRET_DOMAIN}
+behind-proxy: true
 cache-file: /cache/cache.db
+enable-metrics: true
 
 listen-http: "[::]:8080"
-enable-metrics: true
-metrics-listen-http: "[::]:9090"
+log-format: json
 
 log-level: info
-log-format: json
+metrics-listen-http: "[::]:9090"

@@ -5,8 +5,6 @@ kind: Alert
 metadata:
   name: flux
 spec:
-  providerRef:
-    name: flux
   eventSeverity: info
   eventSources:
     - kind: HelmRelease
@@ -50,4 +48,6 @@ spec:
     - error.*lookup.*github
     - dial.*tcp.*timeout
     - waiting.*socket
+  providerRef:
+    name: flux
   suspend: false

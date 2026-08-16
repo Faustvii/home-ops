@@ -7,22 +7,22 @@ metadata:
   annotations:
     gatus.home-operations.com/enabled: "false"
 spec:
+  hostnames:
+    - seerr.${SECRET_DOMAIN}
   parentRefs:
     - name: envoy-external
       namespace: network
-  hostnames:
-    - seerr.${SECRET_DOMAIN}
   rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /api/v1/status
-      filters:
-        - type: ExtensionRef
-          extensionRef:
+    - filters:
+        - extensionRef:
             group: gateway.envoyproxy.io
             kind: HTTPRouteFilter
             name: static-401
+          type: ExtensionRef
+      matches:
+        - path:
+            type: PathPrefix
+            value: /api/v1/status
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/httproute_v1.json
 apiVersion: gateway.networking.k8s.io/v1
@@ -32,27 +32,27 @@ metadata:
   annotations:
     gatus.home-operations.com/enabled: "false"
 spec:
+  hostnames:
+    - seerr.${SECRET_DOMAIN}
   parentRefs:
     - name: envoy-external
       namespace: network
-  hostnames:
-    - seerr.${SECRET_DOMAIN}
   rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /api/v1/status
-          headers:
-            - name: Cookie
-              type: RegularExpression
-              value: ".*connect.sid=.*"
-        - path:
-            type: PathPrefix
-            value: /api/v1/settings/public
-          headers:
-            - name: Cookie
-              type: RegularExpression
-              value: ".*connect.sid=.*"
-      backendRefs:
+    - backendRefs:
         - name: seerr
           port: 80
+      matches:
+        - headers:
+            - name: Cookie
+              type: RegularExpression
+              value: ".*connect.sid=.*"
+          path:
+            type: PathPrefix
+            value: /api/v1/status
+        - headers:
+            - name: Cookie
+              type: RegularExpression
+              value: ".*connect.sid=.*"
+          path:
+            type: PathPrefix
+            value: /api/v1/settings/public

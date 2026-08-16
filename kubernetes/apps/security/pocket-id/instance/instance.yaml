@@ -5,31 +5,31 @@ kind: PocketIDInstance
 metadata:
   name: pocket-id
 spec:
-  encryptionKey:
-    valueFrom:
-      secretKeyRef:
-        name: pocket-id-secret
-        key: ENCRYPTION_KEY
+  analyticsDisabled: true
   appUrl: https://idm.${SECRET_DOMAIN}
   databaseUrl:
     valueFrom:
       secretKeyRef:
-        name: pocket-id-postgres
         key: uri
-  image: ghcr.io/pocket-id/pocket-id:v2.13.0-distroless@sha256:ccb590169770feb5b23ba16d49386514a2c26a77e95bb687b442ae09f17c15da
-  analyticsDisabled: true
-  versionCheckDisabled: true
+        name: pocket-id-postgres
+  encryptionKey:
+    valueFrom:
+      secretKeyRef:
+        key: ENCRYPTION_KEY
+        name: pocket-id-secret
   fileBackend: database
+  image: ghcr.io/pocket-id/pocket-id:v2.13.0-distroless@sha256:ccb590169770feb5b23ba16d49386514a2c26a77e95bb687b442ae09f17c15da
   metrics:
     enabled: true
-  userManagement:
-    allowOwnAccountEdit: true
-    allowUserSignups: "disabled"
-  ui:
-    appName: "FaustID"
-    homePageUrl: /settings/apps
   route:
     enabled: true
     parentRefs:
       - name: envoy-external
         namespace: network
+  ui:
+    appName: "FaustID"
+    homePageUrl: /settings/apps
+  userManagement:
+    allowOwnAccountEdit: true
+    allowUserSignups: "disabled"
+  versionCheckDisabled: true

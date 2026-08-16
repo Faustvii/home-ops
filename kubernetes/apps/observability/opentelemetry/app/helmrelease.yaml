@@ -17,8 +17,8 @@ spec:
   chart:
     spec:
       chart: *app
-      version: 0.121.0
       sourceRef:
         kind: HelmRepository
         name: opentelemetry
+      version: 0.121.0
   interval: 1h

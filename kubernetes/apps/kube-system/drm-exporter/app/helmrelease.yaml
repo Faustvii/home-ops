@@ -11,29 +11,29 @@ spec:
   interval: 1h
   values:
     dra:
-      enabled: true
       deviceClassName: gpu.amd.com
-    securityContext:
-      capabilities:
-        add:
-          - PERFMON
+      enabled: true
     monitoring:
-      serviceMonitor:
-        enabled: true
       dashboards:
         enabled: true
         grafanaOperator:
           enabled: true
           matchLabels:
             dashboards: grafana
+      serviceMonitor:
+        enabled: true
     nodeSelector:
       topology.kubernetes.io/gpus: amd
-    tolerations:
-      - key: llm-workload
-        operator: Exists
-        effect: NoSchedule
     resources:
-      requests:
-        cpu: 10m
       limits:
         memory: 128Mi
+      requests:
+        cpu: 10m
+    securityContext:
+      capabilities:
+        add:
+          - PERFMON
+    tolerations:
+      - effect: NoSchedule
+        key: llm-workload
+        operator: Exists

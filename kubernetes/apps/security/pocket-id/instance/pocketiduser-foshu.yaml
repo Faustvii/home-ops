@@ -7,12 +7,12 @@ metadata:
   annotations:
     pocketid.internal/delete-from-pocket-id: "true"
 spec:
-  username:
-    value: foshu
-  firstName:
-    value: foshu
   displayName:
     value: foshu
   email:
     value: foshu@${SECRET_DOMAIN}
+  firstName:
+    value: foshu
   locale: en
+  username:
+    value: foshu

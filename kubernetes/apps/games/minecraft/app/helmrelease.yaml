@@ -24,137 +24,78 @@ spec:
     name: minecraft
   interval: 1h
   values:
-    terminationGracePeriodSeconds: 90
     deploymentAnnotations:
-      secret.reloader.stakater.com/reload: &secret minecraft-secret
       configmap.reloader.stakater.com/reload: "minecraft-datapacks"
+      secret.reloader.stakater.com/reload: &secret minecraft-secret
+
+    extraEnv:
+      DATAPACKS_FILE: /extras/datapacks.txt
+      ENABLE_ROLLING_LOGS: true
+      GENERATE_LOG4J2_CONFIG: true
+      GID: 1000
+      HIDE_ONLINE_PLAYERS: true
+      MAX_MEMORY: 8G
+      STOP_SERVER_ANNOUNCE_DELAY: 30
+      TZ: "Europe/Paris"
+      UID: 1000
+      USE_AIKAR_FLAGS: true
+
+    extraVolumes:
+
+      - volumeMounts:
+          - mountPath: /extras/datapacks.txt
+            name: datapacks
+            readOnly: true
+            subPath: datapacks.txt
+        volumes:
+          - configMap:
+              name: minecraft-datapacks
+            name: datapacks
     image:
       repository: ghcr.io/itzg/minecraft-server
       tag: 2026.8.0-java25@sha256:e3335993929a1565f73c30b2041bcbc1473fc9c406fdd5a0d0ea24c08ef73320
-    resources:
-      limits:
-        memory: 12Gi
-      requests:
-        cpu: 1000m
-        memory: 4Gi
-    readinessProbe:
-      initialDelaySeconds: 15
-
-    sidecarContainers:
-      - name: vscode
-        image: "ghcr.io/coder/code-server:4.132.0"
-        imagePullPolicy: IfNotPresent
-        args:
-          - --auth
-          - none
-        ports:
-          - containerPort: 8080
-            name: vscode
-        volumeMounts:
-          - name: datadir
-            mountPath: /data # mount Minecraft world + configs
-        resources:
-          requests:
-            cpu: 10m
-            memory: 64Mi
-          limits:
-            cpu: 1
-            memory: 1Gi
-
-    extraEnv:
-      TZ: "Europe/Paris"
-      ENABLE_ROLLING_LOGS: true
-      HIDE_ONLINE_PLAYERS: true
-      UID: 1000
-      GID: 1000
-      MAX_MEMORY: 8G
-      STOP_SERVER_ANNOUNCE_DELAY: 30
-      USE_AIKAR_FLAGS: true
-      DATAPACKS_FILE: /extras/datapacks.txt
-      GENERATE_LOG4J2_CONFIG: true
-
-    extraVolumes:
-      - volumes:
-          - name: datapacks
-            configMap:
-              name: minecraft-datapacks
-
-        volumeMounts:
-          - name: datapacks
-            mountPath: /extras/datapacks.txt
-            subPath: datapacks.txt
-            readOnly: true
-
-    podSecurityContext:
-      runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
-      fsGroupChangePolicy: OnRootMismatch
-      runAsNonRoot: true
-
-    persistence:
-      dataDir:
-        enabled: true
-        existingClaim: *app
-
-    serviceAnnotations:
-      mc-router.itzg.me/externalServerName: "mc.${SECRET_DOMAIN}"
-      lbipam.cilium.io/ips: "192.168.10.31"
-    serviceLabels:
-      io.cilium/ippool: public
     minecraftServer:
-      eula: true
-      # renovate: datasource=custom.minecraft-release
-      version: 1.21.11
-      type: FABRIC
       difficulty: hard
-      whitelist: "liope,OliverWHennings,roflbobl,FranzVDB,lil_havfrue,AndyBeTrollin,inebuni,Djonn,Noerlem,Svend_Bueskytte,v1z3s,dkcom,FoshuMG,Shazbotz,Simmetopia,Alveel,DerRune,HueN77,EHasseltoft,Sanctidus"
-      ops: "liope"
-      pvp: true
-      motd: "Let's goo"
-      worldSaveName: "Wonderland"
-      viewDistance: 16
-      levelSeed: "5143877906783391683"
-      maxPlayers: 24
-      resourcePackUrl: "https://github.com/Faustvii/minds_packs/releases/download/v0.0.2-mc1.21.11/MindsResources_v0.0.2_mc_1.21.11_rp.zip"
-      resourcePackSha: "d25b960c398c9ad111de8c42316b6f6bb48f9d05" # sha-1 digest in lowercase hexadecimal
-      resourcePackEnforce: true
-      rcon:
-        enabled: true
-        embedded: true
-        serviceType: ClusterIP
-      serviceType: LoadBalancer
+      eula: true
       extraPorts:
-        - name: voice
-          containerPort: 24454
+        - containerPort: 24454
+          name: voice
           protocol: UDP
           service:
-            enabled: true
             embedded: true
-            type: LoadBalancer
+            enabled: true
             port: 24454
-        - name: bluemap
-          containerPort: 8100
+            type: LoadBalancer
+        - containerPort: 8100
+          name: bluemap
           protocol: TCP
           service:
-            enabled: true
             embedded: false
-            type: ClusterIP
+            enabled: true
             port: 8100
-        - name: metrics
-          containerPort: 25585
+            type: ClusterIP
+        - containerPort: 25585
+          name: metrics
           protocol: TCP
           service:
-            enabled: true
             embedded: true
-            type: ClusterIP
+            enabled: true
             port: 25585
-      vanillaTweaksShareCodes:
-        - "JV0FV7"
-        - "FF8soj"
+            type: ClusterIP
+      levelSeed: "5143877906783391683"
+      maxPlayers: 24
+          # not updated yet for 1.21.11
+          # - fabricexporter
+          # - async
+          # - noisiumforked
+          # - krypton
+          # - carpet
+      modUrls:
+        - "https://github.com/gnembon/fabric-carpet/releases/download/1.4.193/fabric-carpet-1.21.11-1.4.193+v251211.jar"
+        - "https://github.com/ruscalworld/fabric-exporter/releases/download/v1.0.19/fabricexporter-1.0.19.jar"
       modrinth:
-        downloadDependencies: required
         allowedVersionType: alpha
+        downloadDependencies: required
         projects:
           - bluemap
           - armor-poser
@@ -170,20 +111,79 @@ spec:
           - ferrite-core
           - lithium
           - servercore
-          # not updated yet for 1.21.11
-          # - fabricexporter
-          # - async
-          # - noisiumforked
-          # - krypton
-          # - carpet
-      modUrls:
-        - "https://github.com/gnembon/fabric-carpet/releases/download/1.4.193/fabric-carpet-1.21.11-1.4.193+v251211.jar"
-        - "https://github.com/ruscalworld/fabric-exporter/releases/download/v1.0.19/fabricexporter-1.0.19.jar"
+      motd: "Let's goo"
+      ops: "liope"
+      pvp: true
+      rcon:
+        embedded: true
+        enabled: true
+        serviceType: ClusterIP
+      resourcePackEnforce: true
+      resourcePackSha: "d25b960c398c9ad111de8c42316b6f6bb48f9d05" # sha-1 digest in lowercase hexadecimal
+      resourcePackUrl: "https://github.com/Faustvii/minds_packs/releases/download/v0.0.2-mc1.21.11/MindsResources_v0.0.2_mc_1.21.11_rp.zip"
+      serviceType: LoadBalancer
+      type: FABRIC
+      vanillaTweaksShareCodes:
+        - "JV0FV7"
+        - "FF8soj"
+      # renovate: datasource=custom.minecraft-release
+      version: 1.21.11
+      viewDistance: 16
+      whitelist: "liope,OliverWHennings,roflbobl,FranzVDB,lil_havfrue,AndyBeTrollin,inebuni,Djonn,Noerlem,Svend_Bueskytte,v1z3s,dkcom,FoshuMG,Shazbotz,Simmetopia,Alveel,DerRune,HueN77,EHasseltoft,Sanctidus"
+      worldSaveName: "Wonderland"
+
+    persistence:
+      dataDir:
+        enabled: true
+        existingClaim: *app
+
+    podSecurityContext:
+      fsGroup: 1000
+      fsGroupChangePolicy: OnRootMismatch
+      runAsGroup: 1000
+      runAsNonRoot: true
+      runAsUser: 1000
+    readinessProbe:
+      initialDelaySeconds: 15
+    resources:
+      limits:
+        memory: 12Gi
+      requests:
+        cpu: 1000m
+        memory: 4Gi
+
+    serviceAnnotations:
+      lbipam.cilium.io/ips: "192.168.10.31"
+      mc-router.itzg.me/externalServerName: "mc.${SECRET_DOMAIN}"
+    serviceLabels:
+      io.cilium/ippool: public
+
+    sidecarContainers:
+      - args:
+          - --auth
+          - none
+        image: "ghcr.io/coder/code-server:4.132.0"
+        imagePullPolicy: IfNotPresent
+        name: vscode
+        ports:
+          - containerPort: 8080
+            name: vscode
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+          requests:
+            cpu: 10m
+            memory: 64Mi
+        volumeMounts:
+          - mountPath: /data # mount Minecraft world + configs
+            name: datadir
+    terminationGracePeriodSeconds: 90
         # - "https://cdn.modrinth.com/data/YoRtMPzM/versions/ze2xyOSp/SHA1Runtime-1.21.10-1.4.1.jar" # SHA1Runtime crashes the server on player connect
 
 
   valuesFrom:
     - kind: Secret
       name: *secret
-      valuesKey: RCON_PASSWORD
       targetPath: minecraftServer.rcon.password
+      valuesKey: RCON_PASSWORD

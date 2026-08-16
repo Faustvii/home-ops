@@ -9,14 +9,22 @@ spec:
   chartRef:
     kind: OCIRepository
     name: wyoming-piper
-  dependsOn: []
   interval: 1h
+  dependsOn: []
 
   values:
     controllers:
       wyoming-piper:
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          enableServiceLinks: false
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
         containers:
           app:
             image:
@@ -30,24 +38,16 @@ spec:
                 memory: 128M
               limits:
                 memory: 512M
-        pod:
-          enableServiceLinks: false
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            runAsNonRoot: true
-            fsGroup: 1000
-            fsGroupChangePolicy: OnRootMismatch
-    service:
-      app:
-        controller: wyoming-piper
-        type: LoadBalancer
-        annotations:
-          lbipam.cilium.io/ips: 192.168.10.41
-          external-dns.alpha.kubernetes.io/hostname: piper.${SECRET_DOMAIN}
-        ports:
-          http:
-            port: 10200
     persistence:
       data:
         existingClaim: "{{ .Release.Name }}"
+    service:
+      app:
+        type: LoadBalancer
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: piper.${SECRET_DOMAIN}
+          lbipam.cilium.io/ips: 192.168.10.41
+        controller: wyoming-piper
+        ports:
+          http:
+            port: 10200

@@ -5,6 +5,6 @@ kind: Provider
 metadata:
   name: flux
 spec:
-  type: discord
   secretRef:
     name: discord-flux-secret
+  type: discord

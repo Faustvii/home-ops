@@ -8,30 +8,30 @@ spec:
     level:
       default: info
   provider:
-    type: Kubernetes
     kubernetes:
       envoyDeployment:
-        replicas: 2
+        container:
+          image: mirror.gcr.io/envoyproxy/envoy:v1.39.0
+          resources:
+            limits:
+              memory: 1Gi
+            requests:
+              cpu: 100m
         pod:
           affinity:
             podAntiAffinity:
               preferredDuringSchedulingIgnoredDuringExecution:
-                - weight: 100
-                  podAffinityTerm:
+                - podAffinityTerm:
                     labelSelector:
                       matchLabels:
                         app.kubernetes.io/component: proxy
                         app.kubernetes.io/managed-by: envoy-gateway
                     topologyKey: kubernetes.io/hostname
-        container:
-          image: mirror.gcr.io/envoyproxy/envoy:v1.39.0
-          resources:
-            requests:
-              cpu: 100m
-            limits:
-              memory: 1Gi
+                  weight: 100
+        replicas: 2
       envoyService:
         externalTrafficPolicy: Cluster
+    type: Kubernetes
   shutdown:
     drainTimeout: 180s
   telemetry:
@@ -71,18 +71,18 @@ spec:
       external-dns.alpha.kubernetes.io/hostname: external.${SECRET_DOMAIN}
       lbipam.cilium.io/ips: "192.168.10.23"
   listeners:
-    - name: http
-      protocol: HTTP
-      port: 80
-      allowedRoutes:
+    - allowedRoutes:
         namespaces:
           from: Same
-    - name: https
-      protocol: HTTPS
-      port: 443
-      allowedRoutes:
+      name: http
+      port: 80
+      protocol: HTTP
+    - allowedRoutes:
         namespaces:
           from: All
+      name: https
+      port: 443
+      protocol: HTTPS
       tls:
         certificateRefs:
           - kind: Secret
@@ -94,12 +94,12 @@ metadata:
   name: envoy-internal
   annotations:
     external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
-    gatus.home-operations.com/guarded: "false"
     gatus.home-operations.com/endpoint: |-
       group: internal
       ui:
         hide-hostname: true
         hide-url: true
+    gatus.home-operations.com/guarded: "false"
 spec:
   gatewayClassName: envoy
   infrastructure:
@@ -107,18 +107,18 @@ spec:
       external-dns.alpha.kubernetes.io/hostname: internal.${SECRET_DOMAIN}
       lbipam.cilium.io/ips: "192.168.10.22"
   listeners:
-    - name: http
-      protocol: HTTP
-      port: 80
-      allowedRoutes:
+    - allowedRoutes:
         namespaces:
           from: Same
-    - name: https
-      protocol: HTTPS
-      port: 443
-      allowedRoutes:
+      name: http
+      port: 80
+      protocol: HTTP
+    - allowedRoutes:
         namespaces:
           from: All
+      name: https
+      port: 443
+      protocol: HTTPS
       tls:
         certificateRefs:
           - kind: Secret
@@ -133,10 +133,10 @@ spec:
   compressor:
     - type: Zstd
       zstd: {}
-    - type: Brotli
-      brotli: {}
-    - type: Gzip
-      gzip: {}
+    - brotli: {}
+      type: Brotli
+    - gzip: {}
+      type: Gzip
   retry:
     numRetries: 2
     retryOn:
@@ -168,10 +168,10 @@ spec:
       kind: Gateway
   tcpKeepalive: {}
   tls:
-    minVersion: "1.2"
     alpnProtocols:
       - h2
       - http/1.1
+    minVersion: "1.2"
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -189,7 +189,7 @@ spec:
       sectionName: http
   rules:
     - filters:
-        - type: RequestRedirect
-          requestRedirect:
+        - requestRedirect:
             scheme: https
             statusCode: 301
+          type: RequestRedirect

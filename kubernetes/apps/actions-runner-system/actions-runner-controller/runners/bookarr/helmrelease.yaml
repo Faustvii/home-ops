@@ -10,15 +10,15 @@ spec:
     name: bookarr-runner
   interval: 1h
   values:
-    githubConfigUrl: https://github.com/Faustvii/bookarr
-    githubConfigSecret: bookarr-runner-secret
-    minRunners: 0
-    maxRunners: 3
     containerMode:
       type: dind
     controllerServiceAccount:
       name: actions-runner-controller
       namespace: actions-runner-system
+    githubConfigSecret: bookarr-runner-secret
+    githubConfigUrl: https://github.com/Faustvii/bookarr
+    maxRunners: 3
+    minRunners: 0
     template:
       metadata:
         labels:
@@ -31,17 +31,17 @@ spec:
                   matchLabels:
                     runner: *name
                 topologyKey: kubernetes.io/hostname
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: talos-03
-            effect: NoSchedule
         containers:
-          - name: runner
-            image: ghcr.io/home-operations/actions-runner:2.336.0@sha256:281a9a090522fafbf4967f158b8c97d03552b1978b688893c5f7cb1944bc5fe5
-            command:
+          - command:
               - /home/runner/run.sh
+            image: ghcr.io/home-operations/actions-runner:2.336.0@sha256:281a9a090522fafbf4967f158b8c97d03552b1978b688893c5f7cb1944bc5fe5
+            name: runner
         securityContext:
           fsGroup: 1001
           fsGroupChangePolicy: OnRootMismatch
         serviceAccountName: *name
+        tolerations:
+          - effect: NoSchedule
+            key: dedicated
+            operator: Equal
+            value: talos-03

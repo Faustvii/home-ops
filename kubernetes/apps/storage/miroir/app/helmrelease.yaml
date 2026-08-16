@@ -4,16 +4,15 @@ kind: HelmRelease
 metadata:
   name: miroir
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: miroir
   install:
     crds: CreateReplace
+  interval: 1h
   upgrade:
     crds: CreateReplace
   values:
-    replicaCount: 2
     autoEvictAfter: 2h
     drbd:
       alExtents: 6007
@@ -28,3 +27,4 @@ spec:
         enabled: true
       prometheusRule:
         enabled: true
+    replicaCount: 2

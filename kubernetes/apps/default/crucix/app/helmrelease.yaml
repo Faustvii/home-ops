@@ -10,6 +10,13 @@ spec:
     name: crucix
   interval: 1h
   values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
     controllers:
       crucix:
         strategy: RollingUpdate
@@ -25,48 +32,33 @@ spec:
                 enabled: true
                 custom: true
                 spec:
+                  failureThreshold: 3
                   httpGet:
                     path: /api/health
                     port: &port 3117
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
-                  failureThreshold: 3
               readiness: *probes
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
               limits:
                 memory: 1Gi
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+              readOnlyRootFilesystem: true
     persistence:
       tmp:
         type: emptyDir
       data:
+        accessMode: ReadWriteOnce
         enabled: true
         size: 1Gi
-        accessMode: ReadWriteOnce
         globalMounts:
           - path: /app/runs
           - path: /app/runs/memory
-
-    service:
-      app:
-        ports:
-          http:
-            port: *port
-          smtp:
-            port: 1025
     route:
       app:
         hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
@@ -78,3 +70,11 @@ spec:
           - backendRefs:
               - identifier: app
                 port: *port
+
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+          smtp:
+            port: 1025

@@ -9,8 +9,8 @@ spec:
   chartRef:
     kind: OCIRepository
     name: *app
-  dependsOn: []
   interval: 1h
+  dependsOn: []
 
   values:
     controllers:
@@ -29,26 +29,26 @@ spec:
               - en
             env:
               WYOMING_WHISPER__INSTANCE_NAME: Wyoming-Whisper
-              WYOMING_WHISPER__PORT: &port 10300
               WYOMING_WHISPER__LOG_LEVEL: info
+              WYOMING_WHISPER__PORT: &port 10300
             resources:
               requests:
                 cpu: 100m
                 memory: 256Mi
               limits:
                 memory: 4Gi
-    service:
-      app:
-        controller: wyoming-whisper
-        type: LoadBalancer
-        annotations:
-          lbipam.cilium.io/ips: 192.168.10.40
-        ports:
-          whisper:
-            enabled: true
-            primary: true
-            port: *port
-            protocol: TCP
     persistence:
       data:
         existingClaim: "{{ .Release.Name }}"
+    service:
+      app:
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: 192.168.10.40
+        controller: wyoming-whisper
+        ports:
+          whisper:
+            enabled: true
+            port: *port
+            primary: true
+            protocol: TCP

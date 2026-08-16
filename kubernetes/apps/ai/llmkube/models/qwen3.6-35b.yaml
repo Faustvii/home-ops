@@ -5,21 +5,21 @@ kind: Model
 metadata:
   name: qwen3.6-35b-a3b
 spec:
-  source: hf://SC117/Qwen3.6-35B-A3B-uncensored-heretic-Native-MTP-Preserved-APEX-GGUF
   files:
     - Qwen3.6-35B-A3B-uncensored-heretic-Native-MTP-Preserved-APEX-I-Balanced.gguf
-  mmproj: mmproj-Qwen3.6-35B-A3B-uncensored-heretic-Native-MTP-Preserved-APEX-F16.gguf
   format: gguf
-  quantization: I-Balanced
   hardware:
     accelerator: rocm
     gpu:
       enabled: true
-      vendor: amd
       layers: -1
       resourceClaims:
         - name: gpu
           resourceClaimTemplateName: llm-amd-gpu
+      vendor: amd
+  mmproj: mmproj-Qwen3.6-35B-A3B-uncensored-heretic-Native-MTP-Preserved-APEX-F16.gguf
+  quantization: I-Balanced
+  source: hf://SC117/Qwen3.6-35B-A3B-uncensored-heretic-Native-MTP-Preserved-APEX-GGUF
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/inferenceservice_v1alpha1.json
 apiVersion: inference.llmkube.dev/v1alpha1
@@ -27,38 +27,12 @@ kind: InferenceService
 metadata:
   name: qwen3.6-35b-strix
 spec:
-  modelRef: qwen3.6-35b-a3b
-  modelCache:
-    claimName: llmkube-strix-cache
-  runtime: llamacpp
-  image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4@sha256:ebf0ed1125a80f2446a5aab810eb892be5bd6099b0d80302e39006f81ee2f3fc
-  rolloutPolicy:
-    waitForIdle: true
-    idleTimeoutSeconds: 86400
-  command:
-    - llama-server
-  replicas: 1
-  priority: high
-  nodeSelector:
-    kubernetes.io/hostname: talos-04
-    topology.kubernetes.io/gpus: amd
-  tolerations:
-    - key: llm-workload
-      operator: Exists
-      effect: NoSchedule
-  contextSize: 262144
-  parallelSlots: 2
-  flashAttention: true
-  jinja: true
+  batchSize: 6144
   cacheTypeK: q8_0
   cacheTypeV: q8_0
-  reasoningBudget: 16384
-  reasoningBudgetMessage: "Stop reasoning and produce the implementation, tool call, or final answer."
-  batchSize: 6144
-  uBatchSize: 2048
-  resources:
-    cpu: "500m"
-    memory: 28Gi
+  command:
+    - llama-server
+  contextSize: 262144
   endpoint:
     port: 8080
     type: ClusterIP
@@ -102,24 +76,50 @@ spec:
     - none
     - --chat-template-kwargs
     - '{"preserve_thinking":true}'
+  flashAttention: true
+  image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4@sha256:ebf0ed1125a80f2446a5aab810eb892be5bd6099b0d80302e39006f81ee2f3fc
+  jinja: true
+  modelCache:
+    claimName: llmkube-strix-cache
+  modelRef: qwen3.6-35b-a3b
+  nodeSelector:
+    kubernetes.io/hostname: talos-04
+    topology.kubernetes.io/gpus: amd
+  parallelSlots: 2
+  priority: high
   probeOverrides:
-    startup:
-      httpGet:
-        path: /health
-        port: 8080
-      periodSeconds: 10
-      failureThreshold: 360
     liveness:
+      failureThreshold: 6
       httpGet:
         path: /health
         port: 8080
       initialDelaySeconds: 30
       periodSeconds: 30
-      failureThreshold: 6
     readiness:
+      failureThreshold: 6
       httpGet:
         path: /health
         port: 8080
       initialDelaySeconds: 20
       periodSeconds: 10
-      failureThreshold: 6
+    startup:
+      failureThreshold: 360
+      httpGet:
+        path: /health
+        port: 8080
+      periodSeconds: 10
+  reasoningBudget: 16384
+  reasoningBudgetMessage: "Stop reasoning and produce the implementation, tool call, or final answer."
+  replicas: 1
+  resources:
+    cpu: "500m"
+    memory: 28Gi
+  rolloutPolicy:
+    idleTimeoutSeconds: 86400
+    waitForIdle: true
+  runtime: llamacpp
+  tolerations:
+    - effect: NoSchedule
+      key: llm-workload
+      operator: Exists
+  uBatchSize: 2048

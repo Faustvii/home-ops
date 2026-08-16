@@ -4,11 +4,6 @@ kind: TalosUpgrade
 metadata:
   name: talos
 spec:
-  talos:
-    # renovate: datasource=custom.talos-factory depName=siderolabs/talos
-    version: v1.13.8
-  policy:
-    rebootMode: default
   healthChecks:
     - apiVersion: volsync.backube/v1alpha1
       kind: ReplicationSource
@@ -25,3 +20,8 @@ spec:
       kind: MiroirVolume
       expr: |-
         status.phase == 'Ready'
+  policy:
+    rebootMode: default
+  talos:
+    # renovate: datasource=custom.talos-factory depName=siderolabs/talos
+    version: v1.13.8

@@ -5,11 +5,11 @@ kind: GarageKey
 metadata:
   name: crd-schemas-key
 spec:
-  clusterRef:
-    name: garage
-    namespace: storage
   bucketPermissions:
     - bucketRef:
         name: schemas
       read: true
       write: true
+  clusterRef:
+    name: garage
+    namespace: storage

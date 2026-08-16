@@ -13,11 +13,11 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      KOPIUR_SNAPSHOT_SCHEDULE: "H */6 * * *"
       KOPIUR_CAPACITY: 20Gi
+      KOPIUR_SNAPSHOT_SCHEDULE: "H */6 * * *"
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
   prune: true
   sourceRef:
     kind: GitRepository
@@ -32,20 +32,20 @@ metadata:
   name: &app minecraft-test
   namespace: &namespace games
 spec:
-  dependsOn:
-    - name: minecraft
   components:
     - ../../../../components/kopiur
+  dependsOn:
+    - name: minecraft
   interval: 1h
   path: ./kubernetes/apps/games/minecraft/test
   postBuild:
     substitute:
       APP: *app
-      KOPIUR_SNAPSHOT_SCHEDULE: "H */3 * * *"
       KOPIUR_CAPACITY: 20Gi
+      KOPIUR_SNAPSHOT_SCHEDULE: "H */3 * * *"
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
   prune: true
   sourceRef:
     kind: GitRepository

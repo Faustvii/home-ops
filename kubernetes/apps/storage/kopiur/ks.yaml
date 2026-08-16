@@ -29,12 +29,12 @@ metadata:
 spec:
   dependsOn:
     - name: kopiur
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   interval: 1h
   path: "./kubernetes/apps/storage/kopiur/repository"
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cluster-secrets
   prune: true
   sourceRef:
     kind: GitRepository

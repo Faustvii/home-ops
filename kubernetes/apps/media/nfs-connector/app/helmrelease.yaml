@@ -10,6 +10,11 @@ spec:
     name: nfs-connector
   interval: 1h
   values:
+    defaultPodOptions:
+      securityContext:
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
     controllers:
       nfs-connector:
         type: daemonset
@@ -19,21 +24,16 @@ spec:
               repository: alpine
               tag: "3.24"
             command: ["sleep", "infinity"]
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 1m
                 memory: 8Mi
               limits:
                 memory: 16Mi
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 65534
-        runAsGroup: 65534
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: {drop: ["ALL"]}
+              readOnlyRootFilesystem: true
     persistence:
       media:
         existingClaim: plex-media-nfs-pvc

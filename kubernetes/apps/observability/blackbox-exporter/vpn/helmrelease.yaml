@@ -9,10 +9,38 @@ spec:
     kind: OCIRepository
     name: blackbox-exporter-vpn
   interval: 1h
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |-
+              - op: remove
+                path: /spec/strategy/rollingUpdate
+            target:
+              kind: Deployment
+              name: blackbox-exporter-vpn
   values:
+    config:
+      modules:
+        http_2xx:
+          http:
+            follow_redirects: true
+            preferred_ip_protocol: ip4
+            valid_http_versions:
+              - HTTP/1.1
+              - HTTP/2.0
+          prober: http
+          timeout: 5s
+        icmp:
+          icmp:
+            preferred_ip_protocol: ip4
+          prober: icmp
+          timeout: 5s
+        tcp_connect:
+          prober: tcp
+          tcp:
+            preferred_ip_protocol: ip4
+          timeout: 5s
     fullnameOverride: blackbox-exporter-vpn
-    strategy:
-      type: Recreate
     podAnnotations:
       k8s.v1.cni.cncf.io/networks: |-
         [{
@@ -21,52 +49,24 @@ spec:
           "ips": ["192.168.90.13/24"],
           "mac": "3e:d0:83:c0:8e:13"
         }]
-    securityContext:
-      readOnlyRootFilesystem: true
-      allowPrivilegeEscalation: false
-    config:
-      modules:
-        http_2xx:
-          prober: http
-          timeout: 5s
-          http:
-            valid_http_versions:
-              - HTTP/1.1
-              - HTTP/2.0
-            follow_redirects: true
-            preferred_ip_protocol: ip4
-        icmp:
-          prober: icmp
-          timeout: 5s
-          icmp:
-            preferred_ip_protocol: ip4
-        tcp_connect:
-          prober: tcp
-          timeout: 5s
-          tcp:
-            preferred_ip_protocol: ip4
-    serviceMonitor:
-      enabled: true
-      selfMonitor:
-        enabled: true
     prometheusRule:
       enabled: true
       rules:
         - alert: VpnProbeFailed
+          annotations:
+            summary: |-
+              The probe targeting {{ $labels.instance }} is currently having connectivity issues
           expr: |-
             probe_success{service="blackbox-exporter-vpn"} == 0
           for: 15m
           labels:
             severity: critical
-          annotations:
-            summary: |-
-              The probe targeting {{ $labels.instance }} is currently having connectivity issues
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: Deployment
-              name: blackbox-exporter-vpn
-            patch: |-
-              - op: remove
-                path: /spec/strategy/rollingUpdate
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+    serviceMonitor:
+      enabled: true
+      selfMonitor:
+        enabled: true
+    strategy:
+      type: Recreate

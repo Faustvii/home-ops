@@ -5,13 +5,13 @@ metadata:
   name: garage
 spec:
   allowCrossNamespaceImport: true
-  instanceSelector:
-    matchLabels:
-      dashboards: grafana
+  configMapRef:
+    key: garage-prometheus.json
+    name: garage-operator-garage-dashboard
   datasources:
     - datasourceName: prometheus
       inputName: DS_PROMETHEUS
-  configMapRef:
-    name: garage-operator-garage-dashboard
-    key: garage-prometheus.json
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
 

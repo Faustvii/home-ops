@@ -6,27 +6,6 @@ metadata:
   name: litellm
 spec:
   # renovate: datasource=docker depName=ghcr.io/berriai/litellm
-  image: ghcr.io/berriai/litellm:v1.96.2@sha256:154e23bb5f31b1f10e16392a8ef299bd2cde08de3a64a6849002cfcc25ce3c63
-  replicas: 1
-  generalSettings:
-    health_check_endpoint: /v1/health
-  routerSettings:
-    routing_strategy: simple-shuffle
-    redis_host: os.environ/REDIS_HOST
-    redis_port: os.environ/REDIS_PORT
-    num_retries: 3
-    timeout: 600
-  litellmSettings:
-    success_callback:
-      - prometheus
-    prometheus_adapter: true
-    cache: true
-    cache_params:
-      type: redis
-      host: os.environ/REDIS_HOST
-      port: os.environ/REDIS_PORT
-    drop_params: true
-    merge_reasoning_content_in_choices: true
   env:
     - name: LITELLM_LOG
       value: INFO
@@ -39,25 +18,46 @@ spec:
     - name: LITELLM_MASTER_KEY
       valueFrom:
         secretKeyRef:
-          name: litellm
           key: LITELLM_MASTER_KEY
+          name: litellm
     - name: DATABASE_URL
       valueFrom:
         secretKeyRef:
-          name: "litellm-postgres"
           key: uri
+          name: "litellm-postgres"
+  generalSettings:
+    health_check_endpoint: /v1/health
+  image: ghcr.io/berriai/litellm:v1.96.2@sha256:154e23bb5f31b1f10e16392a8ef299bd2cde08de3a64a6849002cfcc25ce3c63
+  litellmSettings:
+    cache: true
+    cache_params:
+      host: os.environ/REDIS_HOST
+      port: os.environ/REDIS_PORT
+      type: redis
+    drop_params: true
+    merge_reasoning_content_in_choices: true
+    prometheus_adapter: true
+    success_callback:
+      - prometheus
+  replicas: 1
   resources:
+    limits:
+      memory: 2Gi
     requests:
       cpu: 100m
       memory: 256Mi
-    limits:
-      memory: 2Gi
-  service:
-    type: ClusterIP
-    port: 4000
   route:
     hostnames:
       - litellm.${SECRET_DOMAIN}
     parentRefs:
       - name: envoy-internal
         namespace: network
+  routerSettings:
+    num_retries: 3
+    redis_host: os.environ/REDIS_HOST
+    redis_port: os.environ/REDIS_PORT
+    routing_strategy: simple-shuffle
+    timeout: 600
+  service:
+    port: 4000
+    type: ClusterIP

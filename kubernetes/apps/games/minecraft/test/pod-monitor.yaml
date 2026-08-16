@@ -7,11 +7,6 @@ metadata:
   labels:
     metrics: *app
 spec:
-  selector:
-    matchLabels:
-      app: *app
-  podTargetLabels:
-    - app
   podMetricsEndpoints:
     - port: metrics
       relabelings:
@@ -21,3 +16,8 @@ spec:
         - action: replace
           replacement: minecraft
           targetLabel: job
+  podTargetLabels:
+    - app
+  selector:
+    matchLabels:
+      app: *app

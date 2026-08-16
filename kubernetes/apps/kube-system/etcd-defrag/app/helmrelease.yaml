@@ -14,27 +14,29 @@ spec:
       # Must use host network to access etcd on localhost:2379
       hostNetwork: true
       hostPID: true
+      # Ensure this only runs on the control plane node
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
       securityContext:
         runAsGroup: 0
         runAsNonRoot: false
         runAsUser: 0
-      # Ensure this only runs on the control plane node
-      nodeSelector:
-        node-role.kubernetes.io/control-plane: ""
       tolerations:
-        - key: node-role.kubernetes.io/control-plane
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
           operator: Exists
-          effect: NoSchedule
 
     controllers:
       etcd-defrag:
         type: cronjob
         cronjob:
           # Run weekly on Sunday at 3 AM
-          schedule: "0 3 * * 0"
           concurrencyPolicy: Forbid
           failedJobsHistory: 1
+          schedule: "0 3 * * 0"
           successfulJobsHistory: 1
+        serviceAccount:
+          name: etcd-defrag
         containers:
           app:
             image:
@@ -65,8 +67,6 @@ spec:
                 memory: 128Mi
             securityContext:
               privileged: true
-        serviceAccount:
-          name: etcd-defrag
 
     persistence:
       certs:

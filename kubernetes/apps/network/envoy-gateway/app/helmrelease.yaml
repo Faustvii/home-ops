@@ -9,12 +9,12 @@ spec:
     name: envoy-gateway
   interval: 1h
   values:
-    global:
-      imageRegistry: mirror.gcr.io
     config:
       envoyGateway:
         provider:
-          type: Kubernetes
           kubernetes:
             deploy:
               type: GatewayNamespace
+          type: Kubernetes
+    global:
+      imageRegistry: mirror.gcr.io

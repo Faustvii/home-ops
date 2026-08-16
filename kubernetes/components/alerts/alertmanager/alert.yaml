@@ -5,8 +5,6 @@ kind: Alert
 metadata:
   name: alertmanager
 spec:
-  providerRef:
-    name: alertmanager
   eventSeverity: error
   eventSources:
     - kind: FluxInstance
@@ -27,4 +25,6 @@ spec:
     - waiting.*socket
     - health check failed.*context canceled
     - .*status code 502.*
+  providerRef:
+    name: alertmanager
   suspend: false

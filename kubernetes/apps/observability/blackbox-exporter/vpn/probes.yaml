@@ -5,6 +5,10 @@ kind: Probe
 metadata:
   name: vpn-icmp
 spec:
+  metricRelabelings:
+    - action: replace
+      replacement: blackbox-exporter-vpn
+      targetLabel: service
   module: icmp
   prober:
     url: blackbox-exporter-vpn.observability.svc.cluster.local:9115
@@ -12,10 +16,6 @@ spec:
     staticConfig:
       static:
         - 1.1.1.1
-  metricRelabelings:
-    - targetLabel: service
-      replacement: blackbox-exporter-vpn
-      action: replace
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/probe_v1.json
 apiVersion: monitoring.coreos.com/v1
@@ -23,6 +23,10 @@ kind: Probe
 metadata:
   name: vpn-http
 spec:
+  metricRelabelings:
+    - action: replace
+      replacement: blackbox-exporter-vpn
+      targetLabel: service
   module: http_2xx
   prober:
     url: blackbox-exporter-vpn.observability.svc.cluster.local:9115
@@ -30,7 +34,3 @@ spec:
     staticConfig:
       static:
         - https://one.one.one.one
-  metricRelabelings:
-    - targetLabel: service
-      replacement: blackbox-exporter-vpn
-      action: replace

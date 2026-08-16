@@ -4,51 +4,51 @@ kind: HelmRelease
 metadata:
   name: &app infisical
 spec:
-  interval: 30m
   chart:
     spec:
       chart: infisical-standalone
-      version: 1.10.0
       sourceRef:
         kind: HelmRepository
         name: infisical
+      version: 1.10.0
   install:
     remediation:
       retries: 3
+  interval: 30m
+  uninstall:
+    keepHistory: false
   upgrade:
     cleanupOnFail: true
     remediation:
       retries: 3
-  uninstall:
-    keepHistory: false
   values:
     fullnameOverride: *app
-    nameOverride: *app
 
     infisical:
-      replicaCount: 1
+      containerSecurityContext:
+        runAsUser: 1000
       image:
+        pullPolicy: IfNotPresent
         repository: infisical/infisical
         tag: "v0.162.19"
-        pullPolicy: IfNotPresent
 
       podSecurityContext:
         fsGroup: 1000
-      containerSecurityContext:
-        runAsUser: 1000
+      replicaCount: 1
+
+    ingress:
+      enabled: false
+      nginx:
+        enabled: false
+    nameOverride: *app
 
     postgresql:
       enabled: false
       useExistingPostgresSecret:
         enabled: true
         existingConnectionStringSecret:
-          name: infisical-postgres
           key: uri
+          name: infisical-postgres
 
     redis:
       enabled: false
-
-    ingress:
-      enabled: false
-      nginx:
-        enabled: false

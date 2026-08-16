@@ -5,10 +5,10 @@ kind: GrafanaDashboard
 metadata:
   name: victoria-traces-single-node
 spec:
-  instanceSelector:
-    matchLabels:
-      dashboards: grafana
   datasources:
     - datasourceName: prometheus
       inputName: DS_PROMETHEUS
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
   url: https://grafana.com/api/dashboards/24136/revisions/3/download

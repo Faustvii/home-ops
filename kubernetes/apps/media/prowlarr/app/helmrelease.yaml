@@ -10,6 +10,13 @@ spec:
     name: prowlarr
   interval: 1h
   values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
     controllers:
       prowlarr:
         annotations:
@@ -36,45 +43,38 @@ spec:
               liveness:
                 enabled: true
                 spec:
+                  failureThreshold: 5
                   periodSeconds: 30
                   timeoutSeconds: 5
-                  failureThreshold: 5
               readiness:
                 enabled: true
                 custom: true
                 spec:
+                  failureThreshold: 5
                   httpGet:
                     path: /ping
                     port: *port
                   periodSeconds: 10
                   timeoutSeconds: 5
-                  failureThreshold: 5
               startup:
                 enabled: true
                 spec:
                   failureThreshold: 30
                   periodSeconds: 10
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m
               limits:
                 memory: 1Gi
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-    service:
-      app:
-        ports:
-          http:
-            port: *port
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+              readOnlyRootFilesystem: true
+    persistence:
+      config:
+        existingClaim: "{{ .Release.Name }}"
+      tmp:
+        type: emptyDir
     route:
       app:
         hostnames:
@@ -82,8 +82,8 @@ spec:
         parentRefs:
           - name: envoy-internal
             namespace: network
-    persistence:
-      config:
-        existingClaim: "{{ .Release.Name }}"
-      tmp:
-        type: emptyDir
+    service:
+      app:
+        ports:
+          http:
+            port: *port

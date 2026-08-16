@@ -6,6 +6,27 @@ metadata:
   name: otel
 spec:
   config:
+
+    exporters:
+      debug: {}
+      otlp_grpc:
+        compression: gzip
+        endpoint: vtsingle-vt-otel.observability.svc.cluster.local:4317
+        tls:
+          insecure: true
+      otlp_http:
+        compression: gzip
+        encoding: proto
+        logs_endpoint: http://vlsingle-vl.observability.svc.cluster.local:9428/insert/opentelemetry/v1/logs
+        metrics_endpoint: http://vmsingle-vmks.observability.svc.cluster.local:8428/opentelemetry/v1/metrics
+
+    processors:
+      deltatocumulative:
+        max_stale: 5m
+      memory_limiter:
+        check_interval: 1s
+        limit_percentage: 75
+        spike_limit_percentage: 15
     receivers:
       otlp:
         protocols:
@@ -14,38 +35,17 @@ spec:
           http:
             endpoint: "[::]:4318"
 
-    processors:
-      memory_limiter:
-        check_interval: 1s
-        limit_percentage: 75
-        spike_limit_percentage: 15
-      deltatocumulative:
-        max_stale: 5m
-
-    exporters:
-      debug: {}
-      otlp_grpc:
-        endpoint: vtsingle-vt-otel.observability.svc.cluster.local:4317
-        compression: gzip
-        tls:
-          insecure: true
-      otlp_http:
-        compression: gzip
-        encoding: proto
-        metrics_endpoint: http://vmsingle-vmks.observability.svc.cluster.local:8428/opentelemetry/v1/metrics
-        logs_endpoint: http://vlsingle-vl.observability.svc.cluster.local:9428/insert/opentelemetry/v1/logs
-
     service:
       pipelines:
-        traces:
-          receivers: [otlp]
-          processors: [memory_limiter]
-          exporters: [otlp_grpc]
         logs:
-          receivers: [otlp]
+          exporters: [otlp_http]
           processors: [memory_limiter]
-          exporters: [otlp_http]
-        metrics:
           receivers: [otlp]
-          processors: [memory_limiter, deltatocumulative]
+        metrics:
           exporters: [otlp_http]
+          processors: [memory_limiter, deltatocumulative]
+          receivers: [otlp]
+        traces:
+          exporters: [otlp_grpc]
+          processors: [memory_limiter]
+          receivers: [otlp]

@@ -5,17 +5,17 @@ kind: PocketIDOIDCClient
 metadata:
   name: ${APP}
 spec:
-  name: ${OIDC_APP_NAME}
-  launchUrl: https://${APP}.${SECRET_DOMAIN}
-  callbackUrls:
-    - https://${APP}.${SECRET_DOMAIN}${OIDC_CALLBACK_PATH:=/oauth2/callback}
-  logoutCallbackUrls:
-    - https://${APP}.${SECRET_DOMAIN}${OIDC_LOGOUT_CALLBACK_PATH:=/logout}
-  pkceEnabled: ${OIDC_PKCE_ENABLED:=false}
   allowedUserGroups:
     - name: ${APP}-users
+  callbackUrls:
+    - https://${APP}.${SECRET_DOMAIN}${OIDC_CALLBACK_PATH:=/oauth2/callback}
+  launchUrl: https://${APP}.${SECRET_DOMAIN}
+  logoutCallbackUrls:
+    - https://${APP}.${SECRET_DOMAIN}${OIDC_LOGOUT_CALLBACK_PATH:=/logout}
+  name: ${OIDC_APP_NAME}
+  pkceEnabled: ${OIDC_PKCE_ENABLED:=false}
   secret:
-    name: ${APP}-oidc-credentials
     keys:
-      clientSecret: client-secret
       clientID: client-id
+      clientSecret: client-secret
+    name: ${APP}-oidc-credentials

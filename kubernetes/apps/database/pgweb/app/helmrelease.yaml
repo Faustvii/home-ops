@@ -10,6 +10,13 @@ spec:
     name: pgweb
   interval: 1h
   values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
     controllers:
       pgweb:
         annotations:
@@ -24,13 +31,13 @@ spec:
                 enabled: true
                 custom: true
                 spec:
+                  failureThreshold: 3
                   httpGet:
                     path: /
                     port: &port 8081
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
-                  failureThreshold: 3
               readiness: *probes
             resources:
               requests:
@@ -39,20 +46,11 @@ spec:
                 memory: 512Mi
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
               capabilities: {drop: ["ALL"]}
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-    service:
-      app:
-        ports:
-          http:
-            port: *port
+              readOnlyRootFilesystem: true
+    persistence:
+      config:
+        type: emptyDir
     route:
       app:
         hostnames:
@@ -60,9 +58,11 @@ spec:
         parentRefs:
           - name: envoy-internal
             namespace: network
-    persistence:
-      config:
-        type: emptyDir
+    service:
+      app:
+        ports:
+          http:
+            port: *port
       #   existingClaim: "{{ .Release.Name }}"
       # media:
       #   type: nfs

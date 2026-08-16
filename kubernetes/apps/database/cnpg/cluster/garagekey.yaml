@@ -5,11 +5,11 @@ kind: GarageKey
 metadata:
   name: postgres-key
 spec:
-  clusterRef:
-    name: garage
-    namespace: storage
   bucketPermissions:
     - bucketRef:
         name: postgres
       read: true
       write: true
+  clusterRef:
+    name: garage
+    namespace: storage

@@ -11,31 +11,31 @@ spec:
   interval: 1h
   values:
     config:
-      repo: github://faustvii/home-ops
       mcp: true
-      statusChecks: true
-      prComments: true
       prCommentTemplate: |
         ## konflate · #{{ .PR.Number }} — {{ .PR.Title }}
 
         {{ .Summary }}
-    secret:
-      existingSecret: konflate-webhook-token-secret
+      prComments: true
+      repo: github://faustvii/home-ops
+      statusChecks: true
     httpRoute:
-      enabled: true
       annotations:
         gatus.home-operations.com/endpoint: |-
           conditions: ["[STATUS] == 200"]
+      enabled: true
+      hostnames:
+        - "{{ .Release.Name }}.${SECRET_DOMAIN}"
       parentRefs:
         - name: envoy-external
           namespace: network
-      hostnames:
-        - "{{ .Release.Name }}.${SECRET_DOMAIN}"
     monitoring:
       serviceMonitor:
         enabled: true
     resources:
-      requests:
-        cpu: 50m
       limits:
         memory: 2Gi
+      requests:
+        cpu: 50m
+    secret:
+      existingSecret: konflate-webhook-token-secret

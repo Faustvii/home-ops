@@ -2,13 +2,13 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
+configMapGenerator:
+  - files:
+      - ./resources/server.yaml
+    name: ntfy-configmap
+configurations:
+  - ./resources/kustomizeconfig.yaml
 resources:
   - ./helmrelease.yaml
   - ./ocirepository.yaml
-
-configMapGenerator:
-  - name: ntfy-configmap
-    files:
-      - ./resources/server.yaml
-configurations:
-  - ./resources/kustomizeconfig.yaml

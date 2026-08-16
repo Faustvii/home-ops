@@ -5,18 +5,18 @@ kind: HelmRelease
 metadata:
   name: &app omniroute
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: *app
+  interval: 1h
   values:
     defaultPodOptions:
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
     controllers:
       *app :
         containers:
@@ -25,33 +25,32 @@ spec:
               repository: ghcr.io/diegosouzapw/omniroute
               tag: 3.8.49@sha256:92c768c56e2de32c51a0621ef182835018b00b288c9bb235c5c5e4514658c1a1
             env:
-              TZ: "${TZ}"
               NODE_ENV: production
               PORT: &port 20128
               REDIS_URL: "redis://dragonfly.database.svc.cluster.local:6379/3"
+              TZ: "${TZ}"
             probes:
               liveness: &probe
                 enabled: true
                 custom: true
                 spec:
-                  tcpSocket:
-                    port: *port
+                  failureThreshold: 3
                   initialDelaySeconds: 10
                   periodSeconds: 30
+                  tcpSocket:
+                    port: *port
                   timeoutSeconds: 10
-                  failureThreshold: 3
               readiness: *probe
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
 
-    service:
-      app:
-        controller: *app
-        ports:
-          http:
-            port: 80
-            targetPort: *port
+    persistence:
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /app/data
+            subPath: data
 
     route:
       main:
@@ -65,12 +64,13 @@ spec:
               - identifier: app
                 port: 80
 
-    persistence:
-      data:
-        existingClaim: *app
-        globalMounts:
-          - path: /app/data
-            subPath: data
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 80
+            targetPort: *port
 
       # tmpfs:
       #   type: emptyDir

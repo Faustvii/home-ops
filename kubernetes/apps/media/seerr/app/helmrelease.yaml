@@ -10,6 +10,13 @@ spec:
     name: seerr
   interval: 1h
   values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
     controllers:
       seerr:
         annotations:
@@ -20,9 +27,9 @@ spec:
               repository: ghcr.io/seerr-team/seerr
               tag: v3.4.1@sha256:f4768de5f616248d723e05891f3345a1402123775d03bf0890dbfedc0831bda1
             env:
-              TZ: America/New_York
               LOG_LEVEL: "info"
               PORT: &port 80
+              TZ: America/New_York
             envFrom:
               - secretRef:
                   name: "{{ .Release.Name }}"
@@ -30,45 +37,40 @@ spec:
               liveness:
                 enabled: true
                 spec:
+                  failureThreshold: 5
                   periodSeconds: 30
                   timeoutSeconds: 5
-                  failureThreshold: 5
               readiness:
                 enabled: true
                 custom: true
                 spec:
+                  failureThreshold: 5
                   httpGet:
                     path: /api/v1/status
                     port: *port
                   periodSeconds: 10
                   timeoutSeconds: 5
-                  failureThreshold: 5
               startup:
                 enabled: true
                 spec:
                   failureThreshold: 30
                   periodSeconds: 10
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 10m
               limits:
                 memory: 1Gi
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-    service:
-      app:
-        ports:
-          http:
-            port: *port
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: {drop: ["ALL"]}
+              readOnlyRootFilesystem: true
+    persistence:
+      config:
+        existingClaim: "{{ .Release.Name }}"
+        globalMounts:
+          - path: /app/config
+      tmp:
+        type: emptyDir
     route:
       app:
         annotations:
@@ -79,10 +81,8 @@ spec:
         parentRefs:
           - name: envoy-external
             namespace: network
-    persistence:
-      config:
-        existingClaim: "{{ .Release.Name }}"
-        globalMounts:
-          - path: /app/config
-      tmp:
-        type: emptyDir
+    service:
+      app:
+        ports:
+          http:
+            port: *port

@@ -5,34 +5,15 @@ metadata:
   name: mc-restarter
   namespace: games
 spec:
-  schedule: "15 3 * * *" # Runs every day at 3:15 AM
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       backoffLimit: 1
       template:
         spec:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 65532
-            runAsGroup: 65532
-            fsGroup: 65532
-            fsGroupChangePolicy: OnRootMismatch
-          restartPolicy: Never
-          serviceAccountName: mc-restarter-sa
           activeDeadlineSeconds: 300
           containers:
-            - name: mc-restarter
-              image: ghcr.io/faustvii/containers/playground:main
-              securityContext:
-                allowPrivilegeEscalation: false
-                readOnlyRootFilesystem: true
-                capabilities: { drop: ["ALL"] }
-              resources:
-                requests:
-                  cpu: 10m
-              command: ["/bin/sh", "-c"]
-              args:
+            - args:
                 - |
                   NAMESPACE=games
                   TARGET="deployment/minecraft"
@@ -44,6 +25,25 @@ spec:
                   kubectl rollout restart $TARGET
 
                   echo "Restart initiated. Deployment will manage the graceful shutdown."
+              command: ["/bin/sh", "-c"]
+              image: ghcr.io/faustvii/containers/playground:main
+              name: mc-restarter
+              resources:
+                requests:
+                  cpu: 10m
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities: { drop: ["ALL"] }
+                readOnlyRootFilesystem: true
+          restartPolicy: Never
+          securityContext:
+            fsGroup: 65532
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 65532
+            runAsNonRoot: true
+            runAsUser: 65532
+          serviceAccountName: mc-restarter-sa
+  schedule: "15 3 * * *" # Runs every day at 3:15 AM
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -54,8 +54,8 @@ metadata:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  namespace: games
   name: mc-restarter
+  namespace: games
 rules:
   - apiGroups: ["apps"]
     resources: ["deployments"]
@@ -66,11 +66,11 @@ kind: RoleBinding
 metadata:
   name: mc-restarter-binding
   namespace: games
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: mc-restarter
 subjects:
   - kind: ServiceAccount
     name: mc-restarter-sa
     namespace: games
-roleRef:
-  kind: Role
-  name: mc-restarter
-  apiGroup: rbac.authorization.k8s.io

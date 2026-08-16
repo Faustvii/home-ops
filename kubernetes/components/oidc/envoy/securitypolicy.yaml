@@ -5,16 +5,16 @@ kind: SecurityPolicy
 metadata:
   name: ${APP}
 spec:
-  targetRefs:
-    - group: gateway.networking.k8s.io
-      kind: HTTPRoute
-      name: ${APP}
   oidc:
-    provider:
-      issuer: https://idm.${SECRET_DOMAIN}
     clientIDRef:
       name: ${APP}-oidc-credentials
     clientSecret:
       name: ${APP}-oidc-credentials
-    redirectURL: https://${APP}.${SECRET_DOMAIN}${OIDC_CALLBACK_PATH:=/oauth2/callback}
     logoutPath: ${OIDC_PROVIDER_LOGOUT_PATH:=/logout}
+    provider:
+      issuer: https://idm.${SECRET_DOMAIN}
+    redirectURL: https://${APP}.${SECRET_DOMAIN}${OIDC_CALLBACK_PATH:=/oauth2/callback}
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: ${APP}

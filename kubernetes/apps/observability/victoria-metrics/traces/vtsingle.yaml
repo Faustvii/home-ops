@@ -6,10 +6,10 @@ metadata:
   name: vt
 spec:
   extraArgs:
-    otlpGRPCListenAddr: ":4317"
     otlpGRPC.tls: "false"
-  retentionPeriod: 14d
+    otlpGRPCListenAddr: ":4317"
   retentionMaxDiskSpaceUsageBytes: 20GB
+  retentionPeriod: 14d
   serviceSpec:
     metadata:
       name: vtsingle-vt-otel

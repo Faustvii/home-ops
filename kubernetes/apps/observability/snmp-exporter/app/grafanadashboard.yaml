@@ -6,10 +6,10 @@ metadata:
   name: apc-ups
 spec:
   allowCrossNamespaceImport: true
-  instanceSelector:
-    matchLabels:
-      dashboards: grafana
   datasources:
     - datasourceName: prometheus
       inputName: DS_PROMETHEUS
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
   url: https://grafana.com/api/dashboards/13524/revisions/1/download

@@ -6,8 +6,8 @@ metadata:
   name: postgres-${APP}
   namespace: database
 spec:
-  name: ${APP}
-  owner: ${OWNER}
   cluster:
     name: postgres
   extensions: ${EXTENSIONS:=${emptyArray}}
+  name: ${APP}
+  owner: ${OWNER}

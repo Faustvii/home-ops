@@ -4,15 +4,10 @@ kind: PersistentVolume
 metadata:
   name: downloads-nfs-pv
 spec:
-  storageClassName: downloads-nfs
-  capacity:
-    storage: 1Mi
   accessModes:
     - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: ${NFS_SERVER_IP}
-    path: ${NFS_PATH_DOWNLOADS}
+  capacity:
+    storage: 1Mi
   mountOptions:
     - nfsvers=4
     - tcp
@@ -21,6 +16,11 @@ spec:
     - noatime
     - nodiratime
     - nolock
+  nfs:
+    path: ${NFS_PATH_DOWNLOADS}
+    server: ${NFS_SERVER_IP}
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: downloads-nfs
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -28,9 +28,9 @@ metadata:
   name: downloads-nfs-pvc
   namespace: media
 spec:
-  storageClassName: downloads-nfs
   accessModes:
     - ReadWriteMany
   resources:
     requests:
       storage: 1Mi
+  storageClassName: downloads-nfs

@@ -19,14 +19,14 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      KOPIUR_CAPACITY: 15Gi
       OIDC_APP_NAME: Booklore
       OIDC_CALLBACK_PATH: /oauth2-callback
       OIDC_LOGOUT_CALLBACK_PATH: /login
       OIDC_PROVIDER_LOGOUT_PATH: /logout
-      KOPIUR_CAPACITY: 15Gi
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
   prune: true
   sourceRef:
     kind: GitRepository

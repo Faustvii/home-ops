@@ -13,10 +13,10 @@ spec:
     tag: 0.90.2
   url: oci://ghcr.io/victoriametrics/helm-charts/victoria-metrics-k8s-stack
   verify:
-    provider: cosign
     matchOIDCIdentity:
       - issuer: "^https://token.actions.githubusercontent.com$"
         subject: "^https://github.com/VictoriaMetrics/helm-charts.*$"
+    provider: cosign
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -24,20 +24,31 @@ kind: HelmRelease
 metadata:
   name: vmks
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: vm-k8s-stack
   dependsOn:
     - name: victoria-metrics-operator
+  interval: 1h
   values:
-    global:
-      cluster:
-        dnsDomain: cluster.local.
-    nameOverride: vmks
+    alertmanager:
+      enabled: true
+      route:
+        enabled: true
+        hostnames: ["alertmanager.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+      spec:
+        disableNamespaceMatcher: true
+        externalURL: https://alertmanager.${SECRET_DOMAIN}
+        storage:
+          volumeClaimTemplate:
+            spec:
+              resources:
+                requests:
+                  storage: 1Gi
     crds:
-      enabled: false
-    victoria-metrics-operator:
       enabled: false
     defaultDashboards:
       enabled: false
@@ -55,130 +66,6 @@ spec:
       rules:
         "count:up0":
           enabled: false
-    alertmanager:
-      enabled: true
-      route:
-        enabled: true
-        parentRefs:
-          - name: envoy-internal
-            namespace: network
-        hostnames: ["alertmanager.${SECRET_DOMAIN}"]
-      spec:
-        externalURL: https://alertmanager.${SECRET_DOMAIN}
-        disableNamespaceMatcher: true
-        storage:
-          volumeClaimTemplate:
-            spec:
-              resources:
-                requests:
-                  storage: 1Gi
-    vmalert:
-      enabled: true
-    grafana:
-      enabled: false
-    vmsingle:
-      spec:
-        extraArgs:
-          maxLabelsPerTimeseries: "40"
-          search.maxUniqueTimeseries: "600000"
-          search.minStalenessInterval: 5m
-          opentelemetry.usePrometheusNaming: "true"
-        replicaCount: 1
-        retentionPeriod: 14d
-        storage:
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 50Gi
-        useDefaultResources: false
-        useStrictSecurity: true
-        resources:
-          limits:
-            memory: 2Gi
-          requests:
-            cpu: 100m
-      route:
-        enabled: true
-        parentRefs:
-          - name: envoy-internal
-            namespace: network
-        hostnames: ["vmsingle.${SECRET_DOMAIN}"]
-    vmagent:
-      spec:
-        globalScrapeMetricRelabelConfigs: &relabel-config
-          - action: labeldrop
-            regex: ((?:extensions_talos|feature_node).*)
-        inlineRelabelConfig: *relabel-config
-        resources:
-          limits:
-            cpu: 1
-            memory: 1Gi
-          requests:
-            cpu: 150m
-        selectAllByDefault: true
-        scrapeInterval: 20s
-        extraArgs:
-          promscrape.streamParse: "true"
-          promscrape.maxScrapeSize: "32MB"
-    prometheus-node-exporter:
-      enabled: true
-    kubelet:
-      vmScrapes:
-        kubelet:
-          enabled: true
-      vmScrape:
-        spec:
-          relabelConfigs:
-            # This is the same as the chart default, but it explicitly excludes NFD node labels,
-            # and talos extension labels, and some others. These don't really provide any value,
-            # and they cause cardinality to explode.
-            - action: labelmap
-              regex: __meta_kubernetes_node_label_(.+)
-            - action: labeldrop
-              regex: (feature_node|extensions_talos_dev|beta_kubernetes|plan_upgrade_cattle_io|openebs_io|katacontainers_io|topology_rook_io_).*
-            - action: labeldrop
-              regex: .*kubevirt_io.*
-            - action: labeldrop
-              regex: .*home_arpa.*
-            - sourceLabels: [__metrics_path__]
-              targetLabel: metrics_path
-            - targetLabel: job
-              replacement: kubelet
-    kube-state-metrics:
-      enabled: true
-      fullnameOverride: kube-state-metrics
-    kubeApiServer:
-      enabled: true
-    kubeControllerManager:
-      vmScrape:
-        spec:
-          endpoints:
-            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-              port: http-metrics
-              scheme: https
-              tlsConfig:
-                insecureSkipVerify: true
-    kubeEtcd:
-      service:
-        selector:
-          component: kube-apiserver
-        port: 2381
-        targetPort: 2381
-      vmScrape:
-        spec:
-          endpoints:
-            - port: http-metrics
-              scheme: http
-    kubeScheduler:
-      vmScrape:
-        spec:
-          endpoints:
-            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-              port: http-metrics
-              scheme: https
-              tlsConfig:
-                insecureSkipVerify: true
     extraRules:
       dockerhub-rules:
         groups:
@@ -200,3 +87,116 @@ spec:
                 expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 10m >= 1) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[10m]) == 1
                 labels:
                   severity: critical
+    global:
+      cluster:
+        dnsDomain: cluster.local.
+    grafana:
+      enabled: false
+    kube-state-metrics:
+      enabled: true
+      fullnameOverride: kube-state-metrics
+    kubeApiServer:
+      enabled: true
+    kubeControllerManager:
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              port: http-metrics
+              scheme: https
+              tlsConfig:
+                insecureSkipVerify: true
+    kubeEtcd:
+      service:
+        port: 2381
+        selector:
+          component: kube-apiserver
+        targetPort: 2381
+      vmScrape:
+        spec:
+          endpoints:
+            - port: http-metrics
+              scheme: http
+    kubeScheduler:
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              port: http-metrics
+              scheme: https
+              tlsConfig:
+                insecureSkipVerify: true
+    kubelet:
+      vmScrape:
+        spec:
+          relabelConfigs:
+            # This is the same as the chart default, but it explicitly excludes NFD node labels,
+            # and talos extension labels, and some others. These don't really provide any value,
+            # and they cause cardinality to explode.
+            - action: labelmap
+              regex: __meta_kubernetes_node_label_(.+)
+            - action: labeldrop
+              regex: (feature_node|extensions_talos_dev|beta_kubernetes|plan_upgrade_cattle_io|openebs_io|katacontainers_io|topology_rook_io_).*
+            - action: labeldrop
+              regex: .*kubevirt_io.*
+            - action: labeldrop
+              regex: .*home_arpa.*
+            - sourceLabels: [__metrics_path__]
+              targetLabel: metrics_path
+            - replacement: kubelet
+              targetLabel: job
+      vmScrapes:
+        kubelet:
+          enabled: true
+    nameOverride: vmks
+    prometheus-node-exporter:
+      enabled: true
+    victoria-metrics-operator:
+      enabled: false
+    vmagent:
+      spec:
+        extraArgs:
+          promscrape.maxScrapeSize: "32MB"
+          promscrape.streamParse: "true"
+        globalScrapeMetricRelabelConfigs: &relabel-config
+          - action: labeldrop
+            regex: ((?:extensions_talos|feature_node).*)
+        inlineRelabelConfig: *relabel-config
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+          requests:
+            cpu: 150m
+        scrapeInterval: 20s
+        selectAllByDefault: true
+    vmalert:
+      enabled: true
+    vmsingle:
+      route:
+        enabled: true
+        hostnames: ["vmsingle.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+      spec:
+        extraArgs:
+          maxLabelsPerTimeseries: "40"
+          opentelemetry.usePrometheusNaming: "true"
+          search.maxUniqueTimeseries: "600000"
+          search.minStalenessInterval: 5m
+        replicaCount: 1
+        resources:
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 100m
+        retentionPeriod: 14d
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 50Gi
+        useDefaultResources: false
+        useStrictSecurity: true

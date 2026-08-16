@@ -12,15 +12,15 @@ spec:
   values:
     autoDirectNodeRoutes: true
     bandwidthManager:
-      enabled: true
       bbr: true
+      enabled: true
+    bgpControlPlane:
+      enabled: false
     bpf:
       datapathMode: veth
       masquerade: true
       preallocateMaps: true
     bpfClockProbe: true
-    bgpControlPlane:
-      enabled: false
     cgroup:
       automount:
         enabled: false

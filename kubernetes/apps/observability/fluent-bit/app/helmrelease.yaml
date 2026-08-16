@@ -11,27 +11,14 @@ spec:
   interval: 1h
   values:
     config:
-      service: |-
-        [SERVICE]
-          daemon off
-          flush {{ .Values.flush }}
-          log_level {{ .Values.logLevel }}
-          parsers_file /fluent-bit/etc/parsers.conf
-          parsers_file /fluent-bit/etc/conf/custom_parsers.conf
-          http_server on
-          http_listen 0.0.0.0
-          http_port {{ .Values.metricsPort }}
-          health_check on
 
-      inputs: |-
-        [INPUT]
-          name tail
-          alias kubernetes
-          path /var/log/containers/*.log
-          parser containerd
-          tag kubernetes.*
-          skip_empty_lines on
-          skip_long_lines on
+      customParsers: |-
+        [PARSER]
+          name containerd
+          format regex
+          regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<log>.*)$
+          time_key time
+          time_format %Y-%m-%dT%H:%M:%S.%L%z
 
       filters: |-
         [FILTER]
@@ -79,13 +66,15 @@ spec:
           exclude _msg Endpoints
           exclude _msg deprecated
 
-      customParsers: |-
-        [PARSER]
-          name containerd
-          format regex
-          regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<log>.*)$
-          time_key time
-          time_format %Y-%m-%dT%H:%M:%S.%L%z
+      inputs: |-
+        [INPUT]
+          name tail
+          alias kubernetes
+          path /var/log/containers/*.log
+          parser containerd
+          tag kubernetes.*
+          skip_empty_lines on
+          skip_long_lines on
 
       outputs: |-
         [OUTPUT]
@@ -98,8 +87,19 @@ spec:
           json_date_format iso8601
           compress gzip
           log_response_payload false
+      service: |-
+        [SERVICE]
+          daemon off
+          flush {{ .Values.flush }}
+          log_level {{ .Values.logLevel }}
+          parsers_file /fluent-bit/etc/parsers.conf
+          parsers_file /fluent-bit/etc/conf/custom_parsers.conf
+          http_server on
+          http_listen 0.0.0.0
+          http_port {{ .Values.metricsPort }}
+          health_check on
     dashboards:
       enabled: true
+    logLevel: warn
     serviceMonitor:
       enabled: true
-    logLevel: warn

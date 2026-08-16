@@ -6,26 +6,26 @@ metadata:
   name: &app radarr
   namespace: &namespace media
 spec:
-  interval: 1h
   components:
     - ../../../../components/kopiur
     - ../../../../components/dashbrr
   dependsOn:
     - name: pocket-id
       namespace: security
+  interval: 1h
   path: ./kubernetes/apps/media/radarr/app
   postBuild:
     substitute:
       APP: *app
+      KOPIUR_CAPACITY: 10Gi
       NAMESPACE: *namespace
       OIDC_APP_NAME: Radarr
       OIDC_CALLBACK_PATH: /oauth2/callback
       OIDC_LOGOUT_CALLBACK_PATH: /
       OIDC_PROVIDER_LOGOUT_PATH: /logout
-      KOPIUR_CAPACITY: 10Gi
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
   prune: true
   sourceRef:
     kind: GitRepository

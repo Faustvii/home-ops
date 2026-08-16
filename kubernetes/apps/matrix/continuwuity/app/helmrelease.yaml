@@ -5,10 +5,10 @@ kind: HelmRelease
 metadata:
   name: &app continuwuity
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: continuwuity
+  interval: 1h
   values:
     defaultPodOptions:
       securityContext:
@@ -23,11 +23,11 @@ spec:
 
         pod:
           securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            runAsNonRoot: true
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
 
         containers:
           app:
@@ -40,106 +40,50 @@ spec:
               CONDUWUIT_REGISTRATION_TOKEN:
                 valueFrom:
                   secretKeyRef:
-                    name: conduit-registration-secret
                     key: token
+                    name: conduit-registration-secret
             probes:
               liveness: &probe
                 enabled: true
                 custom: true
                 spec:
+                  failureThreshold: 3
                   httpGet:
                     path: /_matrix/client/versions
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
-                  failureThreshold: 3
               readiness: *probe
             resources:
-              limits:
-                # cpu: 50M
-                memory: 1Gi
               requests:
                 cpu: 2
                 memory: 512Mi
+              limits:
+                # cpu: 50M
+                memory: 1Gi
             securityContext:
               capabilities:
                 drop:
                   - ALL
 
-    service:
-      app:
-        controller: *app
-        ports:
-          http:
-            port: 80
-            targetPort: *port
-
-    route:
-      app:
-        hostnames: ["matrix.${SECRET_DOMAIN}"]
-        forceRename: *app
-        parentRefs:
-          - name: envoy-external
-            namespace: network
-            sectionName: https
-        rules:
-          - matches:
-              - path:
-                  type: PathPrefix
-                  value: /
-            backendRefs:
-              - identifier: app
-                port: 80
-
-      federation:
-        hostnames: ["matrix-fed.${SECRET_DOMAIN}"]
-        annotations:
-          external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-        parentRefs:
-          - name: envoy-external
-            namespace: network
-            sectionName: https
-        rules:
-          - backendRefs:
-              - identifier: app
-                port: 80
-
-      well-known:
-        hostnames: ["${SECRET_DOMAIN}"]
-        annotations:
-          external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-          gatus.home-operations.com/enabled: "false"
-        parentRefs:
-          - name: envoy-external
-            namespace: network
-            sectionName: https
-        rules:
-          - matches:
-              - path:
-                  type: PathPrefix
-                  value: /.well-known/matrix/
-            backendRefs:
-              - identifier: app
-                port: 80
-
     persistence:
       data:
-        enabled: true
         type: persistentVolumeClaim
+        enabled: true
         existingClaim: *app
 
       media:
-        size: 5Gi
         accessMode: ReadWriteOnce
-        suffix: "media"
         retain: true
+        size: 5Gi
+        suffix: "media"
         globalMounts:
           - path: /data/media
 
       backups:
-        size: 5Gi
         accessMode: ReadWriteOnce
+        size: 5Gi
         suffix: "backups"
         globalMounts:
           - path: /backups
@@ -150,3 +94,59 @@ spec:
         globalMounts:
           - path: /config/conduit.toml
             subPath: conduit.toml
+
+    route:
+      app:
+        forceRename: *app
+        hostnames: ["matrix.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: 80
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+
+      federation:
+        annotations:
+          external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+        hostnames: ["matrix-fed.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: 80
+
+      well-known:
+        annotations:
+          external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+          gatus.home-operations.com/enabled: "false"
+        hostnames: ["${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: 80
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /.well-known/matrix/
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 80
+            targetPort: *port

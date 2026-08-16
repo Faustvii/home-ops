@@ -18,8 +18,8 @@ spec:
       APP: *app
       KOPIUR_CAPACITY: 1Gi
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
   prune: true
   retryInterval: 2m
   sourceRef:

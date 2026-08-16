@@ -18,6 +18,10 @@ Whenever asked to sort these files, follow these instructions:
     - `annotations`
     - `labels`
 
+### ExternalSecret
+
+- Within an `ExternalSecret` `spec`, the data source section is always kept at the **bottom**: all other keys are sorted alphabetically, then `data` and `dataFrom` come last (in that order). For example: `refreshInterval`, `secretStoreRef`, `target`, then `dataFrom`.
+
 ## HelmReleases based on app-template
 
 This section gives instructions specifically for HelmReleases that are based on the `app-template` chart. These can be identified by the presence of a sidecar `ocirepository.yaml` file that references `oci://ghcr.io/bjw-s-labs/helm/app-template` in the `url` field.

@@ -37,24 +37,24 @@ spec:
                 enabled: true
                 custom: true
                 spec:
+                  failureThreshold: 3
                   httpGet:
                     path: /stats
                     port: *httpPort
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
-                  failureThreshold: 3
               readiness:
                 enabled: true
                 custom: true
                 spec:
+                  failureThreshold: 3
                   httpGet:
                     path: /stats
                     port: *httpPort
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
-                  failureThreshold: 3
             resources:
               requests:
                 cpu: 10m
@@ -78,11 +78,11 @@ spec:
         name: searxng-config
         globalMounts:
           - path: /etc/searxng/limiter.toml
+            readOnly: true
             subPath: limiter.toml
-            readOnly: true
           - path: /etc/searxng/settings.yml
-            subPath: settings.yaml
             readOnly: true
+            subPath: settings.yaml
       tmpfs:
         type: emptyDir
         globalMounts:

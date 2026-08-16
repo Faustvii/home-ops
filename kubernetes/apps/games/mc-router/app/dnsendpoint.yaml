@@ -7,8 +7,8 @@ metadata:
 spec:
   endpoints:
     - dnsName: "mc.${SECRET_DOMAIN}"
-      recordType: CNAME
-      targets: ["ddns.${SECRET_DOMAIN}"]
       providerSpecific:
         - name: external-dns.alpha.kubernetes.io/cloudflare-proxied
           value: "false"
+      recordType: CNAME
+      targets: ["ddns.${SECRET_DOMAIN}"]

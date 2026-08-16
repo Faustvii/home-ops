@@ -5,9 +5,9 @@ kind: GarageBucket
 metadata:
   name: postgres
 spec:
+  bucketId: caa4936288446c39ca1acb18130ed77140a0c55f02aa0ef09bb48dedf756a0c0
   clusterRef:
     name: garage
     namespace: storage
   quotas:
     maxSize: 50Gi
-  bucketId: caa4936288446c39ca1acb18130ed77140a0c55f02aa0ef09bb48dedf756a0c0
