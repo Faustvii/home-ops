@@ -8,10 +8,11 @@ spec:
   interval: 1h
   components:
     - ../../../../components/kopiur
+    - ../../../../components/dashbrr
   dependsOn:
     - name: pocket-id
       namespace: security
-  path: ./kubernetes/apps/default/radarr/app
+  path: ./kubernetes/apps/media/radarr/app
   postBuild:
     substitute:
       APP: *app
@@ -19,7 +20,7 @@ spec:
       OIDC_CALLBACK_PATH: /oauth2/callback
       OIDC_LOGOUT_CALLBACK_PATH: /
       OIDC_PROVIDER_LOGOUT_PATH: /logout
-      KOPIUR_CAPACITY: 5Gi
+      KOPIUR_CAPACITY: 10Gi
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
@@ -28,5 +29,5 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: default
+  targetNamespace: media
   wait: false
