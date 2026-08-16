@@ -8,6 +8,7 @@ spec:
   components:
     - ../../../../components/kopiur
     - ../../../../components/sops
+    - ../../../../components/dashbrr
   interval: 1h
   path: ./kubernetes/apps/media/prowlarr/app
   postBuild:
