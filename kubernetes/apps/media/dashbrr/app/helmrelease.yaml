@@ -12,6 +12,8 @@ spec:
   values:
     controllers:
       dashbrr:
+        annotations:
+          reloader.stakater.com/auto: "true"
         pod:
           automountServiceAccountToken: true
           securityContext:
