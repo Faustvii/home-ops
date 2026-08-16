@@ -26,10 +26,8 @@ spec:
             image:
               repository: ghcr.io/autobrr/dashbrr
               tag: v0.5.1
-            args:
-              - --config
-              - /tmp/config.toml
             env:
+              DASHBRR__CONFIG_PATH: /data/config.toml
               TZ: ${TZ}
             probes:
               liveness:
