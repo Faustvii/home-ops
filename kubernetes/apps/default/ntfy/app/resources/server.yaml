@@ -1,4 +1,3 @@
-
 attachment-cache-dir: /cache/attachments
 
 auth-default-access: deny-all

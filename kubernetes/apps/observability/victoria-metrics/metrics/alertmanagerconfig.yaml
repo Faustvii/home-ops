@@ -5,7 +5,6 @@ kind: AlertmanagerConfig
 metadata:
   name: alertmanager
 spec:
-
   inhibitRules:
     - equal:
         - alertname

@@ -23,13 +23,11 @@ spec:
       rules:
         - alert: CertManagerCertExpirySoon
           annotations:
-            description:
-              "The domain that this cert covers will be unavailable after
+            description: "The domain that this cert covers will be unavailable after
               {{ $value | humanizeDuration }}. Clients using endpoints that this cert
               protects will start to fail in {{ $value | humanizeDuration }}."
             runbook_url: https://gitlab.com/uneeq-oss/cert-manager-mixin/-/blob/master/RUNBOOK.md#certmanagercertexpirysoon
-            summary:
-              "The cert {{ $labels.name }} is {{ $value | humanizeDuration }}
+            summary: "The cert {{ $labels.name }} is {{ $value | humanizeDuration }}
               from expiry, it should have renewed before hitting 1/3 of its total duration."
           expr: |-
             avg by (exported_namespace, namespace, name) (certmanager_certificate_expiration_timestamp_seconds - time()) < (36 * 3600)

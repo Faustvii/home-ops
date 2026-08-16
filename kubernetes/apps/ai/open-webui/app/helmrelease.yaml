@@ -20,7 +20,6 @@ spec:
               repository: ghcr.io/open-webui/open-webui
               tag: v0.11.0@sha256:72c0ba641ba75e7aa52655cb242570906ececd09b1140fb736483038a22b3228
             env:
-
               # Websockets
               ENABLE_WEBSOCKET_SUPPORT: true
               WEBSOCKET_MANAGER: redis

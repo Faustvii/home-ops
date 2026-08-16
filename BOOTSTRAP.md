@@ -39,21 +39,21 @@ In `kubernetes/components/database/postgres/cluster.yaml`:
 
 ```yaml
 bootstrap:
-  recovery:
-    source: source
+    recovery:
+        source: source
 plugins:
-  - name: &plugin barman-cloud.cloudnative-pg.io
-    isWALArchiver: true
-    parameters:
-      barmanObjectName: &store minio-store
-      serverName: postgres-v3        # bumped from v2
-externalClusters:
-  - name: source
-    plugin:
-      name: *plugin
+    - name: &plugin barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
       parameters:
-        barmanObjectName: *store
-        serverName: postgres-v2      # was the previous serverName
+          barmanObjectName: &store minio-store
+          serverName: postgres-v3 # bumped from v2
+externalClusters:
+    - name: source
+      plugin:
+          name: *plugin
+          parameters:
+              barmanObjectName: *store
+              serverName: postgres-v2 # was the previous serverName
 ```
 
 ### 2. Commit and apply
@@ -96,18 +96,18 @@ Once the cluster is `Ready`, remove the `bootstrap.recovery` block and commit:
 #   recovery:
 #     source: source
 plugins:
-  - name: &plugin barman-cloud.cloudnative-pg.io
-    isWALArchiver: true
-    parameters:
-      barmanObjectName: &store minio-store
-      serverName: postgres-v3        # keep this — it's the current version
-externalClusters:
-  - name: source
-    plugin:
-      name: *plugin
+    - name: &plugin barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
       parameters:
-        barmanObjectName: *store
-        serverName: postgres-v2      # keep this — needed for next restore
+          barmanObjectName: &store minio-store
+          serverName: postgres-v3 # keep this — it's the current version
+externalClusters:
+    - name: source
+      plugin:
+          name: *plugin
+          parameters:
+              barmanObjectName: *store
+              serverName: postgres-v2 # keep this — needed for next restore
 ```
 
 ```bash
@@ -122,6 +122,6 @@ git push
 
 Track serverName bumps here so the next restore is always unambiguous.
 
-| Date | Event | serverName |
-|------|-------|------------|
+| Date    | Event           | serverName |
+| ------- | --------------- | ---------- |
 | initial | cluster created | `postgres` |

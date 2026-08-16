@@ -9,7 +9,6 @@ spec:
     name: crd-schema-publisher
   interval: 1h
   values:
-
     # rclone sidecar — syncs the shared output volume to S3-compatible storage.
     # The "output" volume is the chart's default emptyDir.
     extraContainers:

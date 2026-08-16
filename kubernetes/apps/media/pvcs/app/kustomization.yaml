@@ -5,4 +5,3 @@ kind: Kustomization
 resources:
   - ./downloads-nfs-pvc.yaml
   - ./media-nfs-pvc.yaml
-

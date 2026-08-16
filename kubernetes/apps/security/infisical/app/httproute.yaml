@@ -17,4 +17,3 @@ spec:
         - name: infisical-infisical
           namespace: security
           port: 8080
-

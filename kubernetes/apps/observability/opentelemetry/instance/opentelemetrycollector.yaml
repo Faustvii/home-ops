@@ -6,7 +6,6 @@ metadata:
   name: otel
 spec:
   config:
-
     exporters:
       debug: {}
       otlp_grpc:

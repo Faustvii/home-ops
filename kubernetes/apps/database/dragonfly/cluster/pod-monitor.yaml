@@ -8,7 +8,7 @@ metadata:
     metrics: *app
 spec:
   podMetricsEndpoints:
-  - port: admin
+    - port: admin
   podTargetLabels:
     - app
   selector:

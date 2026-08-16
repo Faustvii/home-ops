@@ -4,7 +4,6 @@ kind: GarageCluster
 metadata:
   name: garage
 spec:
-
   admin:
     adminTokenSecretRef:
       key: GARAGE_ADMIN_TOKEN

@@ -3,31 +3,23 @@
   packageRules: [
     {
       description: "Changelog URL for Cloudflared",
-      matchPackageNames: [
-        "/cloudflared/"
-      ],
+      matchPackageNames: ["/cloudflared/"],
       changelogUrl: "https://github.com/cloudflare/cloudflared/blob/master/RELEASE_NOTES",
     },
     {
       description: "Source URL for Kaniop",
-      matchPackageNames: [
-        "ghcr.io/pando85/helm-charts/kaniop"
-      ],
-      sourceUrl: "https://github.com/pando85/kaniop"
+      matchPackageNames: ["ghcr.io/pando85/helm-charts/kaniop"],
+      sourceUrl: "https://github.com/pando85/kaniop",
     },
     {
       description: "Source URL for Kanidm",
-      matchPackageNames: [
-        "docker.io/kanidm/server"
-      ],
-      sourceUrl: "https://github.com/kanidm/kanidm"
+      matchPackageNames: ["docker.io/kanidm/server"],
+      sourceUrl: "https://github.com/kanidm/kanidm",
     },
     {
       description: "Source URL for Envoy Proxy",
-      matchPackageNames: [
-        "mirror.gcr.io/envoyproxy/envoy"
-      ],
-      sourceUrl: "https://github.com/envoyproxy/envoy"
-    }
+      matchPackageNames: ["mirror.gcr.io/envoyproxy/envoy"],
+      sourceUrl: "https://github.com/envoyproxy/envoy",
+    },
   ],
 }

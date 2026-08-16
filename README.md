@@ -36,9 +36,10 @@ There are **5 stages** outlined below for completing this project, make sure you
 > If you have **3 or more nodes** it is recommended to make 3 of them controller nodes for a highly available control plane. This project configures **all nodes** to be able to run workloads. **Worker nodes** are therefore **optional**.
 >
 > **Minimum system requirements**
-> | Role    | Cores    | Memory        | System Disk               |
-> |---------|----------|---------------|---------------------------|
-> | Control/Worker | 4 | 16GB | 256GB SSD/NVMe |
+>
+> | Role           | Cores | Memory | System Disk    |
+> | -------------- | ----- | ------ | -------------- |
+> | Control/Worker | 4     | 16GB   | 256GB SSD/NVMe |
 
 1. Head over to the [Talos Linux Image Factory](https://factory.talos.dev) and follow the instructions. Be sure to only choose the **bare-minimum system extensions** as some might require additional configuration and prevent Talos from booting without it. You can always add system extensions after Talos is installed and working.
 
@@ -76,9 +77,9 @@ There are **5 stages** outlined below for completing this project, make sure you
     mise install
     ```
 
-   📍 _**Having trouble installing the tools?** Try unsetting the `GITHUB_TOKEN` env var and then run these commands again_
+    📍 _**Having trouble installing the tools?** Try unsetting the `GITHUB_TOKEN` env var and then run these commands again_
 
-   📍 _**Having trouble compiling Python?** Try running `mise settings python.compile=0` and then run these commands again_
+    📍 _**Having trouble compiling Python?** Try running `mise settings python.compile=0` and then run these commands again_
 
 5. Logout of GitHub Container Registry (GHCR) as this may cause authorization problems when using the public registry:
 
@@ -94,11 +95,11 @@ There are **5 stages** outlined below for completing this project, make sure you
 
 1. Create a Cloudflare API token for use with cloudflared and external-dns by reviewing the official [documentation](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) and following the instructions below.
 
-   - Click the blue `Use template` button for the `Edit zone DNS` template.
-   - Name your token `kubernetes`
-   - Under `Permissions`, click `+ Add More` and add permissions `Zone - DNS - Edit` and `Account - Cloudflare Tunnel - Read`
-   - Limit the permissions to a specific account and/or zone resources and then click `Continue to Summary` and then `Create Token`.
-   - **Save this token somewhere safe**, you will need it later on.
+    - Click the blue `Use template` button for the `Edit zone DNS` template.
+    - Name your token `kubernetes`
+    - Under `Permissions`, click `+ Add More` and add permissions `Zone - DNS - Edit` and `Account - Cloudflare Tunnel - Read`
+    - Limit the permissions to a specific account and/or zone resources and then click `Continue to Summary` and then `Create Token`.
+    - **Save this token somewhere safe**, you will need it later on.
 
 2. Create the Cloudflare Tunnel:
 
@@ -125,7 +126,7 @@ There are **5 stages** outlined below for completing this project, make sure you
 
 4. Push your changes to git:
 
-   📍 _**Verify** all the `./kubernetes/**/*.sops.*` files are **encrypted** with SOPS_
+    📍 _**Verify** all the `./kubernetes/**/*.sops.*` files are **encrypted** with SOPS_
 
     ```sh
     git add -A
@@ -179,7 +180,7 @@ There are **5 stages** outlined below for completing this project, make sure you
 
 2. Check the status of Flux and if the Flux resources are up-to-date and in a ready state:
 
-   📍 _Run `task reconcile` to force Flux to sync your Git repository state_
+    📍 _Run `task reconcile` to force Flux to sync your Git repository state_
 
     ```sh
     flux check
@@ -190,7 +191,7 @@ There are **5 stages** outlined below for completing this project, make sure you
 
 3. Check TCP connectivity to both the internal and external gateways:
 
-   📍 _The variables are only placeholders, replace them with your actual values_
+    📍 _The variables are only placeholders, replace them with your actual values_
 
     ```sh
     nmap -Pn -n -p 443 ${cluster_gateway_addr} ${cloudflare_gateway_addr} -vv
@@ -198,7 +199,7 @@ There are **5 stages** outlined below for completing this project, make sure you
 
 4. Check you can resolve DNS for `echo`, this should resolve to `${cloudflare_gateway_addr}`:
 
-   📍 _The variables are only placeholders, replace them with your actual values_
+    📍 _The variables are only placeholders, replace them with your actual values_
 
     ```sh
     dig @${cluster_dns_gateway_addr} echo.${cloudflare_domain}
@@ -232,7 +233,7 @@ By default Flux will periodically check your git repository for changes. In-orde
 
 1. Obtain the webhook path:
 
-   📍 _Hook id and path should look like `/hook/12ebd1e363c641dc3c2e430ecf3cee2b3c7a5ac9e1234506f6f5f3ce1230e123`_
+    📍 _Hook id and path should look like `/hook/12ebd1e363c641dc3c2e430ecf3cee2b3c7a5ac9e1234506f6f5f3ce1230e123`_
 
     ```sh
     kubectl -n flux-system get receiver github-webhook --output=jsonpath='{.status.webhookPath}'
@@ -299,23 +300,23 @@ You don't need to re-bootstrap the cluster to add new nodes. Follow these steps:
 
 2. **Get the node information**: While the node is in maintenance mode, retrieve the disk and MAC address information needed for configuration:
 
-   ```sh
-   talosctl get disks -n <ip> --insecure
-   talosctl get links -n <ip> --insecure
-   ```
+    ```sh
+    talosctl get disks -n <ip> --insecure
+    talosctl get links -n <ip> --insecure
+    ```
 
 3. **Update the configuration**: Read the documentation for [talhelper](https://budimanjojo.github.io/talhelper/latest/) and extend the `talconfig.yaml` file manually with the new node information (including the disk and MAC address from step 2).
 
 4. **Generate and apply the configuration**:
 
-   ```sh
-   # Render your talosconfig based on the talconfig.yaml file
-   task talos:generate-config
+    ```sh
+    # Render your talosconfig based on the talconfig.yaml file
+    task talos:generate-config
 
-   # Apply the configuration to the node
-   task talos:apply-node IP=?
-   # e.g. task talos:apply-node IP=10.10.10.10
-   ```
+    # Apply the configuration to the node
+    task talos:apply-node IP=?
+    # e.g. task talos:apply-node IP=10.10.10.10
+    ```
 
 The node should join the cluster automatically and workloads will be scheduled once they report as ready.
 
@@ -333,7 +334,7 @@ Below is a general guide on trying to debug an issue with an resource or applica
 
 1. Check if the Flux resources are up-to-date and in a ready state:
 
-   📍 _Run `task reconcile` to force Flux to sync your Git repository state_
+    📍 _Run `task reconcile` to force Flux to sync your Git repository state_
 
     ```sh
     flux get sources git -A
@@ -448,9 +449,9 @@ If you're having difficulty with this project, can't find the answers you need t
 - **Rate**: $50/hour (no longer than 2 hours / day).
 - **What’s Included**: Assistance with deployment, debugging, or answering questions related to this project.
 - **What to Expect**:
-  1. Sessions will focus on specific questions or issues you are facing.
-  2. I will provide guidance, explanations, and actionable steps to help resolve your concerns.
-  3. Support is limited to this project and does not extend to unrelated tools or custom feature development.
+    1. Sessions will focus on specific questions or issues you are facing.
+    2. I will provide guidance, explanations, and actionable steps to help resolve your concerns.
+    3. Support is limited to this project and does not extend to unrelated tools or custom feature development.
 
 </details>
 

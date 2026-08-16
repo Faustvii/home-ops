@@ -4,13 +4,8 @@
     {
       description: "Actions Runner Controller Group",
       groupName: "actions-runner-controller",
-      matchDatasources: [
-        "docker"
-      ],
-      matchPackageNames: [
-        "/gha-runner-scale-set-controller/",
-        "/gha-runner-scale-set/"
-      ],
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/gha-runner-scale-set-controller/", "/gha-runner-scale-set/"],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
@@ -19,13 +14,8 @@
     {
       description: "Flux Operator Group",
       groupName: "flux-operator",
-      matchDatasources: [
-        "docker"
-      ],
-      matchPackageNames: [
-        "/flux-operator/",
-        "/flux-instance/"
-      ],
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/flux-operator/", "/flux-instance/"],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
@@ -34,9 +24,7 @@
     {
       description: "Kubernetes Group",
       groupName: "kubernetes",
-      matchDatasources: [
-        "docker"
-      ],
+      matchDatasources: ["docker"],
       matchPackageNames: [
         "/kube-apiserver/",
         "/kube-controller-manager/",
@@ -52,10 +40,7 @@
     {
       description: "Flate Group",
       groupName: "flate",
-      matchPackageNames: [
-        "home-operations/flate",
-        "github:home-operations/flate"
-      ],
+      matchPackageNames: ["home-operations/flate", "github:home-operations/flate"],
       minimumGroupSize: 2,
       group: {
         commitMessageTopic: "{{{groupName}}} group",
@@ -64,18 +49,13 @@
     {
       description: "Talos Group",
       groupName: "talos",
-      matchDatasources: [
-        "docker",
-        "github-releases",
-        "github-tags",
-        "custom.talos-factory"
-      ],
+      matchDatasources: ["docker", "github-releases", "github-tags", "custom.talos-factory"],
       matchPackageNames: [
         "ghcr.io/siderolabs/installer",
         "ghcr.io/siderolabs/talosctl",
         "aqua:siderolabs/talos",
         "siderolabs/talos",
-        "/factory\\.talos\\.dev/"
+        "/factory\\.talos\\.dev/",
       ],
       minimumGroupSize: 2,
       group: {

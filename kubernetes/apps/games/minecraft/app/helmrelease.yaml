@@ -41,7 +41,6 @@ spec:
       USE_AIKAR_FLAGS: true
 
     extraVolumes:
-
       - volumeMounts:
           - mountPath: /extras/datapacks.txt
             name: datapacks
@@ -84,12 +83,12 @@ spec:
             type: ClusterIP
       levelSeed: "5143877906783391683"
       maxPlayers: 24
-          # not updated yet for 1.21.11
-          # - fabricexporter
-          # - async
-          # - noisiumforked
-          # - krypton
-          # - carpet
+        # not updated yet for 1.21.11
+        # - fabricexporter
+        # - async
+        # - noisiumforked
+        # - krypton
+        # - carpet
       modUrls:
         - "https://github.com/gnembon/fabric-carpet/releases/download/1.4.193/fabric-carpet-1.21.11-1.4.193+v251211.jar"
         - "https://github.com/ruscalworld/fabric-exporter/releases/download/v1.0.19/fabricexporter-1.0.19.jar"
@@ -179,8 +178,7 @@ spec:
           - mountPath: /data # mount Minecraft world + configs
             name: datadir
     terminationGracePeriodSeconds: 90
-        # - "https://cdn.modrinth.com/data/YoRtMPzM/versions/ze2xyOSp/SHA1Runtime-1.21.10-1.4.1.jar" # SHA1Runtime crashes the server on player connect
-
+      # - "https://cdn.modrinth.com/data/YoRtMPzM/versions/ze2xyOSp/SHA1Runtime-1.21.10-1.4.1.jar" # SHA1Runtime crashes the server on player connect
 
   valuesFrom:
     - kind: Secret

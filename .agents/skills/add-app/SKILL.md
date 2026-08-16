@@ -7,11 +7,11 @@ description: Use when deploying a new application to the cluster — scaffolding
 
 Scaffolds `kubernetes/apps/<namespace>/<app>/` with a Flux Kustomization (`ks.yaml`) and an app-template HelmRelease. Every value below comes from current repo conventions — when in doubt, mirror a recent real app instead of inventing structure:
 
-| Reference app | Shows |
-|---|---|
-| `kubernetes/apps/default/mailpit` | Minimal app-template app + route |
-| `kubernetes/apps/media/booklore` | Secrets + postgres + kopiur-backed persistence |
-| `kubernetes/apps/ai/searxng` | Custom probes, dragonfly dependency |
+| Reference app                     | Shows                                          |
+| --------------------------------- | ---------------------------------------------- |
+| `kubernetes/apps/default/mailpit` | Minimal app-template app + route               |
+| `kubernetes/apps/media/booklore`  | Secrets + postgres + kopiur-backed persistence |
+| `kubernetes/apps/ai/searxng`      | Custom probes, dragonfly dependency            |
 
 ## Step 1: Gather details
 
@@ -48,49 +48,49 @@ kubernetes/apps/<namespace>/<app>/
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app <app>
-  namespace: &namespace <namespace>
+    name: &app <app>
+    namespace: &namespace <namespace>
 spec:
-  interval: 1h
-  path: ./kubernetes/apps/<namespace>/<app>/app
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  targetNamespace: *namespace
+    interval: 1h
+    path: ./kubernetes/apps/<namespace>/<app>/app
+    postBuild:
+        substituteFrom:
+            - name: cluster-secrets
+              kind: Secret
+    prune: true
+    sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+    targetNamespace: *namespace
 ```
 
 **Anchor convention:** declare `&app` / `&namespace` anchors on `metadata.name` / `metadata.namespace` and reference them everywhere the same value repeats — `targetNamespace: *namespace` (always), and `APP: *app` / `NAMESPACE: *namespace` under `postBuild.substitute` whenever substitutions are present. Mirror `kubernetes/apps/media/prowlarr/ks.yaml` (or `dashbrr`). Never repeat the literal app/namespace string once the anchor is declared.
 
-**`wait`:** omit it for a normal leaf app — it defaults to `false`, and explicit `wait: false` is redundant boilerplate we no longer keep. Only add `wait: true` when *another* Kustomization will `dependsOn` this one AND this Kustomization defines no `healthChecks`/`healthCheckExprs` — that is what gives the dependent a real readiness gate. If this Kustomization does define `healthChecks`, leave `wait` unset (setting `wait: true` would make Flux ignore those checks). Depending on another app (e.g. `kopiur` for persistence) does not by itself call for `wait`.
+**`wait`:** omit it for a normal leaf app — it defaults to `false`, and explicit `wait: false` is redundant boilerplate we no longer keep. Only add `wait: true` when _another_ Kustomization will `dependsOn` this one AND this Kustomization defines no `healthChecks`/`healthCheckExprs` — that is what gives the dependent a real readiness gate. If this Kustomization does define `healthChecks`, leave `wait` unset (setting `wait: true` would make Flux ignore those checks). Depending on another app (e.g. `kopiur` for persistence) does not by itself call for `wait`.
 
 Do not add `commonMetadata` or `timeout` — both were dropped as boilerplate; the app-template chart sets `app.kubernetes.io/*` labels on the workloads, and `timeout` falls back to the Flux default.
 
 **If the app has persistence**, add these to `spec` (component uses `${APP}` and `${KOPIUR_*}` substitutions — see `kubernetes/components/kopiur/` for all knobs/defaults):
 
 ```yaml
-  components:
+components:
     - ../../../../components/kopiur
-  dependsOn:
+dependsOn:
     - name: kopiur
       namespace: storage
-  postBuild:
+postBuild:
     substitute:
-      APP: *app
-      NAMESPACE: *namespace
-      # Optional overrides, only when defaults don't fit:
-      # KOPIUR_CLAIM: <app>-data              # PVC name (default: <app>)
-      # KOPIUR_CAPACITY: 15Gi                 # default: 5Gi
-      # KOPIUR_ACCESSMODES: ReadWriteOnce
-      # KOPIUR_STORAGECLASS: miroir-replicated
-      # KOPIUR_PUID: "1000"                  # mover UID default: 1000
-      # KOPIUR_PGID: "1000"                  # mover GID default: 1000
-      # KOPIUR_SNAPSHOT_SCHEDULE: "H * * * *"
+        APP: *app
+        NAMESPACE: *namespace
+        # Optional overrides, only when defaults don't fit:
+        # KOPIUR_CLAIM: <app>-data              # PVC name (default: <app>)
+        # KOPIUR_CAPACITY: 15Gi                 # default: 5Gi
+        # KOPIUR_ACCESSMODES: ReadWriteOnce
+        # KOPIUR_STORAGECLASS: miroir-replicated
+        # KOPIUR_PUID: "1000"                  # mover UID default: 1000
+        # KOPIUR_PGID: "1000"                  # mover GID default: 1000
+        # KOPIUR_SNAPSHOT_SCHEDULE: "H * * * *"
 ```
 
 `volsync` is legacy/deprecated for migration purposes. Do not use it for new apps unless explicitly requested.
@@ -105,22 +105,22 @@ Add user-specified dependencies to `dependsOn`. Whenever any component is used, 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./externalsecret.yaml   # only if secrets
-  - ./ocirepository.yaml
-  - ./helmrelease.yaml
+    - ./externalsecret.yaml # only if secrets
+    - ./ocirepository.yaml
+    - ./helmrelease.yaml
 ```
 
 **If the app mounts config files**, put them in `resources/` and append:
 
 ```yaml
 configMapGenerator:
-  - name: <app>-configmap
-    files:
-      - config.yaml=./resources/config.yaml
+    - name: <app>-configmap
+      files:
+          - config.yaml=./resources/config.yaml
 generatorOptions:
-  disableNameSuffixHash: true
-  annotations:
-    kustomize.toolkit.fluxcd.io/substitute: disabled
+    disableNameSuffixHash: true
+    annotations:
+        kustomize.toolkit.fluxcd.io/substitute: disabled
 ```
 
 ### app/ocirepository.yaml
@@ -131,15 +131,15 @@ generatorOptions:
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: <app>
+    name: <app>
 spec:
-  interval: 15m
-  layerSelector:
-    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
-    operation: copy
-  ref:
-    tag: <version>
-  url: oci://ghcr.io/bjw-s-labs/helm/app-template
+    interval: 15m
+    layerSelector:
+        mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+        operation: copy
+    ref:
+        tag: <version>
+    url: oci://ghcr.io/bjw-s-labs/helm/app-template
 ```
 
 **Never hardcode `<version>` from memory** — use the version the rest of the repo is on:
@@ -156,48 +156,48 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: <app>
-spec:
-  chartRef:
-    kind: OCIRepository
     name: <app>
-  interval: 30m
-  values:
-    controllers:
-      <app>:
-        annotations:
-          reloader.stakater.com/auto: "true"
-        pod:
-          securityContext:
-            runAsGroup: 1000
-            runAsNonRoot: true
-            runAsUser: 1000
-        containers:
-          app:
-            image:
-              repository: <image-repo>
-              tag: <image-tag>
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 256Mi
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
-    service:
-      app:
-        ports:
-          http:
-            port: <port>
+spec:
+    chartRef:
+        kind: OCIRepository
+        name: <app>
+    interval: 30m
+    values:
+        controllers:
+            <app>:
+                annotations:
+                    reloader.stakater.com/auto: "true"
+                pod:
+                    securityContext:
+                        runAsGroup: 1000
+                        runAsNonRoot: true
+                        runAsUser: 1000
+                containers:
+                    app:
+                        image:
+                            repository: <image-repo>
+                            tag: <image-tag>
+                        probes:
+                            liveness:
+                                enabled: true
+                            readiness:
+                                enabled: true
+                        resources:
+                            requests:
+                                cpu: 10m
+                            limits:
+                                memory: 256Mi
+                        securityContext:
+                            allowPrivilegeEscalation: false
+                            readOnlyRootFilesystem: true
+                            capabilities:
+                                drop:
+                                    - ALL
+        service:
+            app:
+                ports:
+                    http:
+                        port: <port>
 ```
 
 Adjust `runAsUser`/`runAsGroup` (and capabilities) to what the image requires, defaulting to `1000:1000`; drop the pod `securityContext` only if the image genuinely can't run non-root. Plain image tags are fine — Renovate pins digests and manages updates.
@@ -207,58 +207,58 @@ Adjust `runAsUser`/`runAsGroup` (and capabilities) to what the image requires, d
 Route (web UI/API):
 
 ```yaml
-    route:
-      app:
+route:
+    app:
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            - "{{ .Release.Name }}.${SECRET_DOMAIN}"
         parentRefs:
-          - name: envoy-internal    # or envoy-external for public apps
-            namespace: network
+            - name: envoy-internal # or envoy-external for public apps
+              namespace: network
 ```
 
 Persistence (pairs with the kopiur block in `ks.yaml`; also add fsGroup: 1000 + fsGroupChangePolicy: OnRootMismatch to the pod securityContext):
 
 ```yaml
-    controllers:
-      <app>:
+controllers:
+    <app>:
         pod:
-          securityContext:
-            runAsGroup: 1000
-            runAsNonRoot: true
-            runAsUser: 1000
-            fsGroup: 1000
-            fsGroupChangePolicy: OnRootMismatch
+            securityContext:
+                runAsGroup: 1000
+                runAsNonRoot: true
+                runAsUser: 1000
+                fsGroup: 1000
+                fsGroupChangePolicy: OnRootMismatch
 
-    persistence:
-      data:
-        existingClaim: <app>       # must match KOPIUR_CLAIM if overridden
+persistence:
+    data:
+        existingClaim: <app> # must match KOPIUR_CLAIM if overridden
         globalMounts:
-          - path: /data
-      tmpfs:                       # writable /tmp for readOnlyRootFilesystem
+            - path: /data
+    tmpfs: # writable /tmp for readOnlyRootFilesystem
         type: emptyDir
         globalMounts:
-          - path: /tmp
+            - path: /tmp
 ```
 
 Config file mount (pairs with configMapGenerator):
 
 ```yaml
-    persistence:
-      config:
+persistence:
+    config:
         type: configMap
         name: <app>-configmap
         globalMounts:
-          - path: /config/config.yaml
-            subPath: config.yaml
-            readOnly: true
+            - path: /config/config.yaml
+              subPath: config.yaml
+              readOnly: true
 ```
 
 Secrets: add to the container:
 
 ```yaml
-            envFrom:
-              - secretRef:
-                  name: <app>-secret
+envFrom:
+    - secretRef:
+          name: <app>-secret
 ```
 
 ### app/externalsecret.yaml (only if secrets)
@@ -269,21 +269,21 @@ Secrets: add to the container:
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: <app>
+    name: <app>
 spec:
-  refreshInterval: 12h
-  secretStoreRef:
-    kind: ClusterSecretStore
-    name: infisical
-  target:
-    name: <app>-secret
-    creationPolicy: Owner
-    template:
-      data:
-        SOME_ENV_VAR: "{{ .<app>_field_name }}"
-  dataFrom:
-    - find:
-        path: /<infisical-folder>
+    refreshInterval: 12h
+    secretStoreRef:
+        kind: ClusterSecretStore
+        name: infisical
+    target:
+        name: <app>-secret
+        creationPolicy: Owner
+        template:
+            data:
+                SOME_ENV_VAR: "{{ .<app>_field_name }}"
+    dataFrom:
+        - find:
+              path: /<infisical-folder>
 ```
 
 Convention: `metadata.name` is `<app>`, the generated Secret is `<app>-secret`, and `dataFrom.find.path` usually points at one app folder in Infisical. Map env vars in `template.data` from the real field names at that path (for example, `SOME_ENV_VAR: "{{ .some_field_name }}"`). If field names weren't provided and you can't ask, insert `<FIXME: infisical field name>` placeholders and call them out. Only use `rewrite` when explicitly loading from multiple folders and key-collision avoidance is required.

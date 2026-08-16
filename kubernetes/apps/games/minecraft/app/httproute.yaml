@@ -17,4 +17,3 @@ spec:
         - name: minecraft-bluemap
           namespace: games
           port: 8100
-

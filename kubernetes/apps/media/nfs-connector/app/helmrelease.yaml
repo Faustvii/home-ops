@@ -32,7 +32,7 @@ spec:
                 memory: 16Mi
             securityContext:
               allowPrivilegeEscalation: false
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
               readOnlyRootFilesystem: true
     persistence:
       media:

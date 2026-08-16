@@ -10,7 +10,6 @@ spec:
     name: plex
   interval: 1h
   values:
-
     defaultPodOptions:
       resourceClaims:
         - name: gpu

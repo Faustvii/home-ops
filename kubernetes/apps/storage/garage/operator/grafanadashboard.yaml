@@ -14,4 +14,3 @@ spec:
   instanceSelector:
     matchLabels:
       dashboards: grafana
-

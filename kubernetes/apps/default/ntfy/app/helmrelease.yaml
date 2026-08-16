@@ -10,7 +10,6 @@ spec:
     name: ntfy
   interval: 1h
   values:
-
     defaultPodOptions:
       securityContext:
         fsGroup: 568

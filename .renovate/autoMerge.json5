@@ -3,49 +3,29 @@
   packageRules: [
     {
       description: "Auto-merge trusted container digests",
-      matchDatasources: [
-        "docker"
-      ],
+      matchDatasources: ["docker"],
       automerge: true,
       automergeType: "pr",
-      matchUpdateTypes: [
-        "digest"
-      ],
-      matchPackageNames: [
-        "/home-operations/"
-      ],
+      matchUpdateTypes: ["digest"],
+      matchPackageNames: ["/home-operations/"],
       ignoreTests: false,
       schedule: ["* 0-3 * * 4"],
     },
     {
       description: "Auto-merge trusted GitHub Actions",
-      matchManagers: [
-        "github-actions"
-      ],
-      matchPackageNames: [
-        "/^actions\//",
-        "/^renovatebot\//",
-      ],
+      matchManagers: ["github-actions"],
+      matchPackageNames: ["/^actions\//", "/^renovatebot\//"],
       automerge: true,
       automergeType: "branch",
-      matchUpdateTypes: [
-        "minor",
-        "patch",
-        "digest"
-      ],
+      matchUpdateTypes: ["minor", "patch", "digest"],
       ignoreTests: true,
       schedule: ["* 0-3 * * 4"],
     },
     {
       description: "Auto-merge high-cadence packages weekly",
-      matchDatasources: [
-        "docker"
-      ],
+      matchDatasources: ["docker"],
       automerge: true,
-      matchUpdateTypes: [
-        "minor",
-        "patch"
-      ],
+      matchUpdateTypes: ["minor", "patch"],
       matchPackageNames: [
         "ghcr.io/renovatebot/renovate",
         "ghcr.io/emberstack/helm-charts/reflector",

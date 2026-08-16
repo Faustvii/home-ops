@@ -15,8 +15,5 @@
   dependencyDashboard: true,
   dependencyDashboardTitle: "Renovate Dashboard 🤖",
   ignorePaths: ["**/*.sops.*"],
-  suppressNotifications: [
-    "prEditedNotification",
-    "prIgnoreNotification",
-  ],
+  suppressNotifications: ["prEditedNotification", "prIgnoreNotification"],
 }

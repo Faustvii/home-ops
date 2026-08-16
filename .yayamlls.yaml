@@ -1,0 +1,5 @@
+# yayamlls workspace config — https://github.com/home-operations/yayamlls
+renderers:
+  flate:
+    enabled: true
+    path: kubernetes
