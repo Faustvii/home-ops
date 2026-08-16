@@ -4,6 +4,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app radarr
+  namespace: &namespace media
 spec:
   interval: 1h
   components:
@@ -16,6 +17,7 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      NAMESPACE: *namespace
       OIDC_APP_NAME: Radarr
       OIDC_CALLBACK_PATH: /oauth2/callback
       OIDC_LOGOUT_CALLBACK_PATH: /
@@ -29,5 +31,5 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: media
+  targetNamespace: *namespace
   wait: false
