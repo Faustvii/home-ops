@@ -105,5 +105,10 @@ spec:
     persistence:
       data:
         existingClaim: dashbrr
+        globalMounts:
+          - path: /config
+            subPath: config
+          - path: /data
+            subPath: data
       tmp:
         type: emptyDir
