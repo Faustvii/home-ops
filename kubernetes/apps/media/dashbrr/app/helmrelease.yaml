@@ -53,6 +53,7 @@ spec:
             image: *image
             env:
               TZ: ${TZ}
+              DASHBRR__LOG_LEVEL: DEBUG
             envFrom:
               - secretRef:
                   name: *app
