@@ -104,7 +104,7 @@ spec:
             namespace: network
     persistence:
       data:
-        existingClaim: dashbrr
+        existingClaim: *app
         globalMounts:
           - path: /config
             subPath: config
