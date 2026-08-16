@@ -32,8 +32,8 @@ spec:
             env:
               DASHBRR__DB_TYPE: "sqlite"
               DASHBRR__LOG_LEVEL: DEBUG
-              DASHBRR__DB_PATH: "/tmp/data/dashbrr.db"
-              DASHBRR__CONFIG_PATH: /tmp/data/config.toml
+              # DASHBRR__DB_PATH: "/tmp/data/dashbrr.db"
+              # DASHBRR__CONFIG_PATH: /tmp/data/config.toml
             envFrom:
               - secretRef:
                   name: *app
@@ -56,8 +56,8 @@ spec:
             env:
               TZ: ${TZ}
               DASHBRR__LOG_LEVEL: DEBUG
-              DASHBRR__DB_PATH: "/tmp/data/dashbrr.db"
-              DASHBRR__CONFIG_PATH: /tmp/data/config.toml
+              # DASHBRR__DB_PATH: "/tmp/data/dashbrr.db"
+              # DASHBRR__CONFIG_PATH: /tmp/data/config.toml
             envFrom:
               - secretRef:
                   name: *app
