@@ -50,6 +50,7 @@
         "ghcr.io/renovatebot/renovate",
         "ghcr.io/emberstack/helm-charts/reflector",
         "ghcr.io/mogenius/helm-charts/renovate-operator",
+        "/kube-prometheus-stack/",
       ],
       schedule: ["* 0-3 * * 4"],
     },
