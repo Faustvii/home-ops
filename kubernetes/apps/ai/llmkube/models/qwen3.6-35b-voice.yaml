@@ -77,7 +77,7 @@ spec:
     - --reasoning
     - "off"
   flashAttention: true
-  image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4@sha256:ebf0ed1125a80f2446a5aab810eb892be5bd6099b0d80302e39006f81ee2f3fc
+  image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4@sha256:3da2f2ac44b94cff12f3b1b2be39cd88c0612b393617abfaf7d262e16b14b6c4
   jinja: true
   modelCache:
     claimName: llmkube-strix-cache
