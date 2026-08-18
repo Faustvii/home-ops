@@ -30,7 +30,7 @@ spec:
       image:
         pullPolicy: IfNotPresent
         repository: infisical/infisical
-        tag: "v0.162.19"
+        tag: "v0.162.21"
 
       podSecurityContext:
         fsGroup: 1000
