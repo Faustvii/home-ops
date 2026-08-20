@@ -3,7 +3,7 @@ machine:
   kubelet:
     defaultRuntimeSeccompProfileEnabled: true
     disableManifestsDirectory: true
-    image: ghcr.io/siderolabs/kubelet:v1.36.3
+    image: ghcr.io/siderolabs/kubelet:v1.36.4
     extraConfig:
       serializeImagePulls: false
       imageGCHighThresholdPercent: 70
