@@ -41,6 +41,17 @@ spec:
   defaultRouteStrategy: BackendNameMatch
   # defaultRoute references the k8s-safe name, not the displayName.
   defaultRoute: self-qwen3-6
+  proxy:
+    # TWO independent timeouts gate a dispatch, and BOTH must be raised:
+    #   - backends[].timeout (20m, set on self-qwen3-8) = overall dispatch
+    #     deadline. Proven applied: successful tool calls log timeoutMs=1200000.
+    #   - responseHeaderTimeout below = the Go http.Transport
+    #     ResponseHeaderTimeout, a SEPARATE lower cap on "time to first
+    #     response header". For a non-streamed request headers arrive only
+    #     when generation finishes, so at ~7.6 tok/s any verdict >~900 tokens
+    #     crosses the 120s DEFAULT and 502s with "timeout awaiting response
+    #     headers" BEFORE the 20m dispatch deadline is ever reached.
+    responseHeaderTimeout: 20m
   policy:
     auditLog:
       sink: stdout
