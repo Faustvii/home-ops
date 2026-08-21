@@ -3,10 +3,13 @@
 apiVersion: inference.llmkube.dev/v1alpha1
 kind: Model
 metadata:
-  name: qwen3-8b
+  name: qwen3.8-27b
 spec:
+  # Dense 27B (all params active) — heavier than the 35B-A3B MoE.
+  # UD-Q6_K_XL is a size/quality balance; bump to UD-Q8_K_XL for max
+  # quality if VRAM allows, or drop to UD-Q4_K_XL to shrink.
   files:
-    - Qwen3-8B-UD-Q8_K_XL.gguf
+    - Qwen3.8-27B-UD-Q6_K_XL.gguf
   format: gguf
   hardware:
     accelerator: rocm
@@ -17,62 +20,70 @@ spec:
         - name: gpu
           resourceClaimTemplateName: llm-amd-gpu
       vendor: amd
-  quantization: UD-Q8_K_XL
-  source: hf://unsloth/Qwen3-8B-GGUF
+  # Vision/multimodal projector — enables image input.
+  mmproj: mmproj-F16.gguf
+  quantization: UD-Q6_K_XL
+  source: hf://unsloth/Qwen3.8-27B-GGUF
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/inferenceservice_v1alpha1.json
 apiVersion: inference.llmkube.dev/v1alpha1
 kind: InferenceService
 metadata:
-  name: qwen3-8b-strix
+  name: qwen3.8-27b-strix
 spec:
   batchSize: 2048
   cacheTypeK: q8_0
   cacheTypeV: q8_0
   command:
     - llama-server
-  # Qwen3 natively supports 32K; HA Assist rarely needs more than a handful
-  # of turns + ~30 exposed entities (~1-2K tokens), so no need for the 256K
-  # context or aggressive KV budget the 35B reasoning model uses.
-  contextSize: 32768
+  # Native 262144, but dense-27B KV is expensive; 131072 keeps memory
+  # sane. Raise toward 262144 only if the VRAM budget allows.
+  contextSize: 131072
   endpoint:
     port: 8080
     type: ClusterIP
   extraArgs:
     - --alias
-    - qwen3-8b
+    - self-hosted-27b
+    - --image-min-tokens
+    - "1024"
     - --cont-batching
     - --cache-prompt
     - --kv-unified
-    - --reasoning
-    - "off"
-    # Qwen's own recommended sampler settings for non-thinking mode.
+    # Qwen3.8 thinking-mode sampler (thinking is on by default).
     - --temp
-    - "0.7"
+    - "1.0"
     - --top-p
-    - "0.8"
+    - "0.95"
     - --top-k
     - "20"
     - --min-p
     - "0"
+    - --presence-penalty
+    - "0"
     - --repeat-penalty
-    - "1.05"
+    - "1.0"
     - --threads
-    - "8"
+    - "16"
     - --threads-batch
-    - "12"
+    - "21"
     - --load-mode
     - none
+    # Default thinking depth. Qwen3.8 reportedly does best at "medium"
+    # (or disabled). Clients can override per-request (see below); to
+    # disable thinking entirely server-side, set reasoningBudget: 0.
+    - --chat-template-kwargs
+    - '{"reasoning_effort":"medium","preserve_thinking":true}'
   flashAttention: true
   image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4@sha256:7dff493b27b6e5c9826cef548dc5c7fff8b1544a2e800c74d755c60180629981
   jinja: true
   modelCache:
     claimName: llmkube-strix-cache
-  modelRef: qwen3-8b
+  modelRef: qwen3.8-27b
   nodeSelector:
     kubernetes.io/hostname: talos-04
     topology.kubernetes.io/gpus: amd
-  parallelSlots: 4
+  parallelSlots: 2
   priority: high
   probeOverrides:
     liveness:
@@ -80,38 +91,36 @@ spec:
       httpGet:
         path: /health
         port: 8080
-      initialDelaySeconds: 15
+      initialDelaySeconds: 30
       periodSeconds: 30
     readiness:
       failureThreshold: 6
       httpGet:
         path: /health
         port: 8080
-      initialDelaySeconds: 10
+      initialDelaySeconds: 20
       periodSeconds: 10
     startup:
-      failureThreshold: 60
+      failureThreshold: 360
       httpGet:
         path: /health
         port: 8080
-      periodSeconds: 5
-  # Voice control should not "think" — thinking mode is too slow for a
-  # sub-2-second response budget. Cap reasoning hard near zero rather than
-  # the 16384 budget used for the coding/reasoning model.
-  reasoningBudget: 0
-  reasoningBudgetMessage: "Answer directly without reasoning."
+      periodSeconds: 10
+  reasoningBudget: 16384
+  reasoningBudgetMessage: "Stop reasoning and produce the implementation, tool call, or final answer."
   replicas: 1
+  # Dense 27B @ Q6 (~22GB weights) + 131072 q8 KV + mmproj. Tune to your
+  # actual GPU budget — and see the coexistence note if this runs
+  # alongside the 35B on talos-04.
   resources:
-    cpu: "250m"
-    memory: 12Gi
+    cpu: "500m"
+    memory: 40Gi
   rolloutPolicy:
-    # This is the voice-control agent — it needs to be resident, not swapped
-    # out on idle like the 35B reasoning model. Voice commands can't eat a
-    # cold-start penalty waiting for the pool to page it back in.
-    waitForIdle: false
+    idleTimeoutSeconds: 86400
+    waitForIdle: true
   runtime: llamacpp
   tolerations:
     - effect: NoSchedule
       key: llm-workload
       operator: Exists
-  uBatchSize: 512
+  uBatchSize: 2048

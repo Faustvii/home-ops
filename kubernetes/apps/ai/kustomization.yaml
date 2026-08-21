@@ -10,6 +10,7 @@ resources:
   - ./omniroute/ks.yaml
   - ./namespace.yaml
   - ./llmkube/ks.yaml
+  - ./modelrouter/ks.yaml
   - ./litellm-operator/ks.yaml
   - ./litellm/ks.yaml
   - ./open-webui/ks.yaml

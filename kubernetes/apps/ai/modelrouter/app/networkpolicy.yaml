@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: modelrouter
+spec:
+  # Selects the managed router-proxy pods. Once this policy exists these
+  # pods are default-deny for ingress except the sources listed below.
+  endpointSelector:
+    matchLabels:
+      inference.llmkube.dev/model-router: modelrouter
+  ingress:
+    - fromEndpoints:
+        # open-webui (same namespace: ai)
+        - matchLabels:
+            app.kubernetes.io/instance: open-webui
+        # agent-pr-review runners (actions-runner-system)
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: actions-runner-system
+            runner: review-runner
+        # envoy-internal data-plane proxies, so the ingress/HTTPRoute
+        # path (modelrouter.${SECRET_DOMAIN}) keeps working
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            gateway.envoyproxy.io/owning-gateway-name: envoy-internal
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

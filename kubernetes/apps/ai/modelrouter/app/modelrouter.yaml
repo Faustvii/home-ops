@@ -1,0 +1,45 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/modelrouter_v1alpha1.json
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: ModelRouter
+metadata:
+  name: modelrouter
+spec:
+  # Managed router-proxy mode (default). The controller provisions a
+  # Deployment + ClusterIP Service named "modelrouter-router-proxy" on
+  # :8080 exposing /v1/chat/completions and /v1/models. No inbound auth
+  # is enforced here — that is handled at the edge (SecurityPolicy) and
+  # east-west (CiliumNetworkPolicy).
+  backends:
+    # displayName == the model id published on /v1/models and what
+    # BackendNameMatch resolves the request's "model" field against.
+    # name stays k8s-safe (^[a-z0-9][a-z0-9-]{0,62}$, no dots).
+    #
+    # Fast local MoE (35B-A3B, ~3B active). Default route.
+    - name: self-qwen3-6
+      displayName: self-qwen3.6
+      tier: local
+      inferenceServiceRef:
+        name: qwen3.6-35b-strix
+      capabilities:
+        - code
+        - tools
+        - vision
+    # Dense 27B vision model — pick with "model": "self-qwen3.8".
+    - name: self-qwen3-8
+      displayName: self-qwen3.8
+      tier: local
+      inferenceServiceRef:
+        name: qwen3.8-27b-strix
+      capabilities:
+        - code
+        - tools
+        - vision
+  # BackendNameMatch: the request's "model" selects the backend by
+  # displayName; anything unmatched falls through to defaultRoute.
+  defaultRouteStrategy: BackendNameMatch
+  # defaultRoute references the k8s-safe name, not the displayName.
+  defaultRoute: self-qwen3-6
+  policy:
+    auditLog:
+      sink: stdout

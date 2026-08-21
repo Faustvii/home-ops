@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.envoyproxy.io/securitypolicy_v1alpha1.json
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: modelrouter
+spec:
+  # Guards the ingress path (modelrouter.${SECRET_DOMAIN}) only.
+  # In-cluster ClusterIP access bypasses this and is governed by the
+  # CiliumNetworkPolicy instead.
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: modelrouter
+  apiKeyAuth:
+    # Opaque Secret where each data key is a client id and each value is
+    # the raw API key (WITHOUT the "Bearer " prefix). Envoy strips the
+    # scheme when extracting from the Authorization header, so standard
+    # OpenAI clients sending "Authorization: Bearer <key>" work as-is.
+    credentialRefs:
+      - name: modelrouter-apikey
+    extractFrom:
+      - headers:
+          - Authorization
