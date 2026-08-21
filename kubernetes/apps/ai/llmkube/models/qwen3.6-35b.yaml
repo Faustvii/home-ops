@@ -9,10 +9,11 @@ spec:
     - Qwen3.6-35B-A3B-uncensored-heretic-Native-MTP-Preserved-APEX-I-Balanced.gguf
   format: gguf
   hardware:
-    accelerator: rocm
+    accelerator: vulkan
     gpu:
       enabled: true
       layers: -1
+      runtime: vulkan
       resourceClaims:
         - name: gpu
           resourceClaimTemplateName: llm-amd-gpu
@@ -30,8 +31,6 @@ spec:
   batchSize: 6144
   cacheTypeK: q8_0
   cacheTypeV: q8_0
-  command:
-    - llama-server
   contextSize: 262144
   endpoint:
     port: 8080
@@ -77,7 +76,7 @@ spec:
     - --chat-template-kwargs
     - '{"preserve_thinking":true}'
   flashAttention: true
-  image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4@sha256:7dff493b27b6e5c9826cef548dc5c7fff8b1544a2e800c74d755c60180629981
+  image: ghcr.io/ggml-org/llama.cpp:server-vulkan-b10548@sha256:70815abd05cfd67c9a686f295573075aac96a3099ad979443b909666c291ad2e
   jinja: true
   modelCache:
     claimName: llmkube-strix-cache
