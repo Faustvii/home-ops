@@ -11,6 +11,10 @@ on:
       pr_number:
         description: PR number to (re-)review
         required: true
+      force_review:
+        description: Re-review even if the diff is unchanged since last pass
+        type: boolean
+        default: true
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
@@ -50,6 +54,10 @@ jobs:
           # precheck. Forward the dispatch input; harmless on pull_request
           # (empty -> action falls back to github.event.pull_request.number).
           pr_number: ${{ github.event.inputs.pr_number }}
+          # On a manual re-dispatch the diff is usually unchanged since the
+          # last pass, so precheck skips (skip_if_diff_unchanged). Honour the
+          # dispatch toggle to force it; empty on pull_request -> stays false.
+          force_review: ${{ github.event.inputs.force_review }}
 
           allowed_source_hosts: "github.com,api.github.com,raw.githubusercontent.com,gitlab.com,registry.terraform.io,artifacthub.io,www.talos.dev,talos.dev,fluxcd.io,kubernetes.io,cilium.io"
 
