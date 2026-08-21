@@ -52,6 +52,13 @@ jobs:
           ai_api_key: "in-cluster"
           ai_model: self-qwen3.8
           ai_api_format: openai
+          # self-qwen3.8 is a thinking model. The action's SSE reassembler
+          # accumulates only delta.content and drops delta.reasoning_content,
+          # so a streamed turn yields empty content -> "parse failed" and a
+          # silent fallback to self-qwen3.6. Non-streamed returns clean JSON
+          # (content separate from reasoning_content), which parses correctly.
+          # (The router-proxy's responseHeaderTimeout is raised to match.)
+          ai_stream: "false"
           ai_fallback_base_url: http://modelrouter-router-proxy.ai.svc.cluster.local:8080/v1
           ai_fallback_api_key: "in-cluster"
           ai_fallback_model: self-qwen3.6
