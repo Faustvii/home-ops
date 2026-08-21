@@ -25,6 +25,11 @@ jobs:
     # review-runner, this job feeds untrusted PR text to a tool-calling model,
     # and these runners have less privileges.
     runs-on: review-runner
+    # Dense-27B reviews are slow but run in the background with a long
+    # deadline. Override the default 360m job cap so a full 27B pass (plus
+    # primary retries) is never killed mid-review. Self-hosted runners are
+    # not bound by GitHub's 6h hosted-runner limit.
+    timeout-minutes: 720
     # Renovate's type/digest PRs do not need model review.
     if: ${{ (github.event_name == 'pull_request' && !github.event.pull_request.draft) || github.event_name == 'workflow_dispatch' }}
     steps:
@@ -54,7 +59,14 @@ jobs:
           ai_max_tokens: "16000"
           ai_primary_retries: "2"
           ai_primary_retry_delay_sec: "5"
-          ai_connect_timeout_sec: "10"
+          # self-qwen3.8 is a dense 27B (~8.5 tok/s generation, ~70 tok/s
+          # prefill on Strix Halo). Timeouts below are sized for it, not
+          # the fast MoE fallback. This job runs in the background with a
+          # long deadline, so wall-clock is cheap; correctness (letting the
+          # 27B finish instead of falling back) is what we want.
+          ai_connect_timeout_sec: "30"
+          # 16000 output tokens / 8.5 tok/s ~= 1880s, plus prefill. 1h budget.
+          ai_request_timeout_sec: "3600"
 
           system_prompt_file: .agents/instructions/pr-review.instructions.md
           system_prompt_mode: append
@@ -66,10 +78,14 @@ jobs:
           tool_mode: native_loop
           tool_max_requests: "4"
           tool_max_rounds: "2"
-          tool_loop_wall_clock_sec: "180"
-          tool_request_timeout_sec: "15"
+          # Overall tool-loop budget across all rounds/requests on the 27B.
+          tool_loop_wall_clock_sec: "2400"
+          # Each native-loop request emits thinking + a tool call at 8.5 tok/s.
+          tool_request_timeout_sec: "600"
           tool_max_response_bytes: "12000"
-          tool_planning_timeout_sec: "60"
+          # ~30 KB planning corpus = ~115s prefill + up to 8000 planning
+          # tokens / 8.5 tok/s (~940s) before the 27B returns a plan.
+          tool_planning_timeout_sec: "1200"
           tool_planning_max_context_bytes: "30000"
           tool_planning_max_tokens: "8000"
           tool_allowed_gh_api_repos: "*"
