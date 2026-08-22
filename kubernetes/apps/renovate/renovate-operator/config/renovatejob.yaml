@@ -20,7 +20,7 @@ spec:
       value: "redis://dragonfly.database.svc.cluster.local:6379/2"
     - name: RENOVATE_AUTODISCOVER_FILTER
       value: "!Faustvii/bookarr"
-  image: ghcr.io/renovatebot/renovate:44.2.1@sha256:e8c7ccc5c628f141641f861fa6a590eec2613bb57e9874e89a7da289c5bac166
+  image: ghcr.io/renovatebot/renovate:44.39.2@sha256:e6b93e709ca64495ab9307350b260064276ee02d15c6886387fd2d42c926623b
   parallelism: 10
   provider:
     name: github
