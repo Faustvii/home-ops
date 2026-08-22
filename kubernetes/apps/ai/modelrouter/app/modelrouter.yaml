@@ -52,6 +52,7 @@ spec:
     #     crosses the 120s DEFAULT and 502s with "timeout awaiting response
     #     headers" BEFORE the 20m dispatch deadline is ever reached.
     responseHeaderTimeout: 20m
+    quarantineDuration: 1s
   policy:
     auditLog:
       sink: stdout
