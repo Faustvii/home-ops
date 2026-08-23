@@ -14,12 +14,11 @@ spec:
   format: gguf
   quantization: ROCmFP8
   hardware:
-    # rocm allocates the GPU device to the pod; actual compute runs on
-    # Vulkan0 (Mesa RADV Wave64) — see -dev Vulkan0 below.
-    accelerator: rocm
+    accelerator: vulkan
     gpu:
       enabled: true
       layers: -1
+      runtime: vulkan
       resourceClaims:
         - name: gpu
           resourceClaimTemplateName: llm-amd-gpu
@@ -78,7 +77,7 @@ spec:
     - --chat-template-kwargs
     - '{"reasoning_effort":"medium"}'
   flashAttention: true
-  image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.14-rocmfpx@sha256:0e66c4dd7bd72da5e20c5feb84f089597ddc4b2d5e18e06d901c6b7c6aac0bc7
+  image: docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-rocmfpx@sha256:7d816d8214f7b5cde4104e78dbdc88a8010f8f9714d7d9471340dcd7356d23a5
   jinja: true
   modelCache:
     claimName: llmkube-strix-cache
