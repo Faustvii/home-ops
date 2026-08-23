@@ -48,6 +48,12 @@ spec:
     - --image-min-tokens
     - "1024"
     - --cont-batching
+    - --spec-type
+    - draft-mtp
+    - --spec-draft-n-max
+    - "6"
+    - --spec-draft-p-min
+    - "0.60"
     - --cache-prompt
     - --kv-unified
     # Qwen3.8 thinking-mode sampler (thinking is on by default).
