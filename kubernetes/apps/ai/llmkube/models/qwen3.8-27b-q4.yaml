@@ -3,54 +3,63 @@
 apiVersion: inference.llmkube.dev/v1alpha1
 kind: Model
 metadata:
-  name: qwen3.8-27b-fp8
+  name: qwen3.8-27b-q4
 spec:
-  # julianmb's ROCmFP8 quant of the same dense Qwen3.8-27B. Custom ggml
-  # quant type (Q8_0_ROCMFPX) — only the ROCmFPX-enabled engine can load
-  # it (see InferenceService image). Essentially lossless (<0.003 PPL vs
-  # FP16), ~26GB weights. Text-only: no mmproj in this repo (no vision).
+  # Dense 27B (all params active) — heavier than the 35B-A3B MoE.
+  # UD-Q4_K_XL (~16GB) trades some quality for speed vs the Q6 sibling —
+  # decode is memory-bandwidth-bound on Strix, so fewer weight bytes/token
+  # means faster tg/s. Bump to UD-Q6_K_XL/UD-Q8_K_XL for more quality.
   files:
-    - Qwen3.8-27B-ROCmFP8.gguf
+    - Qwen3.8-27B-UD-Q4_K_XL.gguf
   format: gguf
-  quantization: ROCmFP8
   hardware:
     accelerator: rocm
     gpu:
       enabled: true
-      layers: 99
+      layers: -1
       resourceClaims:
         - name: gpu
           resourceClaimTemplateName: llm-amd-gpu
       vendor: amd
-  source: hf://julianmb/Qwen-3.8-27B-ROCmFP4-FAST-GGUF
+  # Vision/multimodal projector — enables image input.
+  mmproj: mmproj-F16.gguf
+  quantization: UD-Q4_K_XL
+  source: hf://unsloth/Qwen3.8-27B-GGUF
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/inferenceservice_v1alpha1.json
 apiVersion: inference.llmkube.dev/v1alpha1
 kind: InferenceService
 metadata:
-  name: qwen3.8-27b-fp8-strix
+  name: qwen3.8-27b-q4-strix
 spec:
   batchSize: 2048
   cacheTypeK: q8_0
   cacheTypeV: q8_0
-  contextSize: 65535
   command:
     - llama-server
+  # Native 262144, but dense-27B KV is expensive; 131072 keeps memory
+  # sane. Raise toward 262144 only if the VRAM budget allows.
+  contextSize: 131072
   endpoint:
     port: 8080
     type: ClusterIP
   extraArgs:
     - --alias
-    - self-hosted-27b-fp8
-    - -dev
-    - Vulkan0
-    - --poll
-    - "100"
+    - self-hosted-27b-q4
+    - --image-min-tokens
+    - "1024"
     - --cont-batching
+    - --spec-type
+    - draft-mtp
+    - --spec-draft-n-max
+    - "6"
+    - --spec-draft-p-min
+    - "0.60"
     - --cache-prompt
     - --kv-unified
+    # Qwen3.8 thinking-mode sampler (thinking is on by default).
     - --temp
-    - "1"
+    - "1.0"
     - --top-p
     - "0.95"
     - --top-k
@@ -60,23 +69,28 @@ spec:
     - --presence-penalty
     - "0"
     - --repeat-penalty
-    - "1"
+    - "1.0"
     - --threads
     - "16"
     - --threads-batch
     - "21"
+    - --load-mode
+    - none
+    # Default thinking depth. Qwen3.8 reportedly does best at "medium"
+    # (or disabled). Clients can override per-request (see below); to
+    # disable thinking entirely server-side, set reasoningBudget: 0.
     - --chat-template-kwargs
-    - '{"reasoning_effort":"medium"}'
+    - '{"reasoning_effort":"medium","preserve_thinking":true}'
   flashAttention: true
-  image: ghcr.io/joryirving/q38rocm-engine:rocm7.14-v1.0.0
+  image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4@sha256:498e006d6c5942221c9153b869b8ab50194ce6f247589c5a72cdfdcbf02ff326
   jinja: true
   modelCache:
     claimName: llmkube-strix-cache
-  modelRef: qwen3.8-27b-fp8
+  modelRef: qwen3.8-27b-q4
   nodeSelector:
     kubernetes.io/hostname: talos-04
     topology.kubernetes.io/gpus: amd
-  parallelSlots: 1
+  parallelSlots: 2
   priority: high
   probeOverrides:
     liveness:
@@ -94,23 +108,26 @@ spec:
       initialDelaySeconds: 20
       periodSeconds: 10
     startup:
-      failureThreshold: 720
+      failureThreshold: 360
       httpGet:
         path: /health
         port: 8080
       periodSeconds: 10
-  reasoningBudget: 32768
+  reasoningBudget: 16384
   reasoningBudgetMessage: "Stop reasoning and produce the implementation, tool call, or final answer."
   replicas: 1
+  # Dense 27B @ Q4 (~16GB weights) + 131072 q8 KV + mmproj. Tune to your
+  # actual GPU budget — and see the coexistence note if this runs
+  # alongside the 35B/Q6 on talos-04.
   resources:
     cpu: "500m"
-    memory: 32Gi
+    memory: 40Gi
   rolloutPolicy:
     idleTimeoutSeconds: 86400
-    waitForIdle: false
+    waitForIdle: true
   runtime: llamacpp
   tolerations:
     - effect: NoSchedule
       key: llm-workload
       operator: Exists
-  uBatchSize: 1024
+  uBatchSize: 2048
