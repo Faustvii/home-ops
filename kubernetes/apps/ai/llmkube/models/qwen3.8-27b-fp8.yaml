@@ -1,0 +1,126 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/model_v1alpha1.json
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: Model
+metadata:
+  name: qwen3.8-27b-fp8
+spec:
+  # julianmb's ROCmFP8 quant of the same dense Qwen3.8-27B. Custom ggml
+  # quant type (Q8_0_ROCMFPX) — only the ROCmFPX-enabled engine can load
+  # it (see InferenceService image). Essentially lossless (<0.003 PPL vs
+  # FP16), ~26GB weights. Text-only: no mmproj in this repo (no vision).
+  files:
+    - Qwen3.8-27B-ROCmFP8.gguf
+  format: gguf
+  quantization: ROCmFP8
+  hardware:
+    # rocm allocates the GPU device to the pod; actual compute runs on
+    # Vulkan0 (Mesa RADV Wave64) — see -dev Vulkan0 below.
+    accelerator: rocm
+    gpu:
+      enabled: true
+      layers: -1
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: llm-amd-gpu
+      vendor: amd
+  source: hf://julianmb/Qwen-3.8-27B-ROCmFP4-FAST-GGUF
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/inferenceservice_v1alpha1.json
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: InferenceService
+metadata:
+  name: qwen3.8-27b-fp8-strix
+spec:
+  batchSize: 2048
+  cacheTypeK: q8_0
+  cacheTypeV: q8_0
+  contextSize: 65535
+  command:
+    - llama-server
+  endpoint:
+    port: 8080
+    type: ClusterIP
+  extraArgs:
+    - --alias
+    - self-hosted-27b-fp8
+    - -dev
+    - Vulkan0
+    - -ctxcp
+    - "0"
+    - -cram
+    - "16384"
+    - --poll
+    - "100"
+    - --cont-batching
+    - --spec-type
+    - draft-mtp
+    - --spec-draft-n-max
+    - "6"
+    - --spec-draft-p-min
+    - "0.60"
+    - --temp
+    - "1"
+    - --top-p
+    - "0.95"
+    - --top-k
+    - "20"
+    - --min-p
+    - "0"
+    - --presence-penalty
+    - "0"
+    - --repeat-penalty
+    - "1"
+    - --threads
+    - "16"
+    - --threads-batch
+    - "21"
+    - --chat-template-kwargs
+    - '{"reasoning_effort":"medium"}'
+  flashAttention: true
+  image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.14-rocmfpx@sha256:0e66c4dd7bd72da5e20c5feb84f089597ddc4b2d5e18e06d901c6b7c6aac0bc7
+  jinja: true
+  modelCache:
+    claimName: llmkube-strix-cache
+  modelRef: qwen3.8-27b-fp8
+  nodeSelector:
+    kubernetes.io/hostname: talos-04
+    topology.kubernetes.io/gpus: amd
+  parallelSlots: 1
+  priority: high
+  probeOverrides:
+    liveness:
+      failureThreshold: 6
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 30
+    readiness:
+      failureThreshold: 6
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 20
+      periodSeconds: 10
+    startup:
+      failureThreshold: 720
+      httpGet:
+        path: /health
+        port: 8080
+      periodSeconds: 10
+  reasoningBudget: 32768
+  reasoningBudgetMessage: "Stop reasoning and produce the implementation, tool call, or final answer."
+  replicas: 1
+  resources:
+    cpu: "500m"
+    memory: 32Gi
+  rolloutPolicy:
+    idleTimeoutSeconds: 86400
+    waitForIdle: true
+  runtime: llamacpp
+  tolerations:
+    - effect: NoSchedule
+      key: llm-workload
+      operator: Exists
+  uBatchSize: 1024
