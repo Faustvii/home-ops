@@ -85,7 +85,7 @@ spec:
         path: /health
         port: 8080
       periodSeconds: 10
-  replicas: 1
+  replicas: 0
   resources:
     cpu: "500m"
     memory: 28Gi
