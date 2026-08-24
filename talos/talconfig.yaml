@@ -227,6 +227,7 @@ nodes:
             - siderolabs/drbd
             - siderolabs/nfsd
             - siderolabs/nut-client
+            - siderolabs/realtek-firmware
     kernelModules:
       - name: dm_thin_pool
       - name: drbd
