@@ -20,10 +20,10 @@ spec:
       replicaCount: 1
       resources:
         limits:
-          memory: 90Mi
+          memory: 128Mi
         requests:
           cpu: 10m
-          memory: 78Mi
+          memory: 80Mi
       securityContext:
         allowPrivilegeEscalation: false
         capabilities:
