@@ -33,13 +33,6 @@ nodes:
         extraKernelArgs:
           - pcie_aspm=off # Disable PCIe ASPM
           - talos.dashboard.disabled=1 # Disable Talos Dashboard
-            # mitigate copy fail; CVE-2026-31431
-            # https://copy.fail
-          - initcall_blacklist=algif_aead_init
-            # mitigate dirty frag, CVE-2026-43284 & CVE-2026-43500
-            # https://github.com/V4bel/dirtyfrag
-          - module_blacklist=esp4,esp6,rxrpc
-          - zfs.zfs_arc_max=8589934592 # Cap ZFS ARC at 8GiB
         systemExtensions:
           officialExtensions:
             - siderolabs/amd-ucode
@@ -94,13 +87,6 @@ nodes:
         extraKernelArgs:
           - pcie_aspm=off # Disable PCIe ASPM
           - talos.dashboard.disabled=1 # Disable Talos Dashboard
-            # mitigate copy fail; CVE-2026-31431
-            # https://copy.fail
-          - initcall_blacklist=algif_aead_init
-            # mitigate dirty frag, CVE-2026-43284 & CVE-2026-43500
-            # https://github.com/V4bel/dirtyfrag
-          - module_blacklist=esp4,esp6,rxrpc
-          - zfs.zfs_arc_max=8589934592 # Cap ZFS ARC at 8GiB
         systemExtensions:
           officialExtensions:
             - siderolabs/amd-ucode
@@ -154,12 +140,6 @@ nodes:
         extraKernelArgs:
           - pcie_aspm=off # Disable PCIe ASPM
           - talos.dashboard.disabled=1 # Disable Talos Dashboard
-            # mitigate copy fail; CVE-2026-31431
-            # https://copy.fail
-          - initcall_blacklist=algif_aead_init
-            # mitigate dirty frag, CVE-2026-43284 & CVE-2026-43500
-            # https://github.com/V4bel/dirtyfrag
-          - module_blacklist=esp4,esp6,rxrpc
         systemExtensions:
           officialExtensions:
             - siderolabs/amd-ucode
@@ -208,18 +188,14 @@ nodes:
     schematic:
       customization:
         extraKernelArgs:
+          - pcie_aspm=off # Lower PCIe latency
           - amd_iommu=off # Strix Halo ROCm/iGPU compatibility
           - amd_pstate=active # AMD P-State driver
           - amdgpu.gttsize=126976 # AMD GPU GTT memory size
           - amdgpu.vm_fragment_size=8 # AMD GPU VM fragment size
           - ttm.pages_limit=32505856 # AMD GPU TTM memory limit
           - ttm.page_pool_size=25165824 # AMD GPU TTM page pool size
-          - init_on_alloc=0 # Less security, faster puter
-          - init_on_free=0 # Less security, faster puter
-          - pcie_aspm=off # Lower PCIe latency
-          - mitigations=off # Less security, faster puter
-          - security=none # Less security, faster puter
-          - talos.auditd.disabled=1 # Less security, faster puter
+          - talos.dashboard.disabled=1 # Disable Talos Dashboard
         systemExtensions:
           officialExtensions:
             - siderolabs/amd-ucode
