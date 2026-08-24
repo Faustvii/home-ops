@@ -6,4 +6,4 @@ resources:
   - ./pvc-strix-cache.yaml
   - ./qwen3.6-35b.yaml
   - ./qwen3.8-27b.yaml
-  - ./qwen3.8-27b-q4.yaml
+  - ./nemotron.yaml

@@ -37,7 +37,7 @@ spec:
     type: ClusterIP
   extraArgs:
     - --alias
-    - self-hosted
+    - qwen3.6-35b-strix
     - --image-min-tokens
     - "1024"
     - --cont-batching
