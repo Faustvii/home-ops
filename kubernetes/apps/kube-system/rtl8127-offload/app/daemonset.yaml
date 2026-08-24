@@ -1,0 +1,73 @@
+---
+# Workaround for Realtek RTL8127 (10ec:8127) TX-queue hangs on the in-tree
+# r8169 driver. Under sustained TX load the queue wedges and the kernel logs:
+#   r8169 0000:61:00.0 enp97s0: NETDEV WATCHDOG: transmit queue 0 timed out
+# Disabling segmentation offloads (TSO/GSO/GRO) on the bond slave keeps the
+# driver off the offload path that triggers the hang. Settings are re-asserted
+# on a loop because the NIC's watchdog reset can clear them.
+#
+# Scoped to talos-04 only — the sole Realtek node (talos-01..03 use Intel igc).
+# Remove this app once the node moves to the dedicated r8127 driver (needs a
+# Talos system extension) or to an Intel NIC.
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: rtl8127-offload
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: rtl8127-offload
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rtl8127-offload
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rtl8127-offload
+    spec:
+      # Pin to the only node with the Realtek NIC.
+      nodeSelector:
+        kubernetes.io/hostname: talos-04
+      # System-level daemon: run regardless of node taints (llm-workload, etc.).
+      tolerations:
+        - operator: Exists
+      hostNetwork: true # required so ethtool acts on the host interface
+      hostPID: false
+      priorityClassName: system-node-critical
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: ethtool
+          image: docker.io/library/alpine:3.21
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              IFACE="${IFACE:-enp97s0}"
+              apk add --no-cache ethtool >/dev/null
+              echo "rtl8127-offload: managing offloads on ${IFACE}"
+              while true; do
+                # Disable the offloads implicated in r8169 TX-queue hangs.
+                # Kept conservative: TSO/GSO/GRO only, leaving checksum + SG on
+                # to preserve throughput. Add 'sg off tx off' here if hangs persist.
+                ethtool -K "${IFACE}" tso off gso off gro off 2>/dev/null || \
+                  echo "rtl8127-offload: ethtool -K failed (iface down?), retrying"
+                sleep 60
+              done
+          env:
+            - name: IFACE
+              value: enp97s0
+          securityContext:
+            runAsUser: 0
+            capabilities:
+              drop: ["ALL"]
+              add: ["NET_ADMIN"]
+          resources:
+            requests:
+              cpu: 5m
+              memory: 16Mi
+            limits:
+              memory: 32Mi
