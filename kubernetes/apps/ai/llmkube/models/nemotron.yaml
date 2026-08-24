@@ -5,20 +5,20 @@ kind: Model
 metadata:
   name: nemotron
 spec:
-  source: hf://unsloth/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-GGUF
   files:
     - NVIDIA-Nemotron-3.5-Lightning-30B-A3B-UD-Q4_K_XL.gguf
   format: gguf
-  quantization: UD-Q4_K_XL
   hardware:
     accelerator: rocm
     gpu:
       enabled: true
-      vendor: amd
       layers: -1
       resourceClaims:
         - name: gpu
           resourceClaimTemplateName: llm-amd-gpu
+      vendor: amd
+  quantization: UD-Q4_K_XL
+  source: hf://unsloth/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-GGUF
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/inferenceservice_v1alpha1.json
 apiVersion: inference.llmkube.dev/v1alpha1
@@ -26,39 +26,12 @@ kind: InferenceService
 metadata:
   name: nemotron-strix
 spec:
-  modelRef: nemotron
-  modelCache:
-    claimName: llmkube-strix-cache
-  command:
-    - llama-server
-  runtime: llamacpp
-  image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4@sha256:498e006d6c5942221c9153b869b8ab50194ce6f247589c5a72cdfdcbf02ff326
-  rolloutPolicy:
-    waitForIdle: false
-  replicas: 1
-  priority: high
-  nodeSelector:
-    kubernetes.io/hostname: talos-04
-    topology.kubernetes.io/gpus: amd
-  tolerations:
-    - effect: NoSchedule
-      key: llm-workload
-      operator: Exists
-  contextSize: 262144
-  parallelSlots: 2
-  flashAttention: true
-  jinja: true
+  batchSize: 6144
   cacheTypeK: q8_0
   cacheTypeV: q8_0
-  speculativeDecoding:
-    type: draft-mtp
-    nDraftMax: 3
-    pMin: 0.75
-  batchSize: 6144
-  uBatchSize: 2048
-  resources:
-    cpu: "500m"
-    memory: 28Gi
+  command:
+    - llama-server
+  contextSize: 262144
   endpoint:
     port: 8080
     type: ClusterIP
@@ -80,24 +53,51 @@ spec:
     - "21"
     - --load-mode
     - none
+  flashAttention: true
+  image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4@sha256:498e006d6c5942221c9153b869b8ab50194ce6f247589c5a72cdfdcbf02ff326
+  jinja: true
+  modelCache:
+    claimName: llmkube-strix-cache
+  modelRef: nemotron
+  nodeSelector:
+    kubernetes.io/hostname: talos-04
+    topology.kubernetes.io/gpus: amd
+  parallelSlots: 2
+  priority: high
   probeOverrides:
-    startup:
-      httpGet:
-        path: /health
-        port: 8080
-      periodSeconds: 10
-      failureThreshold: 360
     liveness:
+      failureThreshold: 6
       httpGet:
         path: /health
         port: 8080
       initialDelaySeconds: 30
       periodSeconds: 30
-      failureThreshold: 6
     readiness:
+      failureThreshold: 6
       httpGet:
         path: /health
         port: 8080
       initialDelaySeconds: 20
       periodSeconds: 10
-      failureThreshold: 6
+    startup:
+      failureThreshold: 360
+      httpGet:
+        path: /health
+        port: 8080
+      periodSeconds: 10
+  replicas: 1
+  resources:
+    cpu: "500m"
+    memory: 28Gi
+  rolloutPolicy:
+    waitForIdle: false
+  runtime: llamacpp
+  speculativeDecoding:
+    nDraftMax: 3
+    pMin: 0.75
+    type: draft-mtp
+  tolerations:
+    - effect: NoSchedule
+      key: llm-workload
+      operator: Exists
+  uBatchSize: 2048

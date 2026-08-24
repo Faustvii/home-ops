@@ -36,6 +36,16 @@ spec:
         - code
         - tools
         - vision
+    # MoE 30B-A3B speculative model — pick with "model": "self-nemotron".
+    - name: self-nemotron
+      displayName: self-nemotron
+      tier: local
+      inferenceServiceRef:
+        name: nemotron-strix
+      timeout: 20m
+      capabilities:
+        - code
+        - tools
   # BackendNameMatch: the request's "model" selects the backend by
   # displayName; anything unmatched falls through to defaultRoute.
   defaultRouteStrategy: BackendNameMatch
