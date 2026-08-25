@@ -39,7 +39,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
         - name: ethtool
-          image: docker.io/library/alpine:3.21
+          image: docker.io/library/alpine:3.24
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
