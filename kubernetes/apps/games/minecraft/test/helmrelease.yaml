@@ -154,7 +154,7 @@ spec:
       - args:
           - --auth
           - none
-        image: "ghcr.io/coder/code-server:4.133.0"
+        image: "ghcr.io/coder/code-server:4.134.0"
         imagePullPolicy: IfNotPresent
         name: vscode
         ports:
