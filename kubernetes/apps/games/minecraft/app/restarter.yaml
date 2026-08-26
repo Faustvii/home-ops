@@ -26,7 +26,7 @@ spec:
 
                   echo "Restart initiated. Deployment will manage the graceful shutdown."
               command: ["/bin/sh", "-c"]
-              image: ghcr.io/faustvii/containers/playground:main
+              image: ghcr.io/faustvii/containers/playground:main@sha256:0dda6c6aefec451537dcb5f3ea0ad320e87ad284bf5a65008eec7449cd11b405
               name: mc-restarter
               resources:
                 requests:

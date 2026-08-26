@@ -9,7 +9,7 @@ spec:
       key: GARAGE_ADMIN_TOKEN
       name: garage-cluster
     bindPort: 3903
-  image: dxflrs/garage:v2.3.0
+  image: dxflrs/garage:v2.3.0@sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690
 
   layoutManagement:
     autoApply: true
