@@ -11,6 +11,7 @@
     "github>Faustvii/home-ops//.renovate/labels.json5",
     "github>Faustvii/home-ops//.renovate/talos.json5",
     "github>Faustvii/home-ops//.renovate/managers/minecraft.json5",
+    "docker:pinDigests",
   ],
   dependencyDashboard: true,
   dependencyDashboardTitle: "Renovate Dashboard 🤖",
