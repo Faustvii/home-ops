@@ -81,7 +81,7 @@ spec:
     - --chat-template-kwargs
     - '{"reasoning_effort":"medium","preserve_thinking":true}'
   flashAttention: true
-  image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4@sha256:de576ea401d5610419e4c983baee89469695a4a3c194339fa8edf35ad2d3bc66
+  image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4@sha256:cd5707d0654cbc8bde70d2503f51aa0c6a564695a2bc28403f27d6ffe10508ec
   jinja: true
   modelCache:
     claimName: llmkube-strix-cache
