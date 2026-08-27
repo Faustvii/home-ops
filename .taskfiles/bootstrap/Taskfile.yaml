@@ -5,17 +5,29 @@ tasks:
   talos:
     desc: Bootstrap the Talos cluster
     dir: "{{.TALOS_DIR}}"
+    vars:
+      # Space-separated node hostnames (must match talos/nodes/<role>/<name>.yaml)
+      NODES: talos-01 talos-02 talos-03 talos-04
+      # Controller used for the one-time etcd bootstrap + kubeconfig fetch
+      CONTROLLER_IP: 192.168.10.10
     cmds:
-      - "[ -f talsecret.sops.yaml ] || talhelper gensecret | sops --filename-override talos/talsecret.sops.yaml --encrypt /dev/stdin > talsecret.sops.yaml"
-      - talhelper genconfig
-      - talhelper gencommand apply --extra-flags="--insecure" | bash
-      - until talhelper gencommand bootstrap | bash; do sleep 10; done
-      - until talhelper gencommand kubeconfig --extra-flags="{{.ROOT_DIR}} --force" | bash; do sleep 10; done
+      # 1. Apply the rendered machine config to every node in maintenance mode.
+      - for: {var: NODES, split: " ", as: NODE}
+        cmd: |
+          ip="$(yq 'select(.kind == "BondConfig") | .addresses[0].address' "{{.TALOS_DIR}}"/nodes/*/"{{.NODE}}".yaml | cut -d/ -f1)"
+          task talos:render-config NODE="{{.NODE}}" | talosctl --nodes "$ip" apply-config --insecure --file /dev/stdin
+      # 2. Generate the client talosconfig from the sops secret bundle.
+      - task: talos:talosconfig
+      # 3. Bootstrap etcd on a single controller (retry until it takes).
+      - until talosctl --nodes {{.CONTROLLER_IP}} bootstrap; do sleep 10; done
+      # 4. Fetch the kubeconfig into the repo root (retry until the API is up).
+      - until talosctl --nodes {{.CONTROLLER_IP}} kubeconfig --force "{{.ROOT_DIR}}"; do sleep 10; done
     preconditions:
-      - test -f {{.ROOT_DIR}}/.sops.yaml
-      - test -f {{.SOPS_AGE_KEY_FILE}}
-      - test -f {{.TALOS_DIR}}/talconfig.yaml
-      - which talhelper talosctl sops
+      - test -f "{{.ROOT_DIR}}/.sops.yaml"
+      - test -f "{{.SOPS_AGE_KEY_FILE}}"
+      - test -f "{{.TALOS_DIR}}/base.yaml"
+      - test -f "{{.TALOS_DIR}}/talsecret.sops.yaml"
+      - which talosctl sops yq minijinja-cli jq
 
   apps:
     desc: Bootstrap apps into the Talos cluster

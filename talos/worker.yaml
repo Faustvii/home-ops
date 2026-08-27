@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.14.0-rc.2/pkg/machinery/config/schemas/config.schema.json
+#
+# Worker-only documents. Applied on top of base.yaml for worker nodes.
+# Workers receive only the CA *crt* (from hack/secrets.all.yq), never the CA keys.
+---
+version: v1alpha1
+machine:
+  type: worker

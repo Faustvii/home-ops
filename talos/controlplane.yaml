@@ -1,0 +1,82 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.14.0-rc.2/pkg/machinery/config/schemas/config.schema.json
+#
+# Control-plane-only documents. Applied on top of base.yaml for control-plane nodes.
+# The CA cert+key material and the etcd encryption secret come from
+# hack/secrets.controlplane.yq at render time, NOT from this file.
+---
+version: v1alpha1
+machine:
+  type: controlplane
+cluster:
+  allowSchedulingOnControlPlanes: true
+  etcd:
+    advertisedSubnets:
+      - 192.168.10.0/24
+    extraArgs:
+      listen-metrics-urls: http://0.0.0.0:2381
+---
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+labels:
+  node-role.kubernetes.io/control-plane: ""
+---
+apiVersion: v1alpha1
+kind: KubeAPIServerConfig
+# renovate: datasource=docker depName=registry.k8s.io/kube-apiserver
+image: registry.k8s.io/kube-apiserver:v1.36.4
+certExtraSANs:
+  - "127.0.0.1"
+  - "192.168.10.20"
+extraArgs:
+  # https://kubernetes.io/docs/tasks/extend-kubernetes/configure-aggregation-layer/
+  enable-aggregator-routing: "true"
+  feature-gates: HPAScaleToZero=true
+---
+apiVersion: v1alpha1
+kind: KubeControllerManagerConfig
+# renovate: datasource=docker depName=registry.k8s.io/kube-controller-manager
+image: registry.k8s.io/kube-controller-manager:v1.36.4
+extraArgs:
+  bind-address: 0.0.0.0
+  feature-gates: HPAScaleToZero=true
+---
+apiVersion: v1alpha1
+kind: KubeCoreDNSConfig
+enabled: false
+---
+apiVersion: v1alpha1
+kind: KubeProxyConfig
+enabled: false
+# renovate: datasource=docker depName=registry.k8s.io/kube-proxy
+image: registry.k8s.io/kube-proxy:v1.36.4
+---
+apiVersion: v1alpha1
+kind: KubeSchedulerConfig
+# renovate: datasource=docker depName=registry.k8s.io/kube-scheduler
+image: registry.k8s.io/kube-scheduler:v1.36.4
+extraArgs:
+  bind-address: 0.0.0.0
+config:
+  profiles:
+    - schedulerName: default-scheduler
+      plugins:
+        score:
+          disabled:
+            - name: ImageLocality
+      pluginConfig:
+        - name: PodTopologySpread
+          args:
+            defaultingType: List
+            defaultConstraints:
+              - maxSkew: 1
+                topologyKey: kubernetes.io/hostname
+                whenUnsatisfiable: ScheduleAnyway
+---
+apiVersion: v1alpha1
+kind: KubeTalosAPIAccessConfig
+allowedRoles:
+  - os:admin
+  - os:reader
+allowedKubernetesNamespaces:
+  - system-upgrade
+  - ai

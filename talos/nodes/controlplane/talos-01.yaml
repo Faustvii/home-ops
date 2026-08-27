@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.14.0-rc.2/pkg/machinery/config/schemas/config.schema.json
+# talos-01 — control plane
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+hostname: talos-01
+---
+apiVersion: v1alpha1
+kind: LinkAliasConfig
+name: net0
+selector:
+  match: link.driver == "igc" && mac(link.permanent_addr).startsWith("38:05:25:33:bb:")
+---
+apiVersion: v1alpha1
+kind: BondConfig
+name: bond0
+links:
+  - net0
+bondMode: active-backup
+mtu: 1500
+addresses:
+  - address: 192.168.10.10/24
+routes:
+  - destination: 0.0.0.0/0
+    gateway: 192.168.10.1
+---
+apiVersion: v1alpha1
+kind: VLANConfig
+name: bond0.90
+vlanID: 90
+parent: bond0
+---
+apiVersion: v1alpha1
+kind: Layer2VIPConfig
+name: 192.168.10.20
+link: bond0
+---
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+labels:
+  topology.kubernetes.io/gpus: amd
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: zfs
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: amdgpu
+parameters:
+  - ppfeaturemask=0xffffffff
+---
+apiVersion: v1alpha1
+kind: UnattendedInstallConfig
+provisioning:
+  diskSelector:
+    match: disk.serial == "S436NA0NA14981"
+---
+apiVersion: v1alpha1
+kind: RawVolumeConfig
+name: miroir
+provisioning:
+  diskSelector:
+    match: disk.serial == "S666NE0RB21047"
+  minSize: 512GB
+---
+apiVersion: v1alpha1
+kind: RawVolumeConfig
+name: miroir-local
+provisioning:
+  diskSelector:
+    match: disk.serial == "50026B7383F0C77C"
+  minSize: 512GB

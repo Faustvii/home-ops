@@ -1,0 +1,154 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.14.0-rc.2/pkg/machinery/config/schemas/config.schema.json
+#
+# Documents applied to EVERY node (control plane and worker).
+# Rendered with `minijinja-cli`, the schematic id arrives as the `schematic` define.
+# Secrets are NOT here: they are merged at render time from the sops bundles
+# (see hack/secrets.*.yq and the talos Taskfile). This file is 100% non-secret.
+---
+version: v1alpha1
+machine:
+  # Certificate SANs added to every machine (apid) certificate.
+  certSANs:
+    - "127.0.0.1"
+    - "192.168.10.20"
+  features:
+    rbac: true
+    apidCheckExtKeyUsage: true
+    diskQuotaSupport: true
+cluster:
+  clusterName: kubernetes
+  controlPlane:
+    endpoint: https://192.168.10.20:6443
+  # Disable the built-in CNI; Cilium is installed via Flux.
+  network:
+    cni:
+      name: none
+---
+apiVersion: v1alpha1
+kind: ResolverConfig
+nameservers:
+  - address: 192.168.10.1
+searchDomains:
+  disableDefault: true
+hostDNS:
+  enabled: true
+  forwardKubeDNSToHost: false
+  resolveMemberNames: true
+---
+apiVersion: v1alpha1
+kind: DiscoveryServiceConfig
+name: default
+endpoint: https://discovery.talos.dev/
+---
+apiVersion: v1alpha1
+kind: UnattendedInstallConfig
+installer:
+  # NOTE: the typed multi-document network kinds used here (LinkConfig, BondConfig,
+  # VLANConfig, Layer2VIPConfig, LinkAliasConfig, ...) require Talos >= 1.14. The
+  # cluster currently runs v1.13.9 (see kubernetes/.../tuppr/upgrades/talos.yaml);
+  # adopting this layout means upgrading Talos to a 1.14 release first. Keep this
+  # image tag and the tuppr TalosUpgrade version in lockstep.
+  # renovate: datasource=custom.talos-factory depName=siderolabs/talos
+  image: factory.talos.dev/metal-installer/{{ schematic }}:v1.14.0-rc.2
+provisioning:
+  # Per-node override: each nodes/<role>/<node>.yaml replaces this diskSelector.
+  diskSelector:
+    match: system_disk
+  wipe: false
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: dm_thin_pool
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: drbd
+parameters:
+  - usermode_helper=disabled
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: drbd_transport_tcp
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: nbd
+---
+apiVersion: v1alpha1
+kind: SysctlConfig
+params:
+  fs.inotify.max_user_watches: "1048576" # Watchdog
+  fs.inotify.max_user_instances: "8192" # Watchdog
+  net.core.rmem_max: "7500000" # Cloudflared | QUIC
+  net.core.wmem_max: "7500000" # Cloudflared | QUIC
+  net.ipv4.neigh.default.gc_thresh1: "4096" # Prevent ARP cache overflows
+  net.ipv4.neigh.default.gc_thresh2: "8192" # Prevent ARP cache overflows
+  net.ipv4.neigh.default.gc_thresh3: "16384" # Prevent ARP cache overflows
+  user.max_user_namespaces: "11255" # User Namespaces
+  vm.nr_hugepages: "1024" # Hugepages for PostgreSQL
+---
+apiVersion: v1alpha1
+kind: SysfsConfig
+params:
+  devices.system.cpu.cpufreq.policy0.scaling_governor: powersave
+  devices.system.cpu.cpufreq.policy0.energy_performance_preference: balance_power
+---
+apiVersion: v1alpha1
+kind: EtcFileConfig
+name: nfsmount.conf
+mode: 0o644
+contents: |
+  [ NFSMount_Global_Options ]
+  nfsvers=4
+  hard=True
+  nconnect=8
+  noatime=True
+  rsize=1048576
+  wsize=1048576
+---
+apiVersion: v1alpha1
+kind: CRICustomizationConfig
+name: containerd
+content: |
+  [plugins."io.containerd.cri.v1.images"]
+    discard_unpacked_layers = false
+  [plugins."io.containerd.cri.v1.runtime"]
+    device_ownership_from_security_context = true
+---
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+nodeIP:
+  validSubnets:
+    - 192.168.10.0/24
+---
+apiVersion: v1alpha1
+kind: KubeletConfig
+# renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+image: ghcr.io/siderolabs/kubelet:v1.36.4
+defaultRuntimeSeccompProfileEnabled: true
+config:
+  serializeImagePulls: false
+  imageGCHighThresholdPercent: 70
+  imageGCLowThresholdPercent: 50
+  imageMinimumGCAge: 48h
+  imageMaximumGCAge: 168h
+---
+apiVersion: v1alpha1
+kind: KubeNetworkConfig
+dnsDomain: cluster.local
+podSubnets:
+  - 10.42.0.0/16
+serviceSubnets:
+  - 10.43.0.0/16
+---
+apiVersion: v1alpha1
+kind: KubePrismConfig
+port: 7445
+---
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: local-hostpath
+provisioning:
+  diskSelector:
+    match: "!system_disk"
+  minSize: 10GB

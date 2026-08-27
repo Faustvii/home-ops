@@ -1,59 +1,168 @@
 ---
 version: "3"
 
+# Toolless Talos: native `talosctl machineconfig patch` + `sops` + `minijinja-cli`.
+# No talhelper / talstomize / topf. Render layers (later patches merge into earlier):
+#   base.yaml  ->  <role>.yaml  ->  nodes/<role>/<node>.yaml  ->  sops secret patches
+# See talos/README.md. NOTHING here is run automatically; you invoke it explicitly.
+
+vars:
+  FACTORY_URL: https://factory.talos.dev
+
 tasks:
-  generate-config:
-    desc: Generate Talos configuration
+  render-config:
+    desc: Render a node's full machine config to stdout [NODE=required]
     dir: "{{.TALOS_DIR}}"
-    cmd: talhelper genconfig
+    requires:
+      vars: [NODE]
+    vars:
+      ROLE:
+        sh: test -f "{{.TALOS_DIR}}/nodes/worker/{{.NODE}}.yaml" && echo worker || echo controlplane
+      SCHEMATIC_FILE:
+        sh: ls "{{.TALOS_DIR}}"/nodes/*/"{{.NODE}}".schematic.yaml 2>/dev/null | head -n1 || echo "{{.TALOS_DIR}}/schematic.yaml"
+      SCHEMATIC_ID:
+        sh: curl -fsSL -X POST --data-binary @"{{.SCHEMATIC_FILE}}" "{{.FACTORY_URL}}/schematics" | jq -r '.id'
+    # NOTE: gosh (go-task's shell) has no process substitution, so patch layers are
+    # written to a private, auto-wiped tmpdir (umask 077) instead of `<(...)`.
+    cmd: |
+      umask 077
+      tmp="$(mktemp -d)"
+      trap 'rm -rf "$tmp"' EXIT
+      minijinja-cli --define schematic="{{.SCHEMATIC_ID}}" "{{.TALOS_DIR}}/base.yaml" > "$tmp/base.yaml"
+      minijinja-cli "{{.TALOS_DIR}}/{{.ROLE}}.yaml" > "$tmp/role.yaml"
+      minijinja-cli "{{.TALOS_DIR}}/nodes/{{.ROLE}}/{{.NODE}}.yaml" > "$tmp/node.yaml"
+      sops --decrypt "{{.TALOS_DIR}}/talsecret.sops.yaml" | yq --from-file "{{.TALOS_DIR}}/hack/secrets.all.yq" > "$tmp/secrets.all.yaml"
+      sops --decrypt "{{.TALOS_DIR}}/talenv.sops.yaml"    | yq --from-file "{{.TALOS_DIR}}/hack/secrets.nut.yq" > "$tmp/secrets.nut.yaml"
+      patches="-p @$tmp/role.yaml -p @$tmp/node.yaml -p @$tmp/secrets.all.yaml -p @$tmp/secrets.nut.yaml"
+      if [ "{{.ROLE}}" = "controlplane" ]; then
+        sops --decrypt "{{.TALOS_DIR}}/talsecret.sops.yaml" | yq --from-file "{{.TALOS_DIR}}/hack/secrets.controlplane.yq" > "$tmp/secrets.cp.yaml"
+        patches="$patches -p @$tmp/secrets.cp.yaml"
+      fi
+      talosctl machineconfig patch "$tmp/base.yaml" $patches
     preconditions:
-      - test -f {{.TALOS_DIR}}/talconfig.yaml
-      - test -f {{.ROOT_DIR}}/.sops.yaml
-      - test -f {{.SOPS_AGE_KEY_FILE}}
-      - which talhelper
+      - test -f "{{.TALOS_DIR}}/base.yaml"
+      - test -f "{{.TALOS_DIR}}/nodes/controlplane/{{.NODE}}.yaml" || test -f "{{.TALOS_DIR}}/nodes/worker/{{.NODE}}.yaml"
+      - test -f "{{.SOPS_AGE_KEY_FILE}}"
+      - which talosctl sops yq minijinja-cli jq curl
 
   apply-node:
-    desc: Apply Talos config to a node [IP=required]
+    desc: Render and apply a node's config [NODE=required, IP=auto, MODE=auto]
     dir: "{{.TALOS_DIR}}"
-    cmd: talhelper gencommand apply --node {{.IP}} --extra-flags '--mode={{.MODE}}' | bash
+    requires:
+      vars: [NODE]
     vars:
+      ROLE:
+        sh: test -f "{{.TALOS_DIR}}/nodes/worker/{{.NODE}}.yaml" && echo worker || echo controlplane
       MODE: '{{.MODE | default "auto"}}'
+      # Target IP: derived from the node's BondConfig address unless IP= is passed.
+      NODE_IP:
+        sh: yq 'select(.kind == "BondConfig") | .addresses[0].address' "{{.TALOS_DIR}}/nodes/{{.ROLE}}/{{.NODE}}.yaml" 2>/dev/null | cut -d/ -f1
+      TARGET: '{{.IP | default .NODE_IP}}'
+    prompt: Apply Talos config to {{.NODE}} ({{.TARGET}}) with mode={{.MODE}}... continue?
+    cmd: task talos:render-config NODE={{.NODE}} | talosctl --nodes {{.TARGET}} apply-config --file /dev/stdin --mode {{.MODE}}
+    preconditions:
+      - test -f "{{.TALOSCONFIG}}"
+      - which talosctl
+
+  talosconfig:
+    desc: Generate the client talosconfig from the sops secret bundle
+    dir: "{{.TALOS_DIR}}"
+    # The talhelper talsecret bundle IS the `talosctl gen secrets` format, so it
+    # feeds `gen config --with-secrets` directly to produce the client config.
+    cmd: |
+      umask 077
+      tmp="$(mktemp -d)"
+      trap 'rm -rf "$tmp"' EXIT
+      sops --decrypt "{{.TALOS_DIR}}/talsecret.sops.yaml" > "$tmp/secrets.yaml"
+      talosctl gen config kubernetes https://192.168.10.20:6443 \
+        --with-secrets "$tmp/secrets.yaml" \
+        --output-types talosconfig \
+        --output "{{.TALOS_DIR}}/clusterconfig/talosconfig" \
+        --force
+      talosctl --talosconfig "{{.TALOS_DIR}}/clusterconfig/talosconfig" config endpoint 192.168.10.10 192.168.10.11 192.168.10.12
+      talosctl --talosconfig "{{.TALOS_DIR}}/clusterconfig/talosconfig" config node 192.168.10.10
+    preconditions:
+      - test -f "{{.SOPS_AGE_KEY_FILE}}"
+      - which talosctl sops
+
+  schematic-id:
+    desc: Compute the Image Factory schematic id for a node [NODE=optional]
+    dir: "{{.TALOS_DIR}}"
+    vars:
+      SCHEMATIC_FILE:
+        sh: '[ -n "{{.NODE}}" ] && ls "{{.TALOS_DIR}}"/nodes/*/"{{.NODE}}".schematic.yaml 2>/dev/null | head -n1 || echo "{{.TALOS_DIR}}/schematic.yaml"'
+    cmd: curl -fsSL -X POST --data-binary @"{{.SCHEMATIC_FILE}}" "{{.FACTORY_URL}}/schematics" | jq -r '.id'
+    preconditions:
+      - which curl jq
+
+  download-image:
+    desc: Download a Talos metal image from the Image Factory [VERSION=required, NODE=optional]
+    dir: "{{.TALOS_DIR}}"
+    requires:
+      vars: [VERSION]
+    vars:
+      SCHEMATIC:
+        sh: task talos:schematic-id {{if .NODE}}NODE={{.NODE}}{{end}}
+    cmd: |
+      curl -fL --remove-on-error --retry 5 --retry-delay 5 --retry-all-errors --progress-bar \
+        -o "{{.TALOS_DIR}}/talos-{{.VERSION}}-$(echo {{.SCHEMATIC}} | cut -c1-8).iso" \
+        "{{.FACTORY_URL}}/image/{{.SCHEMATIC}}/{{.VERSION}}/metal-amd64.iso"
+    preconditions:
+      - which curl
+
+  reboot-node:
+    desc: Reboot a node [IP=required, MODE=default]
+    prompt: Reboot node {{.IP}}... continue?
     requires:
       vars: [IP]
+    cmd: talosctl --nodes {{.IP}} reboot --mode {{.MODE | default "default"}}
     preconditions:
-      - talosctl --nodes {{.IP}} get machineconfig
-      - talosctl config info
-      - test -f {{.TALOSCONFIG}}
-      - which talhelper talosctl yq
+      - test -f "{{.TALOSCONFIG}}"
+      - which talosctl
+
+  shutdown-node:
+    desc: Shut down a node [IP=required]
+    prompt: Shut down node {{.IP}}... continue?
+    requires:
+      vars: [IP]
+    cmd: talosctl --nodes {{.IP}} shutdown --force
+    preconditions:
+      - test -f "{{.TALOSCONFIG}}"
+      - which talosctl
+
+  reset-node:
+    desc: Reset a node back to maintenance mode [IP=required]
+    prompt: This will WIPE node {{.IP}} back to maintenance mode... continue?
+    requires:
+      vars: [IP]
+    cmd: talosctl --nodes {{.IP}} reset --system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL --system-labels-to-wipe u-local-hostpath --graceful=false --reboot
+    preconditions:
+      - test -f "{{.TALOSCONFIG}}"
+      - which talosctl
+
+  # --- Optional thin wrappers ---------------------------------------------------
+  # Talos and Kubernetes upgrades are normally driven IN-CLUSTER by tuppr
+  # (kubernetes/apps/system-upgrade/tuppr). These are manual break-glass wrappers.
 
   upgrade-node:
-    desc: Upgrade Talos on a single node [IP=required]
-    dir: "{{.TALOS_DIR}}"
-    cmd: talhelper gencommand upgrade --node {{.IP}} --extra-flags "--timeout=10m" | bash
+    desc: "[break-glass] Upgrade Talos on a node; tuppr is the normal path [IP=required, IMAGE=required]"
+    prompt: Upgrade Talos on node {{.IP}}... continue?
     requires:
-      vars: [IP]
+      vars: [IP, IMAGE]
+    cmd: talosctl --nodes {{.IP}} upgrade --image {{.IMAGE}} --mode powercycle --timeout=10m
     preconditions:
-      - talosctl --nodes {{.IP}} get machineconfig
-      - talosctl config info
-      - test -f {{.TALOSCONFIG}}
-      - which kubectl talhelper talosctl yq
+      - test -f "{{.TALOSCONFIG}}"
+      - which talosctl
 
   upgrade-k8s:
-    desc: Upgrade Kubernetes
-    dir: "{{.TALOS_DIR}}"
-    cmd: talhelper gencommand upgrade-k8s --extra-flags "--to '{{.KUBERNETES_VERSION}}'" | bash
+    desc: "[break-glass] Upgrade Kubernetes across the cluster; tuppr is the normal path [VERSION=required]"
+    prompt: Upgrade Kubernetes to {{.VERSION}}... continue?
+    requires:
+      vars: [VERSION]
+    cmd: talosctl --nodes {{.CONTROLLER}} upgrade-k8s --to {{.VERSION}}
     vars:
-      KUBERNETES_VERSION:
-        sh: yq '.kubernetesVersion' {{.TALOS_DIR}}/talenv.yaml
+      CONTROLLER:
+        sh: talosctl config info --output yaml | yq -r '.endpoints[0]'
     preconditions:
-      - talosctl config info
-      - test -f {{.TALOSCONFIG}}
-      - which talhelper talosctl yq
-
-  reset:
-    desc: Resets nodes back to maintenance mode
-    dir: "{{.TALOS_DIR}}"
-    prompt: This will destroy your cluster and reset the nodes back to maintenance mode... continue?
-    cmd: talhelper gencommand reset --extra-flags="--reboot {{- if eq .CLI_FORCE false }} --system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL{{ end }} --graceful=false --wait=false" | bash
-    preconditions:
-      - which talhelper
+      - test -f "{{.TALOSCONFIG}}"
+      - which talosctl yq

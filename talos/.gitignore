@@ -1,0 +1,8 @@
+# Never commit rendered (decrypted) machine configs or downloaded images.
+# `render-config` prints to stdout, but guard against accidental redirects here.
+rendered/
+*.rendered.yaml
+*.machineconfig.yaml
+*.iso
+*.raw
+*.raw.xz

@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.14.0-rc.2/pkg/machinery/config/schemas/config.schema.json
+# talos-03 — control plane (dedicated, tainted)
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+hostname: talos-03
+---
+apiVersion: v1alpha1
+kind: LinkAliasConfig
+name: net0
+selector:
+  match: mac(link.permanent_addr) == "00:a0:98:05:d4:96"
+---
+apiVersion: v1alpha1
+kind: BondConfig
+name: bond0
+links:
+  - net0
+bondMode: active-backup
+mtu: 1500
+addresses:
+  - address: 192.168.10.12/24
+routes:
+  - destination: 0.0.0.0/0
+    gateway: 192.168.10.1
+---
+apiVersion: v1alpha1
+kind: VLANConfig
+name: bond0.90
+vlanID: 90
+parent: bond0
+---
+apiVersion: v1alpha1
+kind: Layer2VIPConfig
+name: 192.168.10.20
+link: bond0
+---
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+taints:
+  dedicated: talos-03:NoSchedule
+---
+apiVersion: v1alpha1
+kind: UnattendedInstallConfig
+provisioning:
+  diskSelector:
+    match: disk.dev_path == "/dev/vda"
+---
+apiVersion: v1alpha1
+kind: RawVolumeConfig
+name: miroir
+provisioning:
+  diskSelector:
+    match: disk.serial == "ZcM7DKy6"
+  minSize: 256GB

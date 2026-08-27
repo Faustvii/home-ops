@@ -152,7 +152,7 @@ There are **5 stages** outlined below for completing this project, make sure you
 
     ```sh
     git add -A
-    git commit -m "chore: add talhelper encrypted secret :lock:"
+    git commit -m "chore: add encrypted Talos secrets :lock:"
     git push
     ```
 
@@ -252,10 +252,11 @@ By default Flux will periodically check your git repository for changes. In-orde
 > [!CAUTION]
 > **Resetting** the cluster **multiple times in a short period of time** could lead to being **rate limited by DockerHub or Let's Encrypt**.
 
-There might be a situation where you want to destroy your Kubernetes cluster. The following command will reset your nodes back to maintenance mode.
+There might be a situation where you want to destroy your Kubernetes cluster. The following command will reset a node back to maintenance mode.
 
 ```sh
-task talos:reset
+task talos:reset-node IP=?
+# e.g. task talos:reset-node IP=192.168.10.10
 ```
 
 ## 🛠️ Talos and Kubernetes Maintenance
@@ -263,31 +264,27 @@ task talos:reset
 ### ⚙️ Updating Talos node configuration
 
 > [!TIP]
-> Ensure you have updated `talconfig.yaml` and any patches with your updated configuration. In some cases you **not only need to apply the configuration but also upgrade talos** to apply new configuration.
+> The Talos config is now rendered toolless (native `talosctl machineconfig patch` + `sops`, no talhelper). Edit the composable documents under `talos/` — `base.yaml`, `controlplane.yaml`/`worker.yaml`, `nodes/<role>/<node>.yaml`, and the `schematic.yaml` files. See [`talos/README.md`](talos/README.md) for the full layout and command reference.
 
 ```sh
-# (Re)generate the Talos config
-task talos:generate-config
-# Apply the config to the node
-task talos:apply-node IP=? MODE=?
-# e.g. task talos:apply-node IP=10.10.10.10 MODE=auto
+# Render a node's full machine config to stdout (never applied)
+task talos:render-config NODE=talos-01
+# Render and apply the config to a node
+task talos:apply-node NODE=talos-01
+# e.g. override target IP / mode: task talos:apply-node NODE=talos-01 IP=192.168.10.10 MODE=auto
 ```
 
 ### ⬆️ Updating Talos and Kubernetes versions
 
 > [!TIP]
-> Ensure the `talosVersion` and `kubernetesVersion` in `talenv.yaml` are up-to-date with the version you wish to upgrade to.
+> Talos and Kubernetes upgrades are driven in-cluster by [tuppr](kubernetes/apps/system-upgrade/tuppr). Bump the pinned versions in `talos/base.yaml` (installer image / kubelet) and the tuppr CRs. The `task talos:upgrade-*` recipes below are manual break-glass wrappers only.
 
 ```sh
-# Upgrade node to a newer Talos version
-task talos:upgrade-node IP=?
-# e.g. task talos:upgrade-node IP=10.10.10.10
-```
+# Break-glass: upgrade a single node to a specific installer image
+task talos:upgrade-node IP=192.168.10.10 IMAGE="factory.talos.dev/metal-installer/<schematic>:v1.14.0"
 
-```sh
-# Upgrade cluster to a newer Kubernetes version
-task talos:upgrade-k8s
-# e.g. task talos:upgrade-k8s
+# Break-glass: upgrade the cluster's Kubernetes version
+task talos:upgrade-k8s VERSION=v1.36.4
 ```
 
 ### ➕ Adding a node to your cluster
@@ -305,17 +302,17 @@ You don't need to re-bootstrap the cluster to add new nodes. Follow these steps:
     talosctl get links -n <ip> --insecure
     ```
 
-3. **Update the configuration**: Read the documentation for [talhelper](https://budimanjojo.github.io/talhelper/latest/) and extend the `talconfig.yaml` file manually with the new node information (including the disk and MAC address from step 2).
+3. **Update the configuration**: Add the new node to `talos/`: create `nodes/<role>/<hostname>.yaml` (hostname, static address, install-disk selector, labels/taints, and the NIC `LinkAliasConfig` selector using the MAC from step 2) plus a `nodes/<role>/<hostname>.schematic.yaml` override if its extensions differ from the shared `schematic.yaml`. See [`talos/README.md`](talos/README.md).
 
-4. **Generate and apply the configuration**:
+4. **Render and apply the configuration**:
 
     ```sh
-    # Render your talosconfig based on the talconfig.yaml file
-    task talos:generate-config
+    # Inspect the rendered machine config first
+    task talos:render-config NODE=<hostname>
 
     # Apply the configuration to the node
-    task talos:apply-node IP=?
-    # e.g. task talos:apply-node IP=10.10.10.10
+    task talos:apply-node NODE=<hostname>
+    # e.g. task talos:apply-node NODE=talos-05
     ```
 
 The node should join the cluster automatically and workloads will be scheduled once they report as ready.
