@@ -152,7 +152,7 @@ There are **5 stages** outlined below for completing this project, make sure you
 
     ```sh
     git add -A
-    git commit -m "chore: add talhelper encrypted secret :lock:"
+    git commit -m "chore: add talstomize encrypted secret :lock:"
     git push
     ```
 
@@ -263,32 +263,22 @@ task talos:reset
 ### ⚙️ Updating Talos node configuration
 
 > [!TIP]
-> Ensure you have updated `talconfig.yaml` and any patches with your updated configuration. In some cases you **not only need to apply the configuration but also upgrade talos** to apply new configuration.
+> Ensure you have updated `talos/talstomize.yaml` and any patches with your updated configuration. In some cases you **not only need to apply the configuration but also upgrade talos** to apply new configuration.
 
 ```sh
-# (Re)generate the Talos config
+# Render the Talos machine configs to talos/_out (nothing applied)
 task talos:generate-config
-# Apply the config to the node
-task talos:apply-node IP=? MODE=?
-# e.g. task talos:apply-node IP=10.10.10.10 MODE=auto
+# Apply the config to a node (NODE = the node name in talstomize.yaml)
+task talos:apply-node NODE=? MODE=?
+# e.g. task talos:apply-node NODE=talos-01 MODE=auto
+# Preview a change against the live cluster first
+task talos:diff NODE=talos-01
 ```
 
 ### ⬆️ Updating Talos and Kubernetes versions
 
 > [!TIP]
-> Ensure the `talosVersion` and `kubernetesVersion` in `talenv.yaml` are up-to-date with the version you wish to upgrade to.
-
-```sh
-# Upgrade node to a newer Talos version
-task talos:upgrade-node IP=?
-# e.g. task talos:upgrade-node IP=10.10.10.10
-```
-
-```sh
-# Upgrade cluster to a newer Kubernetes version
-task talos:upgrade-k8s
-# e.g. task talos:upgrade-k8s
-```
+> Bump `talosVersion` / `kubernetesVersion` in `talos/talstomize.yaml` (Renovate does this for you). **Rollouts are owned by [tuppr](https://github.com/home-operations/tuppr) in-cluster** — talstomize has no upgrade command, so `task talos:upgrade-node` / `task talos:upgrade-k8s` just point you at tuppr.
 
 ### ➕ Adding a node to your cluster
 
@@ -305,17 +295,17 @@ You don't need to re-bootstrap the cluster to add new nodes. Follow these steps:
     talosctl get links -n <ip> --insecure
     ```
 
-3. **Update the configuration**: Read the documentation for [talhelper](https://budimanjojo.github.io/talhelper/latest/) and extend the `talconfig.yaml` file manually with the new node information (including the disk and MAC address from step 2).
+3. **Update the configuration**: Read the documentation for [talstomize](https://github.com/mirceanton/talstomize) and add the new node under `nodes:` in `talos/talstomize.yaml`, plus a `talos/patches/nodes/<name>.yaml` for its disk/network/kernel settings (using the disk and MAC address from step 2).
 
 4. **Generate and apply the configuration**:
 
     ```sh
-    # Render your talosconfig based on the talconfig.yaml file
+    # Render the machine configs
     task talos:generate-config
 
     # Apply the configuration to the node
-    task talos:apply-node IP=?
-    # e.g. task talos:apply-node IP=10.10.10.10
+    task talos:apply-node NODE=?
+    # e.g. task talos:apply-node NODE=talos-05
     ```
 
 The node should join the cluster automatically and workloads will be scheduled once they report as ready.

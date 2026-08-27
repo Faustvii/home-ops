@@ -1,0 +1,124 @@
+---
+apiVersion: config.talstomize.dev/v1alpha1
+kind: Talstomize
+
+clusterName: kubernetes
+controlPlaneEndpoint: https://192.168.10.20:6443
+
+# renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+kubernetesVersion: v1.36.4
+
+# Encrypted secrets bundle (talosctl gen secrets format, same layout talhelper
+# produced). talstomize auto-detects the top-level `sops:` key and shells out to
+# `sops` to decrypt at build time. Never decrypted or committed in plaintext.
+secrets: ./talsecret.sops.yaml
+
+# Former talhelper additionalApiServerCertSans + additionalMachineCertSans.
+additionalSubjectAltNames:
+  - "127.0.0.1"
+  - "192.168.10.20"
+
+# Cluster-wide installer default. The schematic is submitted to the Talos Image
+# Factory and the resulting installer image is injected into machine.install.image.
+# talos-01 and talos-02 inherit this default; talos-03 and talos-04 override it
+# below (they drop zfs; talos-04 adds realtek-firmware and worker kernel args).
+installer:
+  # renovate: datasource=custom.talos-factory depName=siderolabs/talos
+  talosVersion: v1.13.9
+  schematic:
+    customization:
+      extraKernelArgs:
+        - pcie_aspm=off # Disable PCIe ASPM
+        - talos.dashboard.disabled=1 # Disable Talos Dashboard
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/amd-ucode
+          - siderolabs/amdgpu
+          - siderolabs/drbd
+          - siderolabs/nfsd
+          - siderolabs/nut-client
+          - siderolabs/zfs
+
+nodes:
+  talos-01:
+    ip: 192.168.10.10
+    kind: controlplane
+    patches:
+      - ./patches/nodes/talos-01.yaml
+      - ./patches/storage/talos-01.yaml
+
+  talos-02:
+    ip: 192.168.10.11
+    kind: controlplane
+    patches:
+      - ./patches/nodes/talos-02.yaml
+      - ./patches/storage/talos-02.yaml
+
+  talos-03:
+    ip: 192.168.10.12
+    kind: controlplane
+    installer:
+      # Full replacement of the cluster-default schematic (drops siderolabs/zfs).
+      schematic:
+        customization:
+          extraKernelArgs:
+            - pcie_aspm=off # Disable PCIe ASPM
+            - talos.dashboard.disabled=1 # Disable Talos Dashboard
+          systemExtensions:
+            officialExtensions:
+              - siderolabs/amd-ucode
+              - siderolabs/amdgpu
+              - siderolabs/drbd
+              - siderolabs/nfsd
+              - siderolabs/nut-client
+    patches:
+      - ./patches/nodes/talos-03.yaml
+      - ./patches/storage/talos-03.yaml
+      - ./patches/global/talos-03-kubelet.yaml
+
+  talos-04:
+    ip: 192.168.10.13
+    kind: worker
+    installer:
+      # Full replacement of the cluster-default schematic: drops siderolabs/zfs,
+      # adds siderolabs/realtek-firmware, and uses the Strix Halo ROCm kernel args.
+      schematic:
+        customization:
+          extraKernelArgs:
+            - pcie_aspm=off # Lower PCIe latency
+            - amd_iommu=off # Strix Halo ROCm/iGPU compatibility
+            - amd_pstate=active # AMD P-State driver
+            - amdgpu.gttsize=126976 # AMD GPU GTT memory size
+            - amdgpu.vm_fragment_size=8 # AMD GPU VM fragment size
+            - ttm.pages_limit=32505856 # AMD GPU TTM memory limit
+            - ttm.page_pool_size=25165824 # AMD GPU TTM page pool size
+            - talos.dashboard.disabled=1 # Disable Talos Dashboard
+          systemExtensions:
+            officialExtensions:
+              - siderolabs/amd-ucode
+              - siderolabs/amdgpu
+              - siderolabs/drbd
+              - siderolabs/nfsd
+              - siderolabs/nut-client
+              - siderolabs/realtek-firmware
+    patches:
+      - ./patches/nodes/talos-04.yaml
+      - ./patches/storage/talos-04.yaml
+      - ./patches/global/talos-04-kubelet.yaml
+
+# Cluster-wide patches (applied to every node, both roles).
+patches:
+  - ./patches/global/cluster-network.yaml
+  - ./patches/global/machine-files.yaml
+  - ./patches/global/machine-kubelet.yaml
+  - ./patches/global/machine-network.yaml
+  - ./patches/global/machine-sysctls.yaml
+  - ./patches/global/machine-nut.yaml # uses ${upsmonHost} ${upsmonUser} ${upsmonPass} from talenv.sops.yaml
+
+# Control-plane-only patches.
+controlplanePatches:
+  - ./patches/controller/cluster.yaml
+  - ./patches/controller/machine-features.yaml
+
+# Worker-only patches.
+workerPatches: []

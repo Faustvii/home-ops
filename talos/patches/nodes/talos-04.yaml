@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
+# Node-specific machine config for talos-04 (worker, Strix Halo ROCm node).
+# Migrated out of the former talhelper talconfig.yaml top-level node fields
+# (installDiskSelector / kernelModules / networkInterfaces / nodeLabels).
+machine:
+  nodeLabels:
+    topology.kubernetes.io/gpus: amd
+    node-role.kubernetes.io/rocm-worker: "true"
+  install:
+    diskSelector:
+      serial: "50026B73842AC0DD"
+  kernel:
+    modules:
+      - name: dm_thin_pool
+      - name: drbd
+        parameters:
+          - usermode_helper=disabled
+      - name: drbd_transport_tcp
+      - name: nbd
+  network:
+    interfaces:
+      - interface: bond0
+        bond:
+          interfaces:
+            - enp97s0
+          mode: active-backup
+        dhcp: false
+        addresses:
+          - "192.168.10.13/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "192.168.10.1"
+        mtu: 1500
+        vip:
+          ip: "192.168.10.20"
+        vlans:
+          - vlanId: 90
+            dhcp: false

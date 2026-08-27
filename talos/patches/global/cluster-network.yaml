@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
+# Cluster networking, migrated out of the former talhelper talconfig.yaml
+# top-level fields: clusterPodNets / clusterSvcNets / cniConfig.name.
+# talstomize does not expose these as manifest keys, so they live here as a
+# cluster-wide strategic-merge patch. Built-in CNI is disabled for Cilium.
+cluster:
+  network:
+    cni:
+      name: none
+    podSubnets:
+      - 10.42.0.0/16
+    serviceSubnets:
+      - 10.43.0.0/16

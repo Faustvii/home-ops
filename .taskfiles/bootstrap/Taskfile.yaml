@@ -5,17 +5,27 @@ tasks:
   talos:
     desc: Bootstrap the Talos cluster
     dir: "{{.TALOS_DIR}}"
+    vars:
+      # First control-plane node — used for the one-time bootstrap + kubeconfig fetch.
+      BOOTSTRAP_NODE: '{{.BOOTSTRAP_NODE | default "192.168.10.10"}}'
     cmds:
-      - "[ -f talsecret.sops.yaml ] || talhelper gensecret | sops --filename-override talos/talsecret.sops.yaml --encrypt /dev/stdin > talsecret.sops.yaml"
-      - talhelper genconfig
-      - talhelper gencommand apply --extra-flags="--insecure" | bash
-      - until talhelper gencommand bootstrap | bash; do sleep 10; done
-      - until talhelper gencommand kubeconfig --extra-flags="{{.ROOT_DIR}} --force" | bash; do sleep 10; done
+      # Generate the encrypted secrets bundle once (talstomize consumes it directly,
+      # auto-detecting the top-level `sops:` key). Skipped if it already exists.
+      - >-
+        [ -f talsecret.sops.yaml ] ||
+        { talosctl gen secrets -o /tmp/talsecret.yaml &&
+        sops --filename-override talos/talsecret.sops.yaml --encrypt /tmp/talsecret.yaml > talsecret.sops.yaml &&
+        rm -f /tmp/talsecret.yaml; }
+      # Push machine configs to nodes in maintenance mode. UPS creds injected via sops.
+      - sops exec-env talenv.sops.yaml 'talstomize apply -f . -- --insecure'
+      # Bootstrap etcd on the first control-plane node (talstomize has no bootstrap cmd).
+      - until talosctl bootstrap --nodes {{.BOOTSTRAP_NODE}} --endpoints {{.BOOTSTRAP_NODE}}; do sleep 10; done
+      - until talosctl kubeconfig --nodes {{.BOOTSTRAP_NODE}} --endpoints {{.BOOTSTRAP_NODE}} {{.ROOT_DIR}} --force; do sleep 10; done
     preconditions:
       - test -f {{.ROOT_DIR}}/.sops.yaml
       - test -f {{.SOPS_AGE_KEY_FILE}}
-      - test -f {{.TALOS_DIR}}/talconfig.yaml
-      - which talhelper talosctl sops
+      - test -f {{.TALOS_DIR}}/talstomize.yaml
+      - which talstomize talosctl sops
 
   apps:
     desc: Bootstrap apps into the Talos cluster
