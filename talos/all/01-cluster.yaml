@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
+# Cluster-wide networking + machine cert SANs (was talconfig top-level fields:
+# clusterPodNets, clusterSvcNets, cniConfig.name, additionalMachineCertSans).
+machine:
+  certSANs:
+    - "127.0.0.1"
+    - "192.168.10.20"
+cluster:
+  network:
+    podSubnets:
+      - "10.42.0.0/16"
+    serviceSubnets:
+      - "10.43.0.0/16"
+    # Disable built-in CNI to use Cilium
+    cni:
+      name: none

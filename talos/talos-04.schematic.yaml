@@ -1,0 +1,20 @@
+# talos-04 schematic override: rocm worker.
+# Adds realtek-firmware, drops zfs, and carries the Strix Halo / ROCm kernel args.
+customization:
+  extraKernelArgs:
+    - pcie_aspm=off # Lower PCIe latency
+    - amd_iommu=off # Strix Halo ROCm/iGPU compatibility
+    - amd_pstate=active # AMD P-State driver
+    - amdgpu.gttsize=126976 # AMD GPU GTT memory size
+    - amdgpu.vm_fragment_size=8 # AMD GPU VM fragment size
+    - ttm.pages_limit=32505856 # AMD GPU TTM memory limit
+    - ttm.page_pool_size=25165824 # AMD GPU TTM page pool size
+    - talos.dashboard.disabled=1 # Disable Talos Dashboard
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/amd-ucode
+      - siderolabs/amdgpu
+      - siderolabs/drbd
+      - siderolabs/nfsd
+      - siderolabs/nut-client
+      - siderolabs/realtek-firmware

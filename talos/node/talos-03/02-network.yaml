@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
+machine:
+  network:
+    interfaces:
+      - interface: bond0
+        bond:
+          deviceSelectors:
+            - hardwareAddr: "00:a0:98:05:d4:96"
+          mode: active-backup
+        dhcp: false
+        addresses:
+          - "192.168.10.12/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "192.168.10.1"
+        mtu: 1500
+        vip:
+          ip: "192.168.10.20"
+        vlans:
+          - vlanId: 90
+            dhcp: false

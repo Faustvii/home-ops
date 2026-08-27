@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
+# Kept as strategic-merge machine.network (old-style bond/vlan/vip) for a faithful,
+# low-risk translation rather than the newer typed Link/Bond/VLAN config kinds.
+machine:
+  network:
+    interfaces:
+      - interface: bond0
+        bond:
+          deviceSelectors:
+            - driver: igc
+              hardwareAddr: "38:05:25:33:bb:*"
+          mode: active-backup
+        dhcp: false
+        addresses:
+          - "192.168.10.10/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "192.168.10.1"
+        mtu: 1500
+        vip:
+          ip: "192.168.10.20"
+        vlans:
+          - vlanId: 90
+            dhcp: false

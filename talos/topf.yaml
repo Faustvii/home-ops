@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/postfinance/topf/main/docs/schemas/topf.schema.json
+# topf cluster definition (migrated from talhelper talconfig.yaml).
+# Docs: https://github.com/postfinance/topf
+clusterName: kubernetes
+clusterEndpoint: https://192.168.10.20:6443
+
+# NOTE: kept the "v" prefix to match the values talhelper used (talenv.yaml).
+# topf/talos accept unprefixed too; verify if you prefer eleboucher-style bare versions.
+talosVersion: v1.13.9
+kubernetesVersion: v1.36.4
+
+# Base schematic (talos-01 / talos-02). Per-node overrides below where extensions differ.
+schematicId: "@schematic.yaml"
+
+# Encrypted Talos secret bundle (git mv of the old talsecret.sops.yaml).
+# topf decrypts it internally via sops on read; it is never written back in plaintext.
+secretsPath: secrets.sops.yaml
+
+# Template data for *.yaml.tpl patches (currently only all/06-nut.yaml.tpl).
+# topf runs topf.yaml through sops -> vals before use, so these ref+sops:// pointers
+# resolve the upsmon credentials from the encrypted data.sops.yaml (old talenv.sops.yaml)
+# without ever committing plaintext. See README "Secrets" + PR notes — verify vals/sops.
+data:
+  upsmonHost: ref+sops://data.sops.yaml#/upsmonHost
+  upsmonUser: ref+sops://data.sops.yaml#/upsmonUser
+  upsmonPass: ref+sops://data.sops.yaml#/upsmonPass
+
+nodes:
+  - host: talos-01
+    ip: 192.168.10.10
+    role: control-plane
+  - host: talos-02
+    ip: 192.168.10.11
+    role: control-plane
+  - host: talos-03
+    ip: 192.168.10.12
+    role: control-plane
+    schematicId: "@talos-03.schematic.yaml" # drops zfs
+  - host: talos-04
+    ip: 192.168.10.13
+    role: worker
+    schematicId: "@talos-04.schematic.yaml" # realtek-firmware, drops zfs, extra kernel args
