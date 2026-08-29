@@ -24,7 +24,7 @@
     {
       description: "Kubernetes Group",
       groupName: "kubernetes",
-      matchDatasources: ["docker"],
+      matchDatasources: ["docker", "github-tags"],
       matchPackageNames: [
         "/kube-apiserver/",
         "/kube-controller-manager/",
