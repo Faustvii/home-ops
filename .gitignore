@@ -13,6 +13,9 @@
 # Kubernetes
 kubeconfig
 talosconfig
+# talstomize rendered machine configs (never commit rendered plaintext)
+_out/
+talos/_out/
 # Misc.
 .private/
 .task/

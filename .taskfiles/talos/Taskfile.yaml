@@ -1,59 +1,70 @@
 ---
 version: "3"
 
+# Talos machine configuration is managed with talstomize (github.com/mirceanton/talstomize).
+# The manifest lives at talos/talstomize.yaml. UPS-monitor credentials referenced by
+# patches/global/machine-nut.yaml are injected as env vars via `sops exec-env` from the
+# still-encrypted talos/talenv.sops.yaml — nothing is ever decrypted to disk.
+#
+# NOTE: Talos/Kubernetes UPGRADES are owned by tuppr in-cluster
+# (kubernetes/apps/system-upgrade/tuppr). talstomize intentionally has no upgrade
+# command, so the upgrade-* tasks below only point you at tuppr.
+
 tasks:
   generate-config:
-    desc: Generate Talos configuration
+    desc: Render Talos machine configs to talos/_out (nothing applied)
     dir: "{{.TALOS_DIR}}"
-    cmd: talhelper genconfig
+    cmd: sops exec-env talenv.sops.yaml 'talstomize build .'
     preconditions:
-      - test -f {{.TALOS_DIR}}/talconfig.yaml
+      - test -f {{.TALOS_DIR}}/talstomize.yaml
+      - test -f {{.TALOS_DIR}}/talenv.sops.yaml
       - test -f {{.ROOT_DIR}}/.sops.yaml
       - test -f {{.SOPS_AGE_KEY_FILE}}
-      - which talhelper
+      - which talstomize sops talosctl
 
   apply-node:
-    desc: Apply Talos config to a node [IP=required]
+    desc: Apply Talos config to a single node [NODE=talos-01 required]
     dir: "{{.TALOS_DIR}}"
-    cmd: talhelper gencommand apply --node {{.IP}} --extra-flags '--mode={{.MODE}}' | bash
+    cmd: sops exec-env talenv.sops.yaml 'talstomize apply -f . --node {{.NODE}} -- --mode={{.MODE}}'
     vars:
       MODE: '{{.MODE | default "auto"}}'
     requires:
-      vars: [IP]
+      vars: [NODE]
     preconditions:
-      - talosctl --nodes {{.IP}} get machineconfig
       - talosctl config info
       - test -f {{.TALOSCONFIG}}
-      - which talhelper talosctl yq
+      - which talstomize sops talosctl
+
+  diff:
+    desc: Diff rendered configs against the live cluster [NODE=talos-01 optional]
+    dir: "{{.TALOS_DIR}}"
+    cmd: sops exec-env talenv.sops.yaml 'talstomize diff -f .{{if .NODE}} --node {{.NODE}}{{end}}'
+    preconditions:
+      - talosctl config info
+      - test -f {{.TALOSCONFIG}}
+      - which talstomize sops talosctl
 
   upgrade-node:
-    desc: Upgrade Talos on a single node [IP=required]
-    dir: "{{.TALOS_DIR}}"
-    cmd: talhelper gencommand upgrade --node {{.IP}} --extra-flags "--timeout=10m" | bash
-    requires:
-      vars: [IP]
-    preconditions:
-      - talosctl --nodes {{.IP}} get machineconfig
-      - talosctl config info
-      - test -f {{.TALOSCONFIG}}
-      - which kubectl talhelper talosctl yq
+    desc: "[MOVED] Talos node upgrades are handled by tuppr in-cluster"
+    cmd: |
+      echo "Talos upgrades are owned by tuppr (kubernetes/apps/system-upgrade/tuppr)."
+      echo "talstomize has no upgrade command. Bump talosVersion in talos/talstomize.yaml"
+      echo "and let tuppr roll it out, or upgrade manually with talosctl if you must."
+    silent: true
 
   upgrade-k8s:
-    desc: Upgrade Kubernetes
-    dir: "{{.TALOS_DIR}}"
-    cmd: talhelper gencommand upgrade-k8s --extra-flags "--to '{{.KUBERNETES_VERSION}}'" | bash
-    vars:
-      KUBERNETES_VERSION:
-        sh: yq '.kubernetesVersion' {{.TALOS_DIR}}/talenv.yaml
-    preconditions:
-      - talosctl config info
-      - test -f {{.TALOSCONFIG}}
-      - which talhelper talosctl yq
+    desc: "[MOVED] Kubernetes upgrades are handled by tuppr in-cluster"
+    cmd: |
+      echo "Kubernetes upgrades are owned by tuppr (kubernetes/apps/system-upgrade/tuppr)."
+      echo "talstomize has no upgrade-k8s command. Bump kubernetesVersion in"
+      echo "talos/talstomize.yaml and let tuppr roll it out."
+    silent: true
 
   reset:
     desc: Resets nodes back to maintenance mode
     dir: "{{.TALOS_DIR}}"
     prompt: This will destroy your cluster and reset the nodes back to maintenance mode... continue?
-    cmd: talhelper gencommand reset --extra-flags="--reboot {{- if eq .CLI_FORCE false }} --system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL{{ end }} --graceful=false --wait=false" | bash
+    cmd: talosctl reset --reboot {{- if eq .CLI_FORCE false }} --system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL{{ end }} --graceful=false --wait=false
     preconditions:
-      - which talhelper
+      - talosctl config info
+      - which talosctl
