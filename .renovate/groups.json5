@@ -32,6 +32,7 @@
         "/kube-scheduler/",
         "/kubelet/",
         "aqua:kubernetes/kubernetes/kubectl",
+        "kubernetes/kubernetes/kubectl",
       ],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
