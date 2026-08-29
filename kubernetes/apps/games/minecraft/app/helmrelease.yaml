@@ -103,7 +103,7 @@ spec:
           - chunky
           - spark
           - simple-voice-chat
-          - servux
+          - servux:0.9.6
           - vmp-fabric
           - c2me-fabric
           - scalablelux
