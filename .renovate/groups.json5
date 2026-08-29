@@ -24,6 +24,7 @@
     {
       description: "Kubernetes Group",
       groupName: "kubernetes",
+      semanticCommitScope: "container",
       matchDatasources: ["docker", "github-tags", "github-releases"],
       matchPackageNames: [
         "/kube-apiserver/",
@@ -51,6 +52,7 @@
     {
       description: "Talos Group",
       groupName: "talos",
+      semanticCommitScope: "container",
       matchDatasources: ["docker", "github-releases", "github-tags", "custom.talos-factory"],
       matchPackageNames: [
         "ghcr.io/siderolabs/installer",
