@@ -31,7 +31,7 @@
         "/kube-proxy/",
         "/kube-scheduler/",
         "/kubelet/",
-        "aqua:kubernetes/kubernetes/kubectl",
+        "/aqua:kubernetes/kubernetes/kubectl/",
       ],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
