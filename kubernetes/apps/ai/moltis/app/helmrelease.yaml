@@ -69,7 +69,7 @@ spec:
           app:
             image:
               repository: ghcr.io/moltis-org/moltis
-              tag: latest@sha256:8e81e37b1091a60338cd278a772d48d55eb77a608f5fbc15e34e43a7cef1b0f6
+              tag: latest@sha256:56a9aa3305c480987f16da4f1a464a3ef328de03ec69562c3fc327a029681a87
             args:
               - --bind
               - "::"
