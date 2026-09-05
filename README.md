@@ -152,7 +152,7 @@ There are **5 stages** outlined below for completing this project, make sure you
 
     ```sh
     git add -A
-    git commit -m "chore: add talhelper encrypted secret :lock:"
+    git commit -m "chore: add topf encrypted secret :lock:"
     git push
     ```
 
@@ -263,25 +263,25 @@ task talos:reset
 ### ⚙️ Updating Talos node configuration
 
 > [!TIP]
-> Ensure you have updated `talconfig.yaml` and any patches with your updated configuration. In some cases you **not only need to apply the configuration but also upgrade talos** to apply new configuration.
+> Ensure you have updated `topf.yaml` and any patches with your updated configuration. In some cases you **not only need to apply the configuration but also upgrade talos** to apply new configuration.
 
 ```sh
-# (Re)generate the Talos config
-task talos:generate-config
-# Apply the config to the node
-task talos:apply-node IP=? MODE=?
-# e.g. task talos:apply-node IP=10.10.10.10 MODE=auto
+# Optional: preview the changes against the running cluster
+task talos:diff HOST=?
+# Apply the config (all nodes, or a single node via HOST=<regex>)
+task talos:apply HOST=? MODE=?
+# e.g. task talos:apply HOST=talos-01 MODE=auto
 ```
 
 ### ⬆️ Updating Talos and Kubernetes versions
 
 > [!TIP]
-> Ensure the `talosVersion` and `kubernetesVersion` in `talenv.yaml` are up-to-date with the version you wish to upgrade to.
+> Ensure the `talosVersion` and `kubernetesVersion` in `topf.yaml` are up-to-date with the version you wish to upgrade to.
 
 ```sh
-# Upgrade node to a newer Talos version
-task talos:upgrade-node IP=?
-# e.g. task talos:upgrade-node IP=10.10.10.10
+# Upgrade Talos (all nodes, or a single node via HOST=<regex>)
+task talos:upgrade HOST=?
+# e.g. task talos:upgrade HOST=talos-01
 ```
 
 ```sh
@@ -305,17 +305,19 @@ You don't need to re-bootstrap the cluster to add new nodes. Follow these steps:
     talosctl get links -n <ip> --insecure
     ```
 
-3. **Update the configuration**: Read the documentation for [talhelper](https://budimanjojo.github.io/talhelper/latest/) and extend the `talconfig.yaml` file manually with the new node information (including the disk and MAC address from step 2).
+3. **Update the configuration**: Read the documentation for [TOPF](https://postfinance.github.io/topf/) and extend the `topf.yaml` file (and the patch tree under `talos/`) manually with the new node information (including the disk and MAC address from step 2).
 
 4. **Generate and apply the configuration**:
 
     ```sh
-    # Render your talosconfig based on the talconfig.yaml file
-    task talos:generate-config
+    # Optional: render the machine configs locally to review them first
+    task talos:render
 
-    # Apply the configuration to the node
-    task talos:apply-node IP=?
-    # e.g. task talos:apply-node IP=10.10.10.10
+    # Preview the changes against the running cluster
+    task talos:diff HOST=talos-05
+
+    # Apply the configuration (all nodes, or a single node via HOST=<regex>)
+    task talos:apply HOST=talos-05
     ```
 
 The node should join the cluster automatically and workloads will be scheduled once they report as ready.

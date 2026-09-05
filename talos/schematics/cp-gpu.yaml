@@ -1,9 +1,11 @@
 customization:
   extraKernelArgs:
     - pcie_aspm=off # Disable PCIe ASPM
+    - talos.dashboard.disabled=1 # Disable Talos Dashboard
   systemExtensions:
     officialExtensions:
       - siderolabs/amd-ucode
       - siderolabs/amdgpu
+      - siderolabs/drbd
       - siderolabs/nfsd
       - siderolabs/nut-client

@@ -1,0 +1,33 @@
+---
+clusterName: kubernetes
+clusterEndpoint: https://192.168.10.20:6443
+
+# renovate: datasource=custom.talos-factory depName=siderolabs/talos
+talosVersion: v1.13.9
+# renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+kubernetesVersion: v1.36.4
+
+secretsPath: secrets.sops.yaml
+
+data:
+  upsmonHost: ref+sops://data.sops.yaml#/upsmonHost
+  upsmonUser: ref+sops://data.sops.yaml#/upsmonUser
+  upsmonPass: ref+sops://data.sops.yaml#/upsmonPass
+
+nodes:
+  - host: talos-01
+    ip: 192.168.10.10
+    role: control-plane
+    schematicId: "@schematics/cp-gpu.yaml"
+  - host: talos-02
+    ip: 192.168.10.11
+    role: control-plane
+    schematicId: "@schematics/cp-gpu.yaml"
+  - host: talos-03
+    ip: 192.168.10.12
+    role: control-plane
+    schematicId: "@schematics/cp-gpu.yaml"
+  - host: talos-04
+    ip: 192.168.10.13
+    role: worker
+    schematicId: "@schematics/worker-rocm.yaml"

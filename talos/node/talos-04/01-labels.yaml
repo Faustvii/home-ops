@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
+machine:
+  nodeLabels:
+    topology.kubernetes.io/gpus: amd
+    node-role.kubernetes.io/rocm-worker: "true"
+  nodeTaints:
+    llm-workload: "true:NoSchedule"

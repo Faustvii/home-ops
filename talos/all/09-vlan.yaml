@@ -1,0 +1,5 @@
+apiVersion: v1alpha1
+kind: VLANConfig
+name: bond0.90
+vlanID: 90
+parent: bond0
