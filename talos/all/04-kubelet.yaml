@@ -5,6 +5,7 @@ machine:
     disableManifestsDirectory: true
     image: ghcr.io/siderolabs/kubelet:v1.36.4
     extraConfig:
+      maxPods: 250
       serializeImagePulls: false
       imageGCHighThresholdPercent: 70
       imageGCLowThresholdPercent: 50
