@@ -25,6 +25,13 @@ spec:
       namespace: storage
   maintenance:
     enabled: true
+    schedule:
+      quick:
+        cron: "0 */2 * * *"
+        jitter: "30m"
+      full:
+        cron: "0 3 * * *"
+        jitter: "1h"
   moverDefaults:
     podSecurityContext:
       fsGroup: 1000
