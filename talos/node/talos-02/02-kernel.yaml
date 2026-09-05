@@ -1,13 +1,23 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
-machine:
-  kernel:
-    modules:
-      - name: amdgpu
-        parameters:
-          - ppfeaturemask=0xffffffff
-      - name: dm_thin_pool
-      - name: drbd
-        parameters:
-          - usermode_helper=disabled
-      - name: drbd_transport_tcp
-      - name: nbd
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: amdgpu
+parameters:
+  - ppfeaturemask=0xffffffff
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: dm_thin_pool
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: drbd
+parameters:
+  - usermode_helper=disabled
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: drbd_transport_tcp
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: nbd

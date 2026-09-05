@@ -1,7 +1,7 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
-machine:
-  sysfs:
-    devices.system.cpu.cpufreq.policy0.scaling_governor:
-      $patch: delete
-    devices.system.cpu.cpufreq.policy0.energy_performance_preference:
-      $patch: delete
+apiVersion: v1alpha1
+kind: SysfsConfig
+params:
+  devices.system.cpu.cpufreq.policy0.scaling_governor:
+    $patch: delete
+  devices.system.cpu.cpufreq.policy0.energy_performance_preference:
+    $patch: delete

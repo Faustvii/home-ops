@@ -1,16 +1,16 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
-machine:
-  kubelet:
-    defaultRuntimeSeccompProfileEnabled: true
-    disableManifestsDirectory: true
-    image: ghcr.io/siderolabs/kubelet:v1.36.4
-    extraConfig:
-      maxPods: 250
-      serializeImagePulls: false
-      imageGCHighThresholdPercent: 70
-      imageGCLowThresholdPercent: 50
-      imageMinimumGCAge: "48h"
-      imageMaximumGCAge: "168h"
-    nodeIP:
-      validSubnets:
-        - 192.168.10.0/24
+apiVersion: v1alpha1
+kind: KubeletConfig
+defaultRuntimeSeccompProfileEnabled: true
+config:
+  maxPods: 250
+  serializeImagePulls: false
+  imageGCHighThresholdPercent: 70
+  imageGCLowThresholdPercent: 50
+  imageMinimumGCAge: "48h"
+  imageMaximumGCAge: "168h"
+---
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+nodeIP:
+  validSubnets:
+    - 192.168.10.0/24

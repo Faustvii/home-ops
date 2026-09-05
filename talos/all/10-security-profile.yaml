@@ -1,0 +1,7 @@
+# Talos 1.14 defaults workloadIsolation to true (containerd/kubelet/pods run in a
+# dedicated sandboxd PID/mount namespace). Nodes were non-isolated on 1.13, so we
+# keep it off to make the 1.14 migration behaviour-neutral. Remove this document
+# to opt into workload isolation.
+apiVersion: v1alpha1
+kind: SecurityProfileConfig
+workloadIsolation: false

@@ -1,5 +1,11 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/v1.13.0/pkg/machinery/config/schemas/config.schema.json
-machine:
-  nodeLabels:
-    node.kubernetes.io/exclude-from-external-load-balancers:
-      $patch: delete
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+labels:
+  # Talos adds this to control-plane nodes by default; drop it so they stay
+  # eligible as external load-balancer targets.
+  node.kubernetes.io/exclude-from-external-load-balancers:
+    $patch: delete
+taints:
+  # Equivalent of cluster.allowSchedulingOnControlPlanes: true
+  node-role.kubernetes.io/control-plane:
+    $patch: delete
