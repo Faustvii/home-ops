@@ -18,6 +18,7 @@ spec:
         {{ .Summary }}
       prComments: true
       repo: github://faustvii/home-ops
+      verifyImages: true
       statusChecks: true
     httpRoute:
       annotations:
