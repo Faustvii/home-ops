@@ -28,7 +28,7 @@ releases:
     chart: oci://ghcr.io/home-operations/charts-mirror/keda
     version: 2.20.2
 
-  - name: kube-prometheus-stack
+  - name: prometheus-operator-crds
     namespace: observability
-    chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
-    version: 89.2.3
+    chart: oci://ghcr.io/prometheus-community/charts/prometheus-operator-crds
+    version: 29.0.0
