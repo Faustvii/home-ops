@@ -21,5 +21,10 @@
       matchPackageNames: ["mirror.gcr.io/envoyproxy/envoy"],
       sourceUrl: "https://github.com/envoyproxy/envoy",
     },
+    {
+      description: "Source URL for Garage",
+      matchPackageNames: ["dxflrs/garage"],
+      sourceUrl: "https://git.deuxfleurs.fr/Deuxfleurs/garage",
+    },
   ],
 }
