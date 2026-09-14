@@ -38,4 +38,4 @@ spec:
           secretKey: MCP_TOKEN
 
     seccomp:
-      distribute: true
+      distribute: false
