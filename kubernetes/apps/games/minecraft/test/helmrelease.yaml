@@ -119,7 +119,7 @@ spec:
         - "FF8soj"
 
       # renovate: datasource=custom.minecraft-release
-      version: 1.21.11
+      version: 26.3
       viewDistance: 16
       whitelist: "liope,djonn,inebuni"
       worldSaveName: "Chunklock"
