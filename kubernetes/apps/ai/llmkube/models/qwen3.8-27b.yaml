@@ -43,6 +43,10 @@ spec:
     port: 8080
     type: ClusterIP
   extraArgs:
+    - --port
+    - "8080"
+    - --host
+    - "::"
     - --alias
     - qwen3.8-27b-strix
     - --image-min-tokens
