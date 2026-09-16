@@ -22,3 +22,11 @@ spec:
         name: opentelemetry
       version: 0.123.0
   interval: 1h
+  values:
+    manager:
+      featureGatesMap:
+        # Cilium ipBlock selectors don't match node identities, so the
+        # operator's self-NetworkPolicy (egress to apiserver node IPs only)
+        # blackholes all traffic to the kubernetes service. Enable only if
+        # cilium runs with policyCIDRMatchMode=nodes.
+        operator.networkpolicy: false
