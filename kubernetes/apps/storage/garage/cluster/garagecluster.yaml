@@ -63,6 +63,13 @@ spec:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
         whenUnsatisfiable: DoNotSchedule
+        # labelSelector is NOT defaulted to the pod's own labels; without it the
+        # constraint matches zero pods and never rejects a node. Omitting it put
+        # both storage replicas (and all four miroir-local PVs) on one node.
+        labelSelector:
+          matchLabels:
+            garage.rajsingh.info/cluster: garage
+            garage.rajsingh.info/tier: storage
 
   webApi:
     bindPort: 3902
