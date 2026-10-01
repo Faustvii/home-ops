@@ -79,6 +79,10 @@ spec:
         embedding:
           model: embed/qwen3-embedding
           dims: 1024
+          # Global, not per repo. Measured top-5 neighbours vs random pairs:
+          # home-ops (YAML) 28% of random pairs pass 0.5, 3% pass 0.7;
+          # bookarr keeps 93% of neighbours at 0.7.
+          similarFloor: 0.7
         egress:
           allowHosts:
             - "*.githubusercontent.com"
