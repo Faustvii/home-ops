@@ -7,5 +7,6 @@ customization:
       - siderolabs/amd-ucode
       - siderolabs/amdgpu
       - siderolabs/drbd
+      - siderolabs/gvisor
       - siderolabs/nfsd
       - siderolabs/nut-client
