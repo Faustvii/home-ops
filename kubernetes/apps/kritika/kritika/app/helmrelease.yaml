@@ -86,10 +86,25 @@ spec:
         repositories:
           Faustvii/*:
             agent:
-              commands: [gh, curl, fd, rg]
+              commands: [gh, curl, jq, yq, rg, fd]
+          Faustvii/home-ops:
+            rules:
+              # onedr0p/home-ops' renovate rule.
+              - id: renovate
+                whenExpr: pr.headRef.startsWith("renovate/")
+                rule: >-
+                  This is a Renovate dependency update. Find what changed between
+                  the old and new versions from upstream's release notes,
+                  changelog or compare view, fetching them with gh when the body
+                  does not include them. Then check how this repository uses the
+                  package (its HelmRelease values, OCIRepository, overrides and
+                  CRDs) and report each breaking change, deprecation, removed or
+                  renamed value, or changed default that affects it. Start the
+                  summary with a verdict, safe to merge or not, and name the
+                  sources you read.
 
     runner:
-      # -tools adds gh, curl, fd and rg for agent.commands.
+      # -tools adds curl, fd, gh, jq, rg and yq for agent.commands.
       image: ghcr.io/home-operations/kritika:main-tools@sha256:f7b2830c4bb539b791b7298adeb3acbcbd5aacb712a7cd96989f59cc7487661a
       runtimeClassName: gvisor
 
