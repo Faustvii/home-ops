@@ -22,15 +22,14 @@ metadata:
   name: qwen3-embedding
 spec:
   mode: embedding
-  # Embeddings need the whole input in one ubatch, and the compute buffer
-  # grows to the largest ubatch seen and stays there: measured ~4 GiB
-  # total at ~4-5k tokens, OOM past 6Gi at ~6.6k. 4096 bounds it; kritika
-  # caps inputs at 6000 chars (embedding.maxItemChars) so one still fits.
-  batchSize: 4096
-  uBatchSize: 4096
-  # KV is ~112 KiB/token (f16), so 16384 ctx is ~1.75 GiB, shared by the
-  # 4 slots through the unified KV.
-  contextSize: 16384
+  # With --pooling last a long input is split across ubatches through the
+  # KV cache (llama.cpp can_split), so the ubatch can stay small; attention
+  # scratch grows with its square (8192 OOMed past 6Gi on one 6.6k-token
+  # input). No batchSize: embeddings force n_batch = n_ubatch.
+  uBatchSize: 512
+  # KV is ~112 KiB/token (f16), so 32768 ctx is ~3.5 GiB, shared by the 4
+  # slots through the unified KV; an input must fit what is free of it.
+  contextSize: 32768
   parallelSlots: 4
   endpoint:
     port: 8080
