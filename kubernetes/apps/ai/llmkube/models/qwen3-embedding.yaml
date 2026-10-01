@@ -34,6 +34,9 @@ spec:
   endpoint:
     port: 8080
     type: ClusterIP
+  # Without FA the attention scores alone are 16 heads x ubatch x ctx x
+  # 4 B (~8 GiB at 8192 x 16384), filled lazily until the pod OOMs.
+  flashAttention: true
   extraArgs:
     - --alias
     - qwen3-embedding
