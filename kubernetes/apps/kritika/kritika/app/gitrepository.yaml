@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/gitrepository_v1.json
+# kritika has no release or published OCI chart yet: build the chart from git,
+# pinned to the commit the image digest in helmrelease.yaml was built from
+# (org.opencontainers.image.revision). Bump both together.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: kritika
+spec:
+  interval: 1h
+  url: https://github.com/home-operations/kritika
+  ref:
+    commit: 78cd661396f516dc67dcb2bbe533243681fffd44
+  ignore: |
+    /*
+    !/charts/kritika

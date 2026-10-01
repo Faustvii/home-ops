@@ -19,6 +19,12 @@ spec:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: actions-runner-system
             runner: review-runner
+        # kritika serve pods (its gateway makes every model call; runner
+        # pods never reach the model directly)
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kritika
+            app.kubernetes.io/name: kritika
+            app.kubernetes.io/instance: kritika
         # envoy-internal data-plane proxies, so the ingress/HTTPRoute
         # path (modelrouter.${SECRET_DOMAIN}) keeps working
         - matchLabels:

@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/barmancloud.cnpg.io/objectstore_v1.json
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: kritika-garage-store
+spec:
+  configuration:
+    data:
+      compression: gzip
+    destinationPath: s3://kritika-postgres/
+    endpointURL: http://garage.storage.svc.cluster.local:3900
+    s3Credentials:
+      accessKeyId:
+        key: access-key-id
+        name: kritika-postgres-key
+      region:
+        key: region
+        name: kritika-postgres-key
+      secretAccessKey:
+        key: secret-access-key
+        name: kritika-postgres-key
+    wal:
+      compression: zstd
+  retentionPolicy: "10d"

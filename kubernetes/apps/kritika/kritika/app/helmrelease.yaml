@@ -1,0 +1,115 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app kritika
+spec:
+  chart:
+    spec:
+      chart: ./charts/kritika
+      reconcileStrategy: Revision
+      sourceRef:
+        kind: GitRepository
+        name: *app
+  interval: 1h
+  values:
+    # Built from the commit pinned in gitrepository.yaml.
+    image:
+      repository: ghcr.io/home-operations/kritika
+      tag: main@sha256:45ab9600a42aa9316655808620097fdb9e9157c15096f58ea114140bf0e40675
+
+    deploymentAnnotations:
+      reloader.stakater.com/auto: "true"
+
+    web:
+      url: https://${APP}.${SECRET_DOMAIN}
+
+    database:
+      owner:
+        existingSecret: kritika-postgres-credentials
+      app:
+        existingSecret: kritika-postgres-app
+      runner:
+        existingSecret: kritika-postgres-runner
+
+    auth:
+      # Break-glass local admin; day-to-day sign-in is Pocket ID.
+      admin:
+        passwordSecret:
+          name: kritika-secret
+          key: ADMIN_PASSWORD
+      oidc:
+        name: Pocket ID
+        issuer: https://idm.${SECRET_DOMAIN}
+        clientId: ${APP}
+        clientSecretSecret:
+          name: ${APP}-oidc-credentials
+          key: client-secret
+        scopes: [openid, email, profile, groups]
+        rolesClaim: groups
+        roleMappingExpr: '"kritika-admins" in roles ? "admin" : ("kritika-users" in roles ? "member" : "")'
+
+    secretEnv:
+      - { name: GITHUB_APP_CLIENT_ID, secretName: kritika-secret, key: GITHUB_APP_CLIENT_ID }
+      - { name: GITHUB_APP_PRIVATE_KEY, secretName: kritika-secret, key: GITHUB_APP_PRIVATE_KEY }
+      - { name: GITHUB_APP_WEBHOOK_SECRET, secretName: kritika-secret, key: GITHUB_APP_WEBHOOK_SECRET }
+      - { name: LOCAL_LLM_API_KEY, secretName: kritika-secret, key: LOCAL_LLM_API_KEY }
+
+    config:
+      file:
+        apps:
+          - name: github
+            accounts: [Faustvii]
+            clientId: { env: GITHUB_APP_CLIENT_ID }
+            privateKey: { env: GITHUB_APP_PRIVATE_KEY }
+            webhookSecret: { env: GITHUB_APP_WEBHOOK_SECRET }
+        providers:
+          modelrouter:
+            type: openai
+            baseUrl: http://modelrouter-router-proxy.ai.svc.cluster.local:8080/v1
+            apiKey: { env: LOCAL_LLM_API_KEY }
+          embed:
+            type: openai
+            baseUrl: http://qwen3-embedding.ai.svc.cluster.local:8080/v1
+            apiKey: { env: LOCAL_LLM_API_KEY }
+        defaults:
+          models:
+            review: modelrouter/self-qwen3.6
+        embedding:
+          model: embed/qwen3-embedding
+          dims: 1024
+        egress:
+          allowHosts:
+            - "*.githubusercontent.com"
+            - ghcr.io
+        repositories:
+          # Everything starts off; turn Faustvii/home-ops on from the
+          # dashboard's Repositories page (an owner/name entry can't set
+          # enabled).
+          Faustvii/*:
+            enabled: false
+            agent:
+              commands: [gh, curl, fd, rg]
+
+    runner:
+      # -tools adds gh, curl, fd and rg for agent.commands.
+      image: ghcr.io/home-operations/kritika:main-tools@sha256:f7b2830c4bb539b791b7298adeb3acbcbd5aacb712a7cd96989f59cc7487661a
+      runtimeClassName: gvisor
+
+    httpRoute:
+      enabled: true
+      parentRefs:
+        - name: envoy-external
+          namespace: network
+          sectionName: https
+
+    networkPolicy:
+      enabled: true
+      type: cilium
+      # 8080: modelrouter and the embedder in the ai namespace.
+      egressPorts: [443, 8080]
+
+    monitoring:
+      serviceMonitor:
+        enabled: true
