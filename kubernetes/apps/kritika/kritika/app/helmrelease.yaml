@@ -84,11 +84,7 @@ spec:
             - "*.githubusercontent.com"
             - ghcr.io
         repositories:
-          # Everything starts off; turn Faustvii/home-ops on from the
-          # dashboard's Repositories page (an owner/name entry can't set
-          # enabled).
           Faustvii/*:
-            enabled: false
             agent:
               commands: [gh, curl, fd, rg]
 
