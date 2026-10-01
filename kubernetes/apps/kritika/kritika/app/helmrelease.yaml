@@ -108,7 +108,9 @@ spec:
       enabled: true
       type: cilium
       # 8080: modelrouter and the embedder in the ai namespace.
-      egressPorts: [443, 8080]
+      # 10443: in-cluster *.${SECRET_DOMAIN} (e.g. Pocket ID) resolves to
+      # the envoy LB, and Cilium matches egress on the backend port.
+      egressPorts: [443, 8080, 10443]
 
     monitoring:
       serviceMonitor:
