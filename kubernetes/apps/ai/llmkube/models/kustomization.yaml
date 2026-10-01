@@ -4,6 +4,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./pvc-strix-cache.yaml
+  - ./pvc-embedding-cache.yaml
   - ./qwen3.6-35b.yaml
   - ./qwen3.8-27b.yaml
   - ./nemotron.yaml

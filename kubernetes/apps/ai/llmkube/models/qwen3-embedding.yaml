@@ -45,6 +45,8 @@ spec:
     - --load-mode
     - mmap
   image: ghcr.io/ggml-org/llama.cpp:server-b10548@sha256:4edd7ad571186256b3b9a4b6386f515b8725f78c34828131a5c85d2a0676e241
+  modelCache:
+    claimName: llmkube-embedding-cache
   modelRef: qwen3-embedding-0.6b
   priority: normal
   probeOverrides:

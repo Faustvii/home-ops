@@ -1,0 +1,15 @@
+---
+# Own cache for the CPU embedder: the shared llmkube-model-cache is RWO and
+# held by the controller on its node, and llmkube-strix-cache is node-local
+# to talos-04. Replicated so the embedder can schedule on any node.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: llmkube-embedding-cache
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: miroir-replicated
