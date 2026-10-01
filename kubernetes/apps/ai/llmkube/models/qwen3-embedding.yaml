@@ -34,10 +34,12 @@ spec:
   endpoint:
     port: 8080
     type: ClusterIP
-  # Without FA the attention scores alone are 16 heads x ubatch x ctx x
-  # 4 B (~8 GiB at 8192 x 16384), filled lazily until the pod OOMs.
-  flashAttention: true
   extraArgs:
+    # Without FA the attention scores alone are 16 heads x ubatch x ctx x
+    # 4 B (~8 GiB at 8192 x 16384), filled lazily until the pod OOMs.
+    # Set here: llmkube 0.9.29 drops spec.flashAttention without a GPU.
+    - --flash-attn
+    - "on"
     - --alias
     - qwen3-embedding
     - --cont-batching
