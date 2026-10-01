@@ -79,6 +79,9 @@ spec:
         embedding:
           model: embed/qwen3-embedding
           dims: 1024
+          # Keeps one input inside the embedder's 4096-token ubatch; index
+          # chunks are already cut at 6000 bytes.
+          maxItemChars: 6000
         egress:
           allowHosts:
             - "*.githubusercontent.com"

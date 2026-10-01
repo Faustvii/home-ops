@@ -22,13 +22,14 @@ metadata:
   name: qwen3-embedding
 spec:
   mode: embedding
-  # Embeddings need the whole input in one ubatch; kritika sends at most
-  # 16,000 chars per input, so 8192 tokens covers it.
-  batchSize: 8192
-  uBatchSize: 8192
-  # KV is ~112 KiB/token (f16), so 16384 ctx is ~1.75 GiB; 32768 sat at
-  # ~3.6 GiB idle and OOMed at 4Gi under load. Unified KV still lets the 4
-  # slots share it, and one input never exceeds the 8192 ubatch.
+  # Embeddings need the whole input in one ubatch, and the compute buffer
+  # grows to the largest ubatch seen and stays there: measured ~4 GiB
+  # total at ~4-5k tokens, OOM past 6Gi at ~6.6k. 4096 bounds it; kritika
+  # caps inputs at 6000 chars (embedding.maxItemChars) so one still fits.
+  batchSize: 4096
+  uBatchSize: 4096
+  # KV is ~112 KiB/token (f16), so 16384 ctx is ~1.75 GiB, shared by the
+  # 4 slots through the unified KV.
   contextSize: 16384
   parallelSlots: 4
   endpoint:
@@ -81,7 +82,7 @@ spec:
   replicas: 1
   resources:
     cpu: "2"
-    memory: 6Gi
+    memory: 8Gi
   rolloutPolicy:
     idleTimeoutSeconds: 86400
     waitForIdle: true
