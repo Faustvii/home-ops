@@ -2,9 +2,10 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+components:
+  - ../../components/sops
+namespace: kritika
+
 resources:
-  - ./pvc-strix-cache.yaml
-  - ./qwen3.6-35b.yaml
-  - ./qwen3.8-27b.yaml
-  - ./nemotron.yaml
-  - ./qwen3-embedding.yaml
+  - ./namespace.yaml
+  - ./kritika/ks.yaml

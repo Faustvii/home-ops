@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/dist/schemas/pocketidoidcclient_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: ${APP}
+spec:
+  allowedUserGroups:
+    - name: ${APP}-admins
+    - name: ${APP}-users
+  callbackUrls:
+    - https://${APP}.${SECRET_DOMAIN}/auth/callback/oidc
+  # Fixed so the HelmRelease can set it inline (auth.oidc.clientId).
+  clientID: ${APP}
+  launchUrl: https://${APP}.${SECRET_DOMAIN}
+  name: Kritika
+  pkceEnabled: true
+  secret:
+    keys:
+      clientID: client-id
+      clientSecret: client-secret
+    name: ${APP}-oidc-credentials

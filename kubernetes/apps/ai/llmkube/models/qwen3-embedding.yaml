@@ -1,0 +1,78 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/model_v1alpha1.json
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: Model
+metadata:
+  name: qwen3-embedding-0.6b
+spec:
+  files:
+    - Qwen3-Embedding-0.6B-Q8_0.gguf
+  format: gguf
+  hardware:
+    accelerator: cpu
+  quantization: Q8_0
+  source: hf://Qwen/Qwen3-Embedding-0.6B-GGUF
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/inferenceservice_v1alpha1.json
+# CPU-only embedder for kritika's similar-code index (1024 dims). Called
+# directly, not through modelrouter, which only proxies chat completions.
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: InferenceService
+metadata:
+  name: qwen3-embedding
+spec:
+  mode: embedding
+  # Embeddings need the whole input in one ubatch; kritika sends at most
+  # 16,000 chars per input, so 8192 tokens covers it.
+  batchSize: 8192
+  uBatchSize: 8192
+  contextSize: 32768
+  parallelSlots: 4
+  endpoint:
+    port: 8080
+    type: ClusterIP
+  extraArgs:
+    - --alias
+    - qwen3-embedding
+    - --cont-batching
+    - --kv-unified
+    - --cache-ram
+    - "0"
+    - --threads
+    - "4"
+    - --threads-batch
+    - "8"
+    - --load-mode
+    - mmap
+  image: ghcr.io/ggml-org/llama.cpp:server-b10548@sha256:4edd7ad571186256b3b9a4b6386f515b8725f78c34828131a5c85d2a0676e241
+  modelRef: qwen3-embedding-0.6b
+  priority: normal
+  probeOverrides:
+    liveness:
+      failureThreshold: 6
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 30
+    readiness:
+      failureThreshold: 6
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 20
+      periodSeconds: 10
+    startup:
+      failureThreshold: 360
+      httpGet:
+        path: /health
+        port: 8080
+      periodSeconds: 10
+  replicas: 1
+  resources:
+    cpu: "2"
+    memory: 4Gi
+  rolloutPolicy:
+    idleTimeoutSeconds: 86400
+    waitForIdle: true
+  runtime: llamacpp
