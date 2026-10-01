@@ -26,7 +26,10 @@ spec:
   # 16,000 chars per input, so 8192 tokens covers it.
   batchSize: 8192
   uBatchSize: 8192
-  contextSize: 32768
+  # KV is ~112 KiB/token (f16), so 16384 ctx is ~1.75 GiB; 32768 sat at
+  # ~3.6 GiB idle and OOMed at 4Gi under load. Unified KV still lets the 4
+  # slots share it, and one input never exceeds the 8192 ubatch.
+  contextSize: 16384
   parallelSlots: 4
   endpoint:
     port: 8080
@@ -73,7 +76,7 @@ spec:
   replicas: 1
   resources:
     cpu: "2"
-    memory: 4Gi
+    memory: 6Gi
   rolloutPolicy:
     idleTimeoutSeconds: 86400
     waitForIdle: true
