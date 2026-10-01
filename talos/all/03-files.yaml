@@ -17,5 +17,6 @@ contents: |
   hard=True
   nconnect=8
   noatime=True
+  noresvport=True
   rsize=1048576
   wsize=1048576
