@@ -114,6 +114,15 @@ spec:
             name: ${APP}-oidc-credentials
             key: client-secret
 
+    resources:
+      requests: { cpu: 10m, memory: 64Mi }
+      limits: { memory: 512Mi }
+
+    runner:
+      resources:
+        requests: { cpu: 10m, memory: 256Mi }
+        limits: { memory: 2Gi }
+
     database:
       owner:
         existingSecret: kritika-postgres-credentials
