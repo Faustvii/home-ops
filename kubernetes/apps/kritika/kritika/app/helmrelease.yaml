@@ -51,7 +51,7 @@ spec:
           apiKey: { env: LOCAL_LLM_API_KEY }
       defaults:
         models:
-          review: modelrouter/self-qwen3.6
+          review: modelrouter/self-qwen3.8
       embedding:
         model: embed/qwen3-embedding
         dims: 1024
