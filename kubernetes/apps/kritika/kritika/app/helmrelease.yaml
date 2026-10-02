@@ -13,6 +13,10 @@ spec:
     deploymentAnnotations:
       reloader.stakater.com/auto: "true"
 
+    # Chart 0.0.6 defaults to one replica; keep two so a drain doesn't take
+    # kritika down, and so the chart still renders the PodDisruptionBudget.
+    replicas: 2
+
     config:
       webUrl: https://${APP}.${SECRET_DOMAIN}
       runnerRuntimeClass: gvisor
@@ -150,4 +154,6 @@ spec:
 
     monitoring:
       serviceMonitor:
+        enabled: true
+      prometheusRule:
         enabled: true
