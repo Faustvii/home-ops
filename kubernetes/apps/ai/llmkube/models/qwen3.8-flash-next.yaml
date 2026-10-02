@@ -37,10 +37,10 @@ metadata:
   annotations:
     inference.llmkube.dev/idle-endpoint: /health
 spec:
-  # gufo serves the model itself (runtime: generic), so the operator only
-  # stages the files. Unlike Jory's setup (skipModelInit + a pre-populated
-  # cache) we keep the model-downloader init so the first start pulls the
-  # weights into the strix cache. The cache key is sha256(source)[:16].
+  # gufo serves the model itself (runtime: generic). The operator neither
+  # downloads nor mounts weights for generic runtimes, so the strix cache is
+  # mounted directly and the files must already be staged under
+  # /models/<sha256(source)[:16]>/ (one-off download, see Model above).
   args:
     - serve
     - llm
@@ -103,16 +103,17 @@ spec:
     - name: HSA_OVERRIDE_GFX_VERSION
       value: "11.5.1"
   extraVolumeMounts:
-    - name: gufo-cache
+    - name: models
+      mountPath: /models
+      readOnly: true
+    - name: models
       mountPath: /cache
       subPath: gufo-cache
   extraVolumes:
-    - name: gufo-cache
+    - name: models
       persistentVolumeClaim:
         claimName: llmkube-strix-cache
   image: ghcr.io/joryirving/toolboxes/gufo-runtime:sha-840d3736012ebeb123472b2dc8ca39411084b05e@sha256:0f6acad707331df31f6e016f06669c6f2a0e8674f1341fc3f3ba8ba862023c81
-  modelCache:
-    claimName: llmkube-strix-cache
   modelRef: qwen3.8-flash-next
   nodeSelector:
     kubernetes.io/hostname: talos-04
@@ -152,6 +153,7 @@ spec:
     idleTimeoutSeconds: 86400
     waitForIdle: false
   runtime: generic
+  skipModelInit: true
   tolerations:
     - effect: NoSchedule
       key: llm-workload
