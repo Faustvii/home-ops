@@ -3,27 +3,83 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app kritika
+  name: kritika
 spec:
-  chart:
-    spec:
-      chart: ./charts/kritika
-      reconcileStrategy: Revision
-      sourceRef:
-        kind: GitRepository
-        name: *app
+  chartRef:
+    kind: OCIRepository
+    name: kritika
   interval: 1h
   values:
-    # Built from the commit pinned in gitrepository.yaml.
-    image:
-      repository: ghcr.io/home-operations/kritika
-      tag: main@sha256:45ab9600a42aa9316655808620097fdb9e9157c15096f58ea114140bf0e40675
-
     deploymentAnnotations:
       reloader.stakater.com/auto: "true"
 
-    web:
-      url: https://${APP}.${SECRET_DOMAIN}
+    config:
+      webUrl: https://${APP}.${SECRET_DOMAIN}
+      runnerRuntimeClass: gvisor
+      # Local models doing multi-step research outrun the 15m default.
+      runnerDeadline: 30m
+
+    # Passed through verbatim (no tpl); secrets are { env: NAME } from
+    # envFrom/env below.
+    configFile:
+      auth:
+        # Break-glass local admin; day-to-day sign-in is Pocket ID.
+        admin:
+          password: { env: ADMIN_PASSWORD }
+        oidc:
+          name: Pocket ID
+          issuer: https://idm.${SECRET_DOMAIN}
+          clientId: ${APP}
+          clientSecret: { env: OIDC_CLIENT_SECRET }
+          scopes: [openid, email, profile, groups]
+          rolesClaim: groups
+          roleMappingExpr: '"kritika-admins" in roles ? "admin" : ("kritika-users" in roles ? "member" : "")'
+      apps:
+        github:
+          accounts: [Faustvii]
+          clientId: { env: GITHUB_APP_CLIENT_ID }
+          privateKey: { env: GITHUB_APP_PRIVATE_KEY }
+          webhookSecret: { env: GITHUB_APP_WEBHOOK_SECRET }
+      providers:
+        modelrouter:
+          type: openai
+          baseUrl: http://modelrouter-router-proxy.ai.svc.cluster.local:8080/v1
+          apiKey: { env: LOCAL_LLM_API_KEY }
+        embed:
+          type: openai
+          baseUrl: http://qwen3-embedding.ai.svc.cluster.local:8080/v1
+          apiKey: { env: LOCAL_LLM_API_KEY }
+      defaults:
+        models:
+          review: modelrouter/self-qwen3.6
+      embedding:
+        model: embed/qwen3-embedding
+        dims: 1024
+        # Global, not per repo. Measured top-5 neighbours vs random pairs:
+        # home-ops (YAML) 28% of random pairs pass 0.5, 3% pass 0.7;
+        # bookarr keeps 93% of neighbours at 0.7.
+        similarFloor: 0.7
+      egress:
+        allowHosts:
+          - "*.githubusercontent.com"
+          - ghcr.io
+      # Per-repository rules and ignores live in each repo's .kritika.yaml;
+      # agent may only be set here.
+      repositories:
+        Faustvii/*:
+          agent:
+            # The runner's -tools image provides these.
+            commands: [gh, curl, jq, yq, rg, fd]
+
+    envFrom:
+      - secretRef:
+          name: kritika-secret
+    env:
+      OIDC_CLIENT_SECRET:
+        valueFrom:
+          secretKeyRef:
+            name: ${APP}-oidc-credentials
+            key: client-secret
 
     database:
       owner:
@@ -33,91 +89,14 @@ spec:
       runner:
         existingSecret: kritika-postgres-runner
 
-    auth:
-      # Break-glass local admin; day-to-day sign-in is Pocket ID.
-      admin:
-        passwordSecret:
-          name: kritika-secret
-          key: ADMIN_PASSWORD
-      oidc:
-        name: Pocket ID
-        issuer: https://idm.${SECRET_DOMAIN}
-        clientId: ${APP}
-        clientSecretSecret:
-          name: ${APP}-oidc-credentials
-          key: client-secret
-        scopes: [openid, email, profile, groups]
-        rolesClaim: groups
-        roleMappingExpr: '"kritika-admins" in roles ? "admin" : ("kritika-users" in roles ? "member" : "")'
-
-    secretEnv:
-      - { name: GITHUB_APP_CLIENT_ID, secretName: kritika-secret, key: GITHUB_APP_CLIENT_ID }
-      - { name: GITHUB_APP_PRIVATE_KEY, secretName: kritika-secret, key: GITHUB_APP_PRIVATE_KEY }
-      - { name: GITHUB_APP_WEBHOOK_SECRET, secretName: kritika-secret, key: GITHUB_APP_WEBHOOK_SECRET }
-      - { name: LOCAL_LLM_API_KEY, secretName: kritika-secret, key: LOCAL_LLM_API_KEY }
-
-    config:
-      file:
-        apps:
-          - name: github
-            accounts: [Faustvii]
-            clientId: { env: GITHUB_APP_CLIENT_ID }
-            privateKey: { env: GITHUB_APP_PRIVATE_KEY }
-            webhookSecret: { env: GITHUB_APP_WEBHOOK_SECRET }
-        providers:
-          modelrouter:
-            type: openai
-            baseUrl: http://modelrouter-router-proxy.ai.svc.cluster.local:8080/v1
-            apiKey: { env: LOCAL_LLM_API_KEY }
-          embed:
-            type: openai
-            baseUrl: http://qwen3-embedding.ai.svc.cluster.local:8080/v1
-            apiKey: { env: LOCAL_LLM_API_KEY }
-        defaults:
-          models:
-            review: modelrouter/self-qwen3.6
-        embedding:
-          model: embed/qwen3-embedding
-          dims: 1024
-          # Global, not per repo. Measured top-5 neighbours vs random pairs:
-          # home-ops (YAML) 28% of random pairs pass 0.5, 3% pass 0.7;
-          # bookarr keeps 93% of neighbours at 0.7.
-          similarFloor: 0.7
-        egress:
-          allowHosts:
-            - "*.githubusercontent.com"
-            - ghcr.io
-        repositories:
-          Faustvii/*:
-            agent:
-              commands: [gh, curl, jq, yq, rg, fd]
-          Faustvii/home-ops:
-            rules:
-              # onedr0p/home-ops' renovate rule.
-              - id: renovate
-                whenExpr: pr.headRef.startsWith("renovate/")
-                rule: >-
-                  This is a Renovate dependency update. Find what changed between
-                  the old and new versions from upstream's release notes,
-                  changelog or compare view, fetching them with gh when the body
-                  does not include them. Then check how this repository uses the
-                  package (its HelmRelease values, OCIRepository, overrides and
-                  CRDs) and report each breaking change, deprecation, removed or
-                  renamed value, or changed default that affects it. Start the
-                  summary with a verdict, safe to merge or not, and name the
-                  sources you read.
-
-    runner:
-      # -tools adds curl, fd, gh, jq, rg and yq for agent.commands.
-      image: ghcr.io/home-operations/kritika:main-tools@sha256:f7b2830c4bb539b791b7298adeb3acbcbd5aacb712a7cd96989f59cc7487661a
-      runtimeClassName: gvisor
-
     httpRoute:
       enabled: true
       parentRefs:
         - name: envoy-external
           namespace: network
           sectionName: https
+      hostnames:
+        - ${APP}.${SECRET_DOMAIN}
 
     networkPolicy:
       enabled: true
