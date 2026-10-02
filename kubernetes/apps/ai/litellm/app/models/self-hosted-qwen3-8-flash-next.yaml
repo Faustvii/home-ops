@@ -3,11 +3,11 @@
 apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMModel
 metadata:
-  name: self-hosted-qwen3-6-35b
+  name: self-hosted-qwen3-8-flash-next
 spec:
   info:
     maxInputTokens: 262144
-    maxOutputTokens: 16384
+    maxOutputTokens: 32768
     supportsFunctionCalling: true
     supportsVision: true
   modelName: self-hosted
@@ -15,7 +15,7 @@ spec:
     additional:
       max_parallel_requests: 2
       order: 1
-    apiBase: http://qwen3-6-35b-strix.ai.svc.cluster.local:8080/v1
+    apiBase: http://qwen3-8-flash-next-strix.ai.svc.cluster.local:8080/v1
     apiKey: selfhosted
     dropParams: true
-    model: openai/qwen3.6-35b
+    model: openai/qwen3.8-flash-next-strix

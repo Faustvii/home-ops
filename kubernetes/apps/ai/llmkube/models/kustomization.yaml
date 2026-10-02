@@ -5,7 +5,10 @@ kind: Kustomization
 resources:
   - ./pvc-strix-cache.yaml
   - ./pvc-embedding-cache.yaml
-  - ./qwen3.6-35b.yaml
-  - ./qwen3.8-27b.yaml
-  - ./nemotron.yaml
+  # flash-next owns the whole Strix box (108Gi); the others are kept as
+  # swap-backs, their weights are still in the strix cache.
+  - ./qwen3.8-flash-next.yaml
+  # - ./qwen3.6-35b.yaml
+  # - ./qwen3.8-27b.yaml
+  # - ./nemotron.yaml
   - ./qwen3-embedding.yaml

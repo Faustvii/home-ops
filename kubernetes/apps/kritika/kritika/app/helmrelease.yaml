@@ -52,7 +52,7 @@ spec:
           apiKey: { env: LOCAL_LLM_API_KEY }
       defaults:
         models:
-          review: modelrouter/self-qwen3.8
+          review: modelrouter/self-qwen3.8-flash-next
         limits:
           concurrency: 1
       embedding:

@@ -15,45 +15,25 @@ spec:
     # BackendNameMatch resolves the request's "model" field against.
     # name stays k8s-safe (^[a-z0-9][a-z0-9-]{0,62}$, no dots).
     #
-    # Fast local MoE (35B-A3B, ~3B active). Default route.
-    - name: self-qwen3-6
-      displayName: self-qwen3.6
+    # Qwen3.8-Flash-Next on gufo — the only model on the Strix box.
+    - name: self-qwen3-8-flash-next
+      displayName: self-qwen3.8-flash-next
       tier: local
       inferenceServiceRef:
-        name: qwen3.6-35b-strix
-      capabilities:
-        - code
-        - tools
-        - vision
-    # Dense 27B vision model — pick with "model": "self-qwen3.8".
-    - name: self-qwen3-8
-      displayName: self-qwen3.8
-      tier: local
-      inferenceServiceRef:
-        name: qwen3.8-27b-strix
+        name: qwen3.8-flash-next-strix
       timeout: 20m
       capabilities:
         - code
         - tools
         - vision
-    # MoE 30B-A3B speculative model — pick with "model": "self-nemotron".
-    - name: self-nemotron
-      displayName: self-nemotron
-      tier: local
-      inferenceServiceRef:
-        name: nemotron-strix
-      timeout: 20m
-      capabilities:
-        - code
-        - tools
   # BackendNameMatch: the request's "model" selects the backend by
   # displayName; anything unmatched falls through to defaultRoute.
   defaultRouteStrategy: BackendNameMatch
   # defaultRoute references the k8s-safe name, not the displayName.
-  defaultRoute: self-qwen3-6
+  defaultRoute: self-qwen3-8-flash-next
   proxy:
     # TWO independent timeouts gate a dispatch, and BOTH must be raised:
-    #   - backends[].timeout (20m, set on self-qwen3-8) = overall dispatch
+    #   - backends[].timeout (20m, set on self-qwen3-8-flash-next) = overall dispatch
     #     deadline. Proven applied: successful tool calls log timeoutMs=1200000.
     #   - responseHeaderTimeout below = the Go http.Transport
     #     ResponseHeaderTimeout, a SEPARATE lower cap on "time to first

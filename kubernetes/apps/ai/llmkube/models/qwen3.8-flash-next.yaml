@@ -1,0 +1,158 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/model_v1alpha1.json
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: Model
+metadata:
+  name: qwen3.8-flash-next
+spec:
+  # Ported from joryirving/home-ops (qwen3.8-flash-next-gufo.yaml), same
+  # Strix Halo hardware. ~115GB of weights + MTP head + mmproj.
+  files:
+    - UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf
+    - UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00002-of-00004.gguf
+    - UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00003-of-00004.gguf
+    - UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00004-of-00004.gguf
+    - MTP/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf
+    - mmproj-BF16.gguf
+  format: gguf
+  hardware:
+    accelerator: rocm
+    gpu:
+      enabled: true
+      layers: 99
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: llm-amd-gpu
+      runtime: rocm
+      vendor: amd
+  mmproj: mmproj-BF16.gguf
+  quantization: UD-Q4_K_XL
+  source: hf://unsloth/Qwen3.8-Flash-Next-GGUF
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/inferenceservice_v1alpha1.json
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: InferenceService
+metadata:
+  name: qwen3.8-flash-next-strix
+  annotations:
+    inference.llmkube.dev/idle-endpoint: /health
+spec:
+  # gufo serves the model itself (runtime: generic), so the operator only
+  # stages the files. Unlike Jory's setup (skipModelInit + a pre-populated
+  # cache) we keep the model-downloader init so the first start pulls the
+  # weights into the strix cache. The cache key is sha256(source)[:16].
+  args:
+    - serve
+    - llm
+    - --host
+    - 0.0.0.0
+    - --port
+    - "8080"
+    - --sessions
+    - "2"
+    - --max-pending
+    - "32"
+    - --max-pending-per-client
+    - "16"
+    - --max-request-bytes
+    - "67108864"
+    - --model
+    - /models/f869f01c859f8577/UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf
+    - --mmproj
+    - /models/f869f01c859f8577/mmproj-BF16.gguf
+    - --served-model-name
+    - qwen3.8-flash-next-strix
+    - --context
+    - "262144"
+    - --max-tokens
+    - "32768"
+    - --speculative
+    - mtp
+    - --mtp-model
+    - /models/f869f01c859f8577/MTP/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf
+    # Qwen3.8 thinking-mode sampler.
+    - --temperature
+    - "1.0"
+    - --top-p
+    - "0.95"
+    - --top-k
+    - "20"
+    - --min-p
+    - "0"
+    - --presence-penalty
+    - "0.0"
+    - --repeat-penalty
+    - "1.0"
+    - --reasoning-effort
+    - medium
+    - --preserve-thinking
+    - "off"
+    # Prompt-continuation cache on disk (64GiB), on the gufo-cache subPath.
+    - --cache-disk
+    - /cache/continuation
+    - --cache-disk-bytes
+    - "68719476736"
+  command:
+    - gufo
+  containerPort: 8080
+  contextSize: 262144
+  endpoint:
+    port: 8080
+    type: ClusterIP
+  env:
+    - name: HSA_OVERRIDE_GFX_VERSION
+      value: "11.5.1"
+  extraVolumeMounts:
+    - name: gufo-cache
+      mountPath: /cache
+      subPath: gufo-cache
+  extraVolumes:
+    - name: gufo-cache
+      persistentVolumeClaim:
+        claimName: llmkube-strix-cache
+  image: ghcr.io/joryirving/toolboxes/gufo-runtime:sha-840d3736012ebeb123472b2dc8ca39411084b05e@sha256:0f6acad707331df31f6e016f06669c6f2a0e8674f1341fc3f3ba8ba862023c81
+  modelCache:
+    claimName: llmkube-strix-cache
+  modelRef: qwen3.8-flash-next
+  nodeSelector:
+    kubernetes.io/hostname: talos-04
+    topology.kubernetes.io/gpus: amd
+  podSecurityContext:
+    fsGroup: 102
+    fsGroupChangePolicy: OnRootMismatch
+  priority: high
+  probeOverrides:
+    liveness:
+      failureThreshold: 6
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 30
+    readiness:
+      failureThreshold: 6
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 20
+      periodSeconds: 10
+    startup:
+      # 2h, as upstream: loading ~115GB of weights is slow.
+      failureThreshold: 720
+      httpGet:
+        path: /health
+        port: 8080
+      periodSeconds: 10
+  replicas: 1
+  # ~111GB weights in unified memory; this one model owns the Strix box.
+  resources:
+    cpu: "1"
+    memory: 108Gi
+  rolloutPolicy:
+    idleTimeoutSeconds: 86400
+    waitForIdle: false
+  runtime: generic
+  tolerations:
+    - effect: NoSchedule
+      key: llm-workload
+      operator: Exists
