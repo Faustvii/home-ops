@@ -113,7 +113,9 @@ spec:
     - name: models
       persistentVolumeClaim:
         claimName: llmkube-strix-cache
-  image: ghcr.io/joryirving/toolboxes/gufo-runtime:sha-840d3736012ebeb123472b2dc8ca39411084b05e@sha256:0f6acad707331df31f6e016f06669c6f2a0e8674f1341fc3f3ba8ba862023c81
+  # Upstream gufo >= 0.5.0 (gufo-org/gufo#373): older builds silently drop
+  # array args from tool calls whenever another tool has an object parameter.
+  image: ghcr.io/gufo-org/toolboxes/gufo-runtime:0.5.0@sha256:371a731c5286d698c77daa2507300588e24dc063c7c665895331001410dc06b4
   modelRef: qwen3.8-flash-next
   nodeSelector:
     kubernetes.io/hostname: talos-04
