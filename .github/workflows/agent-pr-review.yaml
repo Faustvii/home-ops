@@ -4,7 +4,7 @@ name: AI PR Review
 
 on:
   pull_request:
-    branches: ["main"]
+    branches: ["main-disabled"]
     types: [opened, reopened, synchronize, ready_for_review]
   workflow_dispatch:
     inputs:
