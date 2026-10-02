@@ -18,6 +18,7 @@ spec:
       runnerRuntimeClass: gvisor
       # Local models doing multi-step research outrun the 15m default.
       runnerDeadline: 30m
+      reviewWorkers: 1
 
     # Passed through verbatim (no tpl); secrets are { env: NAME } from
     # envFrom/env below.
@@ -52,6 +53,8 @@ spec:
       defaults:
         models:
           review: modelrouter/self-qwen3.8
+        limits:
+          concurrency: 1
       embedding:
         model: embed/qwen3-embedding
         dims: 1024
@@ -63,6 +66,7 @@ spec:
         allowHosts:
           - "*.githubusercontent.com"
           - ghcr.io
+          - konflate.${SECRET_DOMAIN}
       # Per-repository rules and ignores live in each repo's .kritika.yaml;
       # agent may only be set here.
       repositories:
@@ -70,6 +74,34 @@ spec:
           agent:
             # The runner's -tools image provides these.
             commands: [gh, curl, jq, yq, rg, fd]
+        # Here rather than in .kritika.yaml to keep the domain out of the repo;
+        # rules add up by id with the repo's own.
+        Faustvii/home-ops:
+          rules:
+            - id: konflate
+              paths: ["kubernetes/**"]
+              rule: >-
+                konflate renders this pull request's Flux manifests at the
+                head and the merge base and diffs the result, so it shows what
+                the change does to the cluster that the git diff hides. Before
+                reviewing, fetch its summary with
+                `curl -sS --retry 10 -H "Accept: text/markdown"
+                https://konflate.${SECRET_DOMAIN}/api/prs/<number>/summary`,
+                with this pull request's number: the blast radius, caution
+                lint (data loss, immutable fields, RBAC, suspend/prune), image
+                changes and render failures. A 404 means konflate does not
+                track the pull request; go on without it. For the rendered
+                YAML, save
+                `curl -sS -o konflate-diff.json
+                https://konflate.${SECRET_DOMAIN}/api/prs/<number>/diff` and
+                read it with jq: `.diff.resources[]` has `id`, `title`,
+                `kind`, `name`, `status`, `add`, `del` and the `unified` diff
+                rows. konflate already posts its summary on the pull request,
+                so do not repeat its cautions or tables. Use what it rendered
+                as evidence for your own findings: to judge what a change
+                really does, to confirm or rule out a suspected problem, and
+                to catch a rendered change the diff or description does not
+                explain.
 
     envFrom:
       - secretRef:
