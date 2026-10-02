@@ -5,7 +5,7 @@ clusterEndpoint: https://192.168.10.20:6443
 # renovate: datasource=custom.talos-factory depName=siderolabs/talos
 talosVersion: v1.14.1
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-kubernetesVersion: v1.37.0
+kubernetesVersion: v1.37.1
 
 secretsPath: secrets.sops.yaml
 
