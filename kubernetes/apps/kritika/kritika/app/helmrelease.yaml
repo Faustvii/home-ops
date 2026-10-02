@@ -71,6 +71,7 @@ spec:
       # agent may only be set here.
       repositories:
         Faustvii/*:
+          approve: true
           agent:
             # The runner's -tools image provides these.
             commands: [gh, curl, jq, yq, rg, fd]
