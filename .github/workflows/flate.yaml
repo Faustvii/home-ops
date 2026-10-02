@@ -3,7 +3,7 @@ name: "Flate"
 
 on:
   pull_request:
-    branches: ["main"]
+    branches: ["main-disabled"]
 
 permissions: {}
 
