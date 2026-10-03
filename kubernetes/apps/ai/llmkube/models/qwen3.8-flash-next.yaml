@@ -49,7 +49,7 @@ spec:
     - --port
     - "8080"
     - --sessions
-    - "2"
+    - "1"
     - --max-pending
     - "32"
     - --max-pending-per-client
@@ -92,6 +92,11 @@ spec:
     - /cache/continuation
     - --cache-disk-bytes
     - "68719476736"
+    # Staging bounds each snapshot written to/read from disk (default 1 GiB
+    # skips anything past ~30k tokens); 8 GiB fits a full 262K Flash-Next
+    # snapshot. Allocated only while a capture/read is in flight.
+    - --cache-disk-staging-bytes
+    - "8589934592"
   command:
     - gufo
   containerPort: 8080
