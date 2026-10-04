@@ -4,7 +4,8 @@
 ignore: ["**/?*.sops.*"]
 rules:
   # Started from onedr0p/home-ops' renovate rule. Ordered steps with an end:
-  # the open-ended version had the agent read upstream source file by file.
+  # the open-ended version had the agent read upstream source file by file,
+  # and it burned steps on base64 file contents and huge listings.
   - id: renovate
     whenExpr: pr.headRef.startsWith("renovate/")
     rule: >-
@@ -15,7 +16,13 @@ rules:
       there are none; the pull request body often already includes them. Open
       the compare view or a source file only to settle one specific question
       the notes leave open, such as whether a flag this repository passes was
-      renamed or removed, never to read the whole compare. Second, read what
+      renamed or removed, never to read the whole compare. Every command's
+      output stays in your context for the rest of the review, so ask for
+      small answers. Save an upstream file with `curl -sL -o <file>
+      https://raw.githubusercontent.com/<owner>/<repo>/<ref>/<path>` and
+      search it with rg rather than printing it; the gh contents API returns
+      it base64-encoded. Filter gh output with --jq, and never list all
+      tags, paginate a compare or fetch every release. Second, read what
       this repository sets for the package: the values, args, flags and env
       in the files the diff touches. Report each breaking change, removal,
       rename or changed default that touches one of those settings. A change
