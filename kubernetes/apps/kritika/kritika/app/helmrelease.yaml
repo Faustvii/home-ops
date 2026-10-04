@@ -100,13 +100,14 @@ spec:
                 each CRD's schema changes as added, removed and changed paths.
                 Where it cuts something for size it prints the exact command
                 that fetches it. If it says the pull request is not tracked or
-                still rendering, go on without it. Treat its output as what
-                Flux will apply and use it as evidence for your own findings:
-                to judge what the change really does, to confirm or rule out a
-                suspected problem, and to catch a rendered change the diff or
-                description does not explain. Do not rebuild from upstream what
-                it already shows, and do not repeat its summary, which konflate
-                already posts on the pull request.
+                still rendering, go on without it. Its output is what Flux will
+                apply: use it to judge what the change really does and to catch
+                a rendered change the diff or description does not explain. It
+                is complete, so do not search the repository or the registry
+                for rendered effects it does not list. When the summary says
+                Routine, the change is only the version bump shown. Do not
+                repeat its summary, which konflate already posts on the pull
+                request.
 
     envFrom:
       - secretRef:
