@@ -79,36 +79,34 @@ spec:
           agent:
             # Default is 20m; the review runner's deadline stretches to fit.
             timeout: 45m
-            # The runner's -tools image provides these.
-            commands: [gh, curl, jq, yq, rg, fd]
+            # The runner's -tools image provides the first six; konflate comes
+            # from runner.tools below.
+            commands: [gh, curl, jq, yq, rg, fd, konflate]
         # Here rather than in .kritika.yaml to keep the domain out of the repo;
         # rules add up by id with the repo's own.
-        # Faustvii/home-ops:
-          # rules:
-            # - id: konflate
-              # paths: ["kubernetes/**"]
-              # rule: >-
-                # konflate renders this pull request's Flux manifests at the
-                # head and the merge base and diffs the result, so it shows what
-                # the change does to the cluster that the git diff hides. Before
-                # reviewing, fetch its summary with
-                # `curl -sS --retry 10 -H "Accept: text/markdown"
-                # https://konflate.${SECRET_DOMAIN}/api/prs/<number>/summary`,
-                # with this pull request's number: the blast radius, caution
-                # lint (data loss, immutable fields, RBAC, suspend/prune), image
-                # changes and render failures. A 404 means konflate does not
-                # track the pull request; go on without it. For the rendered
-                # YAML, save
-                # `curl -sS -o konflate-diff.json
-                # https://konflate.${SECRET_DOMAIN}/api/prs/<number>/diff` and
-                # read it with jq: `.diff.resources[]` has `id`, `title`,
-                # `kind`, `name`, `status`, `add`, `del` and the `unified` diff
-                # rows. konflate already posts its summary on the pull request,
-                # so do not repeat its cautions or tables. Use what it rendered
-                # as evidence for your own findings: to judge what a change
-                # really does, to confirm or rule out a suspected problem, and
-                # to catch a rendered change the diff or description does not
-                # explain.
+        Faustvii/home-ops:
+          rules:
+            - id: konflate
+              paths: ["kubernetes/**"]
+              rule: >-
+                konflate renders this pull request's Flux manifests with flate
+                at the head and at the merge base and diffs the result, so it
+                shows what the change does to the cluster that the git diff
+                hides. Before anything else, run
+                `konflate --server https://konflate.${SECRET_DOMAIN} <number>`
+                with this pull request's number. It prints plain text, ready to
+                read: konflate's summary (blast radius, cautions, image changes,
+                render failures), a unified diff of every changed resource, and
+                each CRD's schema changes as added, removed and changed paths.
+                Where it cuts something for size it prints the exact command
+                that fetches it. If it says the pull request is not tracked or
+                still rendering, go on without it. Treat its output as what
+                Flux will apply and use it as evidence for your own findings:
+                to judge what the change really does, to confirm or rule out a
+                suspected problem, and to catch a rendered change the diff or
+                description does not explain. Do not rebuild from upstream what
+                it already shows, and do not repeat its summary, which konflate
+                already posts on the pull request.
 
     envFrom:
       - secretRef:
@@ -128,6 +126,13 @@ spec:
       resources:
         requests: { cpu: 10m, memory: 256Mi }
         limits: { memory: 2Gi }
+      # Mounted as an image volume at /opt/kritika/tools/<name> and put on the
+      # runner's PATH; built from tools/konflate by .github/workflows/konflate-tool.yaml.
+      tools:
+        - name: konflate
+          image: ghcr.io/faustvii/konflate-tool:latest@sha256:080316965e698bc3f2b08496f903f3022f5b98e3712f338c4d3275d840ef5c89
+          path: /bin
+          commands: [konflate]
 
     database:
       owner:
