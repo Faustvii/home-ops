@@ -13,3 +13,4 @@ resources:
   - ./dragonfly/ks.yaml
   - ./cnpg/ks.yaml
   - ./pgweb/ks.yaml
+  - ./libredb-studio/ks.yaml
