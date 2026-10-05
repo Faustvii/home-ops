@@ -7,16 +7,21 @@ helmDefaults:
     - --include-crds
     - --no-hooks
 
+bases:
+  - default.yaml
+
 releases:
   - name: cloudflare-dns
     namespace: network
-    chart: oci://ghcr.io/home-operations/charts-mirror/external-dns
-    version: 1.23.0
+    inherit:
+      - template: default
+    values:
+      - policy: sync
 
   - name: envoy-gateway
     namespace: network
-    chart: oci://mirror.gcr.io/envoyproxy/gateway-helm
-    version: v1.9.1
+    inherit:
+      - template: default
 
   - name: grafana-operator
     namespace: observability
@@ -25,8 +30,8 @@ releases:
 
   - name: keda
     namespace: observability
-    chart: oci://ghcr.io/home-operations/charts-mirror/keda
-    version: 2.21.0
+    inherit:
+      - template: default
 
   - name: prometheus-operator-crds
     namespace: observability
