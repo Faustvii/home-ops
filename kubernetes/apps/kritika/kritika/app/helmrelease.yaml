@@ -59,10 +59,6 @@ spec:
           type: openai
           baseUrl: http://qwen3-embedding.ai.svc.cluster.local:8080/v1
           apiKey: { env: LOCAL_LLM_API_KEY }
-      review:
-        model: modelrouter/self-qwen3.8-flash-next
-      limits:
-        concurrency: 1
       embedding:
         model: embed/qwen3-embedding
         dims: 1024
@@ -70,6 +66,12 @@ spec:
         # home-ops (YAML) 28% of random pairs pass 0.5, 3% pass 0.7;
         # bookarr keeps 93% of neighbours at 0.7.
         similarFloor: 0.7
+      review:
+        model: modelrouter/self-qwen3.8-flash-next
+      limits:
+        concurrency: 1
+      trigger:
+        exclude: [{ name: forks, expr: pr.fork }]
       egress:
         allowHosts:
           - "*.githubusercontent.com"
