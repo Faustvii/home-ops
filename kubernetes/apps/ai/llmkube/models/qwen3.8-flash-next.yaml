@@ -120,7 +120,7 @@ spec:
         claimName: llmkube-strix-cache
   # Upstream gufo >= 0.5.0 (gufo-org/gufo#373): older builds silently drop
   # array args from tool calls whenever another tool has an object parameter.
-  image: ghcr.io/gufo-org/toolboxes/gufo-runtime:0.7.0@sha256:b280a3781e0588154149f76b6d3fb6f0bc5f56da0f5352887af521f0a62dcf70
+  image: ghcr.io/gufo-org/toolboxes/gufo-runtime:0.8.1@sha256:56f0a052e784fdfd43ebe2aba590336c8fb5b05c5a813aaebb5ac98d61010afd
   modelRef: qwen3.8-flash-next
   nodeSelector:
     kubernetes.io/hostname: talos-04
