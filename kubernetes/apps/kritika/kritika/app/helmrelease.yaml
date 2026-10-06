@@ -141,7 +141,7 @@ spec:
       # runner's PATH; built from tools/konflate by .github/workflows/konflate-tool.yaml.
       tools:
         - name: konflate
-          image: ghcr.io/faustvii/konflate-tool:latest@sha256:080316965e698bc3f2b08496f903f3022f5b98e3712f338c4d3275d840ef5c89
+          image: ghcr.io/faustvii/konflate-tool:latest@sha256:7f75ba444d4d077005baa203fdc6d6ba80f4572cddfea30f57cbc5ab53e94f8c
           path: /bin
           commands: [konflate]
 
