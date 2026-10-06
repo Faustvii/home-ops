@@ -73,7 +73,7 @@ spec:
       trigger:
         exclude: [{ name: forks, expr: pr.fork }]
       egress:
-        allowHosts:
+        allow:
           - "*.githubusercontent.com"
           - ghcr.io
           - konflate.${SECRET_DOMAIN}
