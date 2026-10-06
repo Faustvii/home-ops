@@ -166,7 +166,13 @@ spec:
       egressPorts: [443, 8080, 10443]
 
     monitoring:
-      serviceMonitor:
+      dashboards:
         enabled: true
+        grafanaOperator:
+          enabled: true
+          matchLabels:
+            dashboards: grafana
       prometheusRule:
+        enabled: true
+      serviceMonitor:
         enabled: true
