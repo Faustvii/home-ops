@@ -50,6 +50,11 @@ spec:
           type: openai
           baseUrl: http://modelrouter-router-proxy.ai.svc.cluster.local:8080/v1
           apiKey: { env: LOCAL_LLM_API_KEY }
+          # $/M tokens. Local inference costs nothing; priced as OpenRouter's
+          # qwen/qwen3.8-flash (Alibaba endpoint) to show what it would cost.
+          pricing:
+            self-qwen3.8-flash-next:
+              { input: 0.15, output: 0.47, cacheRead: 0.016, cacheWrite: 0.2 }
         embed:
           type: openai
           baseUrl: http://qwen3-embedding.ai.svc.cluster.local:8080/v1
