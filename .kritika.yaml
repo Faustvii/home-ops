@@ -15,3 +15,7 @@ rules:
   - id: renovate
     when: [{ name: renovate, expr: pr.headRef.startsWith("renovate/") }]
     file: .kritika/renovate.md
+skills:
+  scope:
+    add-app:
+      when: [{ expr: '!pr.headRef.startsWith("renovate/")' }]
