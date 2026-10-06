@@ -5,27 +5,13 @@ ignore: ["**/?*.sops.*"]
 rules:
   # Started from onedr0p/home-ops' renovate rule. Ordered steps with an end:
   # the open-ended version had the agent read upstream source file by file,
-  # and it burned steps on base64 file contents and huge listings.
+  # and it burned steps on base64 file contents and huge listings. The second
+  # category (cluster changes whatever the repo sets) is what #1513's widened
+  # Ingress RBAC needs; "not set, not a finding" alone would suppress it.
+  # A file rule: 32 KiB instead of the inline rule's 2000 characters. Read
+  # from the merge base, like this file.
+  # The severity and submit paragraphs keep a step cap from turning open
+  # questions into blocking findings.
   - id: renovate
     whenExpr: pr.headRef.startsWith("renovate/")
-    rule: >-
-      This is a Renovate dependency update. The question is whether the new
-      version breaks what this repository sets for the package; answer it in
-      this order and submit once you can. First, read the release notes for
-      each version between the old and the new with gh, or the changelog when
-      there are none; the pull request body often already includes them. Open
-      the compare view or a source file only to settle one specific question
-      the notes leave open, such as whether a flag this repository passes was
-      renamed or removed, never to read the whole compare. Every command's
-      output stays in your context for the rest of the review, so ask for
-      small answers. Save an upstream file with `curl -sL -o <file>
-      https://raw.githubusercontent.com/<owner>/<repo>/<ref>/<path>` and
-      search it with rg rather than printing it; the gh contents API returns
-      it base64-encoded. Filter gh output with --jq, and never list all
-      tags, paginate a compare or fetch every release. Second, read what
-      this repository sets for the package: the values, args, flags and env
-      in the files the diff touches. Report each breaking change, removal,
-      rename or changed default that touches one of those settings. A change
-      to something the repository does not set is not a finding and needs no
-      further search. Renovate pinned the tag and digest: do not fetch
-      registry tokens, manifests or image config.
+    file: .kritika/renovate.md
