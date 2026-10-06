@@ -13,5 +13,5 @@ rules:
   # The severity and submit paragraphs keep a step cap from turning open
   # questions into blocking findings.
   - id: renovate
-    whenExpr: pr.headRef.startsWith("renovate/")
+    when: [{ name: renovate, expr: pr.headRef.startsWith("renovate/") }]
     file: .kritika/renovate.md
