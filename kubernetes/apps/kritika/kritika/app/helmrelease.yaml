@@ -54,11 +54,10 @@ spec:
           type: openai
           baseUrl: http://qwen3-embedding.ai.svc.cluster.local:8080/v1
           apiKey: { env: LOCAL_LLM_API_KEY }
-      defaults:
-        models:
-          review: modelrouter/self-qwen3.8-flash-next
-        limits:
-          concurrency: 1
+      review:
+        model: modelrouter/self-qwen3.8-flash-next
+      limits:
+        concurrency: 1
       embedding:
         model: embed/qwen3-embedding
         dims: 1024
@@ -75,7 +74,8 @@ spec:
       # agent may only be set here.
       repositories:
         Faustvii/*:
-          approve: true
+          review:
+            approve: true
           agent:
             # Default is 20m; the review runner's deadline stretches to fit.
             timeout: 45m
