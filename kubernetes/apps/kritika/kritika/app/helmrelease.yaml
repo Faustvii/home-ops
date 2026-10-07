@@ -89,6 +89,8 @@ spec:
           agent:
             # Default is 20m; the review runner's deadline stretches to fit.
             timeout: 45m
+            # Qwen likes to use all the steps available. Lowering it seems to have no impact on findings.
+            steps: 24
             # The runner's -tools image provides the first six; konflate comes
             # from runner.tools below.
             commands: [gh, curl, jq, yq, rg, fd, konflate]
