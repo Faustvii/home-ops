@@ -10,6 +10,7 @@ spec:
     - --proactor_threads=2
     - --cluster_mode=emulated
     - --default_lua_flags=allow-undeclared-keys
+    - --version_check=false
   env:
     - name: MAX_MEMORY
       valueFrom:
@@ -17,7 +18,6 @@ spec:
           divisor: 1Mi
           resource: limits.memory
   image: ghcr.io/dragonflydb/dragonfly:v2.0.0@sha256:7426fdb31ddcf7bd9499b4205f36ebaa83b26149ba1609a0d5f8f474b3631233
-  networkPolicyEnabled: false
 
   podSecurityContext:
     fsGroup: 65532
