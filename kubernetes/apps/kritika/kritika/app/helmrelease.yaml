@@ -86,6 +86,9 @@ spec:
         Faustvii/*:
           review:
             approve: true
+            # low matched medium on every important finding in the eval of 300 runs across 10 different cases,
+            # with fewer steps and failed calls.
+            effort: low
           agent:
             # Default is 20m; the review runner's deadline stretches to fit.
             timeout: 45m
