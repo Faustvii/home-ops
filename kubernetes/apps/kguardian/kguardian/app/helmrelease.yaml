@@ -28,6 +28,8 @@ spec:
     controller:
       excludedNamespaces:
         - kguardian
+        - kube-system
+        - renovate
 
     ai:
       enabled: true
