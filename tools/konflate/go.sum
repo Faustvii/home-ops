@@ -4,3 +4,5 @@ golang.org/x/crypto/x509roots/fallback v0.0.0-20260929172509-b39ff6d641ec h1:6gL
 golang.org/x/crypto/x509roots/fallback v0.0.0-20260929172509-b39ff6d641ec/go.mod h1:HPze8vhfG6fO06AM+VSvxRm4E3+5Yk375mgrJ5M2z1E=
 golang.org/x/crypto/x509roots/fallback v0.0.0-20261005185213-c3db4df58582 h1:wjDBrGbfLuifgrVLFEWUBJYAfh5Q1wkMc5t0FY0tCbs=
 golang.org/x/crypto/x509roots/fallback v0.0.0-20261005185213-c3db4df58582/go.mod h1:HPze8vhfG6fO06AM+VSvxRm4E3+5Yk375mgrJ5M2z1E=
+golang.org/x/crypto/x509roots/fallback v0.0.0-20261009200856-99e4382b128e h1:jsB4A6J5vF93GeMqp72mLAOcFfGXgHtxpgeLk7OJB4M=
+golang.org/x/crypto/x509roots/fallback v0.0.0-20261009200856-99e4382b128e/go.mod h1:HPze8vhfG6fO06AM+VSvxRm4E3+5Yk375mgrJ5M2z1E=
