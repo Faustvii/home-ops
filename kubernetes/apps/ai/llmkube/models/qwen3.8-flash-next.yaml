@@ -92,9 +92,7 @@ spec:
     - /cache/continuation
     - --cache-disk-bytes
     - "68719476736"
-    # Staging bounds each snapshot written to/read from disk (default 1 GiB
-    # skips anything past ~30k tokens); 8 GiB fits a full 262K Flash-Next
-    # snapshot. Allocated only while a capture/read is in flight.
+    # 8 GiB fits a full 262K Flash-Next
     - --cache-disk-staging-bytes
     - "8589934592"
   command:
@@ -118,8 +116,6 @@ spec:
     - name: models
       persistentVolumeClaim:
         claimName: llmkube-strix-cache
-  # Upstream gufo >= 0.5.0 (gufo-org/gufo#373): older builds silently drop
-  # array args from tool calls whenever another tool has an object parameter.
   image: ghcr.io/gufo-org/toolboxes/gufo-runtime:0.9.0@sha256:c8a37c14ffbc7d32fd63b50341c17803ebe9f9a37f6e275d71083059071a3f72
   modelRef: qwen3.8-flash-next
   nodeSelector:
