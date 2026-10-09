@@ -64,7 +64,6 @@ spec:
         dims: 1024
         # Global, not per repo. Measured top-5 neighbours vs random pairs:
         # home-ops (YAML) 28% of random pairs pass 0.5, 3% pass 0.7;
-        # bookarr keeps 93% of neighbours at 0.7.
         similarFloor: 0.7
       review:
         model: modelrouter/self-qwen3.8-flash-next
@@ -74,12 +73,11 @@ spec:
         exclude: [{ name: forks, expr: pr.fork }]
       egress:
         allow:
-          - "*.githubusercontent.com"
-          - ghcr.io
-          - konflate.${SECRET_DOMAIN}
-          # In-cluster konflate resolves to the envoy-external LB, a private
-          # address the gateway refuses unless an address entry covers it.
+          - "*"
+          # konflate.${SECRET_DOMAIN} resolves to the envoy-external LB, a
+          # private address the gateway refuses unless an entry covers it.
           - 192.168.10.23
+        deny: ["*.internal"]
       # Per-repository rules and ignores live in each repo's .kritika.yaml;
       # agent may only be set here.
       repositories:
