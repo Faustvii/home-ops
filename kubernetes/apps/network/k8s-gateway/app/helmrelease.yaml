@@ -9,13 +9,61 @@ spec:
     name: k8s-gateway
   interval: 1h
   values:
-    domain: "${SECRET_DOMAIN}"
     fullnameOverride: k8s-gateway
+    replicaCount: 2
+    podDisruptionBudget:
+      minAvailable: 1
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: k8s-gateway
+            app.kubernetes.io/instance: k8s-gateway
+    serviceType: LoadBalancer
     service:
       annotations:
         lbipam.cilium.io/ips: "192.168.10.21"
       externalTrafficPolicy: Cluster
-      port: 53
-      type: LoadBalancer
-    ttl: 1
-    watchedResources: ["HTTPRoute", "Service"]
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        cpu: null
+        memory: 128Mi
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: ["ALL"]
+    servers:
+      - zones:
+          - zone: .
+            use_tcp: true
+        port: 1053
+        servicePort: 53
+        plugins:
+          - name: k8s_gateway
+            parameters: "${SECRET_DOMAIN}"
+            configBlock: |-
+              apex k8s-gateway.network
+              ttl 1
+              resources HTTPRoute Service
+          - name: log
+          - name: errors
+          - name: health
+            configBlock: |-
+              lameduck 5s
+          - name: ready
+          - name: prometheus
+            parameters: 0.0.0.0:9153
+          - name: forward
+            parameters: . /etc/resolv.conf
+          - name: loop
+          - name: reload
+          - name: loadbalance
