@@ -90,7 +90,7 @@ spec:
             # with fewer steps and failed calls.
             effort: low
           confidence:
-            model: plan/sol-latest
+            model: plan/~sol-latest
             threshold: 4
             risk: medium
           agent:
