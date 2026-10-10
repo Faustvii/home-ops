@@ -89,6 +89,10 @@ spec:
             # low matched medium on every important finding in the eval of 300 runs across 10 different cases,
             # with fewer steps and failed calls.
             effort: low
+          confidence:
+            model: plan/sol-latest
+            threshold: 4
+            risk: medium
           agent:
             # Default is 20m; the review runner's deadline stretches to fit.
             timeout: 45m
