@@ -12,9 +12,6 @@ spec:
       inference.llmkube.dev/model-router: modelrouter
   ingress:
     - fromEndpoints:
-        # open-webui (same namespace: ai)
-        - matchLabels:
-            app.kubernetes.io/instance: open-webui
         # agent-pr-review runners (actions-runner-system)
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: actions-runner-system
