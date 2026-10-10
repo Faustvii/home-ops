@@ -19,3 +19,4 @@ skills:
   scope:
     add-app:
       when: [{ expr: '!pr.headRef.startsWith("renovate/")' }]
+      load: false
