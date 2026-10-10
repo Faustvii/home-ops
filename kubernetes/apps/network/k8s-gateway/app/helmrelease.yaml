@@ -55,6 +55,8 @@ spec:
               ttl 1
               resources HTTPRoute Service
           - name: log
+            configBlock: |-
+              class denial error
           - name: errors
           - name: health
             configBlock: |-
