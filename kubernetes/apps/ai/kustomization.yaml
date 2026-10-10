@@ -6,9 +6,7 @@ components:
   - ../../components/sops
 namespace: ai
 resources:
-  - ./moltis/ks.yaml
   - ./namespace.yaml
   - ./llmkube/ks.yaml
   - ./modelrouter/ks.yaml
-  - ./open-webui/ks.yaml
   - ./searxng/ks.yaml
