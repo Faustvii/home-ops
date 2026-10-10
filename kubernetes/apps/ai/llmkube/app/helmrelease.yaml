@@ -35,6 +35,9 @@ spec:
       keep: true
     metrics:
       enabled: true
+    metalRelay:
+      secretCreatePolicy:
+        enabled: false
     modelCache:
       accessMode: ReadWriteOnce
       enabled: true
