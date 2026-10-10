@@ -116,7 +116,7 @@ spec:
     - name: models
       persistentVolumeClaim:
         claimName: llmkube-strix-cache
-  image: ghcr.io/gufo-org/toolboxes/gufo-runtime:0.10.0@sha256:089221120dee1e61e04acb9bc398295fecd4dd68aac3d15dfd9ec44a6853af6a
+  image: ghcr.io/gufo-org/toolboxes/gufo-runtime:0.11.0@sha256:9899cb993d1e511748b9b115065245011b83e820f3aea0e1dc2ea3f86c30ad72
   modelRef: qwen3.8-flash-next
   nodeSelector:
     kubernetes.io/hostname: talos-04
