@@ -46,6 +46,8 @@ spec:
           privateKey: { env: GITHUB_APP_PRIVATE_KEY }
           webhookSecret: { env: GITHUB_APP_WEBHOOK_SECRET }
       providers:
+        plan:
+          type: chatgpt
         modelrouter:
           type: openai
           baseUrl: http://modelrouter-router-proxy.ai.svc.cluster.local:8080/v1
