@@ -147,10 +147,10 @@ spec:
         requests: { cpu: 10m, memory: 256Mi }
         limits: { memory: 2Gi }
       # Mounted as an image volume at /opt/kritika/tools/<name> and put on the
-      # runner's PATH; built from tools/konflate by .github/workflows/konflate-tool.yaml.
+      # runner's PATH; built from konflate-tool/ in faustvii/containers.
       tools:
         - name: konflate
-          image: ghcr.io/faustvii/konflate-tool:latest@sha256:7f75ba444d4d077005baa203fdc6d6ba80f4572cddfea30f57cbc5ab53e94f8c
+          image: ghcr.io/faustvii/containers/konflate-tool:latest@sha256:2c35300e4751faa8bcb5d3082b413c3a1b78a37c4ba6010dd2ad61164069775a
           path: /bin
           commands: [konflate]
 
