@@ -109,6 +109,11 @@ spec:
             model: plan/~sol-latest
             threshold: 4
             risk: critical
+          # konflate only knows home-ops' Flux manifests.
+          agent:
+            timeout: 45m
+            steps: 24
+            commands: [gh, curl, jq, yq, rg, fd]
         # Here rather than in .kritika.yaml to keep the domain out of the repo;
         # rules add up by id with the repo's own.
         Faustvii/home-ops:
