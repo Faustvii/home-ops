@@ -101,6 +101,14 @@ spec:
             # The runner's -tools image provides the first six; konflate comes
             # from runner.tools below.
             commands: [gh, curl, jq, yq, rg, fd, konflate]
+        # Image build files and CI workflows only, which the scorer always rates
+        # high or critical risk, so the score alone decides; Renovate keeps
+        # majors out of auto-merge.
+        Faustvii/containers:
+          confidence:
+            model: plan/~sol-latest
+            threshold: 4
+            risk: critical
         # Here rather than in .kritika.yaml to keep the domain out of the repo;
         # rules add up by id with the repo's own.
         Faustvii/home-ops:
