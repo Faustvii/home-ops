@@ -163,7 +163,7 @@ spec:
       # runner's PATH; built from konflate-tool/ in faustvii/containers.
       tools:
         - name: konflate
-          image: ghcr.io/faustvii/containers/konflate-tool:latest@sha256:2c35300e4751faa8bcb5d3082b413c3a1b78a37c4ba6010dd2ad61164069775a
+          image: ghcr.io/faustvii/containers/konflate-tool:latest@sha256:ce819955156c18b277b77a833a519c682dabe925d70748e1958f7a2bfd127a29
           path: /bin
           commands: [konflate]
 
