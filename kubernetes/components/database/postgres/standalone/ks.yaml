@@ -1,0 +1,42 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ${APP}-postgres
+  namespace: &namespace ${NAMESPACE}
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: &app ${APP}
+  dependsOn:
+    - name: cnpg
+      namespace: database
+    - name: plugin-barman-cloud
+      namespace: database
+    - name: garage-cluster
+      namespace: storage
+  healthCheckExprs:
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      current: status.conditions.exists(e, e.type == 'Ready' && e.status == 'True')
+  interval: 1h
+  path: ${DATABASE_CLUSTER_PATH:=./kubernetes/components/database/postgres/standalone/cluster}
+  postBuild:
+    substitute:
+      APP: *app
+      OWNER: ${DATABASE_OWNER:=${APP}}
+      STORAGE: ${DATABASE_STORAGE:=5Gi}
+      BUCKET_SIZE: ${DATABASE_BUCKET_SIZE:=20Gi}
+      GENERATION: ${DATABASE_GENERATION:=v1}
+  # Never prune: removing the app leaves its cluster and backup bucket behind
+  # to delete by hand, instead of deleting both with it.
+  prune: false
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 10m
+  wait: true

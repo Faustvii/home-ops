@@ -7,7 +7,7 @@ metadata:
   namespace: &namespace media
 spec:
   components:
-    - ../../../../components/database/postgres
+    - ../../../../components/database/postgres/shared
   interval: 1h
   path: ./kubernetes/apps/media/bookarr/app
 

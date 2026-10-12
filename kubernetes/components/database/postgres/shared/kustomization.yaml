@@ -2,6 +2,11 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1alpha1
 kind: Component
+# The app's database on the shared "postgres" cluster in the database namespace.
+components:
+  - ../base
+resources:
+  - ./externalsecret.yaml
 patches:
   - patch: |-
       apiVersion: helm.toolkit.fluxcd.io/v2
@@ -43,6 +48,3 @@ patches:
       group: helm.toolkit.fluxcd.io
       kind: HelmRelease
       version: v2
-resources:
-  - ./base/ks.yaml
-  - ./base/pass
