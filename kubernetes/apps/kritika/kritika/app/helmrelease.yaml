@@ -201,5 +201,9 @@ spec:
             dashboards: grafana
       prometheusRule:
         enabled: true
+        # One review worker with 45m agent timeouts means a second queued PR
+        # waits longer than the chart's 600s default during normal load.
+        queueAgeSeconds: 3600
+        queueDelayFor: 30m
       serviceMonitor:
         enabled: true
