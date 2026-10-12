@@ -4,20 +4,6 @@ apiVersion: kustomize.config.k8s.io/v1alpha1
 kind: Component
 patches:
   - patch: |-
-      - op: add
-        path: /spec/managed/roles/-
-        value:
-          name: ${APP}
-          login: true
-          ensure: present
-          superuser: false
-          disablePassword: false
-          passwordSecret:
-            name: ${APP}-postgres
-    target:
-      kind: Cluster
-      name: postgres
-  - patch: |-
       apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
       metadata:

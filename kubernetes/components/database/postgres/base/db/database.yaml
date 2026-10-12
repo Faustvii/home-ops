@@ -8,6 +8,7 @@ metadata:
 spec:
   cluster:
     name: postgres
+  databaseReclaimPolicy: delete
   extensions: ${EXTENSIONS:=${emptyArray}}
   name: ${APP}
   owner: ${OWNER}
