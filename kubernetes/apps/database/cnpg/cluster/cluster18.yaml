@@ -70,6 +70,11 @@ spec:
               type: ClusterIP
           updateStrategy: patch
 
+  primaryUpdateStrategy: unsupervised
+  # Switchover rejects an update that changes image and parameters at once;
+  # apply them one at a time.
+  primaryUpdateMethod: switchover
+
   bootstrap:
     recovery:
       source: &src source
