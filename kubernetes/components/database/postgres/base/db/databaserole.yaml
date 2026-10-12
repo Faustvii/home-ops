@@ -9,7 +9,7 @@ spec:
   cluster:
     name: postgres
   comment: "${APP} user"
-  databaseRoleReclaimPolicy: delete
+  databaseRoleReclaimPolicy: ${RECLAIM_POLICY:=delete}
   login: true
   name: ${OWNER}
   passwordSecret:

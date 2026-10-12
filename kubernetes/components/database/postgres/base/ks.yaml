@@ -23,6 +23,7 @@ spec:
     substitute:
       APP: *app
       OWNER: ${DATABASE_OWNER:=${APP}}
+      RECLAIM_POLICY: ${DATABASE_RECLAIM_POLICY:=delete}
       emptyArray: "[]"
   prune: true
   retryInterval: 2m
