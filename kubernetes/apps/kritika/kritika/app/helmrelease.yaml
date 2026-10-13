@@ -64,6 +64,10 @@ spec:
       embedding:
         model: embed/qwen3-embedding
         dims: 1024
+        # kritika gives each request 1 min (since 0.0.14) and the CPU
+        # embedder does ~45k tokens/min, so 64 code chunks timed out.
+        maxBatch: 16
+        maxBatchChars: 48000
         # Global, not per repo. Measured top-5 neighbours vs random pairs:
         # home-ops (YAML) 28% of random pairs pass 0.5, 3% pass 0.7;
         similarFloor: 0.7
