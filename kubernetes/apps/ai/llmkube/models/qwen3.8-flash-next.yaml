@@ -92,9 +92,6 @@ spec:
     - /cache/continuation
     - --cache-disk-bytes
     - "68719476736"
-    # 8 GiB fits a full 262K Flash-Next
-    - --cache-disk-staging-bytes
-    - "8589934592"
   command:
     - gufo
   containerPort: 8080
