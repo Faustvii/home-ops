@@ -92,9 +92,6 @@ spec:
     - /cache/continuation
     - --cache-disk-bytes
     - "68719476736"
-    # 8 GiB fits a full 262K Flash-Next
-    - --cache-disk-staging-bytes
-    - "8589934592"
   command:
     - gufo
   containerPort: 8080
@@ -116,7 +113,7 @@ spec:
     - name: models
       persistentVolumeClaim:
         claimName: llmkube-strix-cache
-  image: ghcr.io/gufo-org/toolboxes/gufo-runtime:0.13.0@sha256:e03e006da8485314e2440acbce5167c4659ef853af64ed339337f29fe43bd3b4
+  image: ghcr.io/gufo-org/toolboxes/gufo-runtime:0.14.0@sha256:c397b71c132c4ce570fbd5ab85a2fd1ac5cf0f18d1f83e162c02f73398845f5b
   modelRef: qwen3.8-flash-next
   nodeSelector:
     kubernetes.io/hostname: talos-04
