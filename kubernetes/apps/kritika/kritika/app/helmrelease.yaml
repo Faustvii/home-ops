@@ -19,14 +19,7 @@ spec:
 
     config:
       webUrl: https://${APP}.${SECRET_DOMAIN}
-      runnerRuntimeClass: gvisor
-      # Local models doing multi-step research outrun the 15m default.
-      runnerDeadline: 30m
       reviewWorkers: 1
-
-    # Passed through verbatim (no tpl); secrets are { env: NAME } from
-    # envFrom/env below.
-    configFile:
       auth:
         # Break-glass local admin; day-to-day sign-in is Pocket ID.
         admin:
@@ -160,6 +153,9 @@ spec:
       limits: { memory: 512Mi }
 
     runner:
+      runtimeClass: gvisor
+      # Local models doing multi-step research outrun the 15m default.
+      deadline: 30m
       resources:
         requests: { cpu: 10m, memory: 256Mi }
         limits: { memory: 2Gi }
