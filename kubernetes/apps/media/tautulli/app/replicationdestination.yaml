@@ -13,7 +13,7 @@ spec:
     cacheAccessModes:
       - ReadWriteOnce
     cacheCapacity: 5Gi
-    cacheStorageClassName: miroir-replicated-kopiur
+    cacheStorageClassName: miroir-replicated-staging
     capacity: 5Gi
     cleanupCachePVC: true
     cleanupTempPVC: true
