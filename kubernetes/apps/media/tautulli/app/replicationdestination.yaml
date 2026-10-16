@@ -16,7 +16,7 @@ spec:
     cacheStorageClassName: miroir-replicated-staging
     capacity: 5Gi
     cleanupCachePVC: true
-    cleanupTempPVC: true
+    cleanupTempPVC: false # miroir snapshots need their source volume to restore
     copyMethod: Snapshot
     enableFileDeletion: true
     moverSecurityContext:
