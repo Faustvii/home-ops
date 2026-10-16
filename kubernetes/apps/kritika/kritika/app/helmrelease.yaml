@@ -19,7 +19,7 @@ spec:
 
     config:
       webUrl: https://${APP}.${SECRET_DOMAIN}
-      reviewWorkers: 1
+      reviewWorkers: 2
       auth:
         # Break-glass local admin; day-to-day sign-in is Pocket ID.
         admin:
