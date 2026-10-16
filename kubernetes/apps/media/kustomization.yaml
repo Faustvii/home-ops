@@ -20,4 +20,5 @@ resources:
   - ./prowlarr/ks.yaml
   - ./radarr/ks.yaml
   - ./seerr/ks.yaml
+  - ./tautulli/ks.yaml
   - ./dashbrr/ks.yaml
