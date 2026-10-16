@@ -6,12 +6,19 @@ metadata:
   name: &app tautulli
   namespace: &namespace media
 spec:
+  components:
+    - ../../../../components/kopiur/no-pvc
   dependsOn:
+    - name: kopiur
+      namespace: storage
     - name: volsync
       namespace: storage
   interval: 1h
   path: ./kubernetes/apps/media/tautulli/app
   postBuild:
+    substitute:
+      APP: *app
+      NAMESPACE: *namespace
     substituteFrom:
       - kind: Secret
         name: cluster-secrets
