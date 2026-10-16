@@ -111,6 +111,17 @@ spec:
             timeout: 45m
             steps: 24
             commands: [gh, curl, jq, yq, rg, fd]
+        # Go tools; the scorer rates a toolchain bump high even with no
+        # findings, so high passes on the score. Critical still stops.
+        Faustvii/agent-tools:
+          confidence:
+            model: plan/~sol-latest
+            threshold: 4
+            risk: high
+          agent:
+            timeout: 45m
+            steps: 24
+            commands: [gh, curl, jq, yq, rg, fd]
         # Here rather than in .kritika.yaml to keep the domain out of the repo;
         # rules add up by id with the repo's own.
         Faustvii/home-ops:
