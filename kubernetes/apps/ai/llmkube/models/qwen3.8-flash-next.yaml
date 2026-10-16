@@ -41,6 +41,8 @@ spec:
   # downloads nor mounts weights for generic runtimes, so the strix cache is
   # mounted directly and the files must already be staged under
   # /models/<sha256(source)[:16]>/ (one-off download, see Model above).
+  command:
+    - gufo
   args:
     - serve
     - llm
@@ -49,7 +51,7 @@ spec:
     - --port
     - "8080"
     - --sessions
-    - "1"
+    - "2"
     - --max-pending
     - "32"
     - --max-pending-per-client
@@ -65,7 +67,7 @@ spec:
     - --context
     - "262144"
     - --max-tokens
-    - "32768"
+    - "65536"
     - --speculative
     - mtp
     - --mtp-model
@@ -92,8 +94,6 @@ spec:
     - /cache/continuation
     - --cache-disk-bytes
     - "68719476736"
-  command:
-    - gufo
   containerPort: 8080
   contextSize: 262144
   endpoint:
