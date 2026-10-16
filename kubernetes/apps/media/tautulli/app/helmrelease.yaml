@@ -24,11 +24,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/tautulli/tautulli
-              tag: v2.17.2@sha256:864245fb24830ef6516b5f383bf4d8ba37939ae2f0574dc0217ca02fba4301ff
-            # Bypass start.sh (needs root for usermod/gosu)
-            args: ["--config", "/config/config.ini", "--datadir", "/config"]
-            command: ["python", "Tautulli.py"]
+              repository: ghcr.io/home-operations/tautulli
+              tag: 2.17.2@sha256:7592e192e2dd5297054a80c0f1e8b2593f7675af75c5020806b30c712e159406
             env:
               TZ: ${TZ}
             probes:
@@ -73,8 +70,15 @@ spec:
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
-      tmp:
+      tmpfs:
         type: emptyDir
+        advancedMounts:
+          tautulli:
+            app:
+              - path: /config/logs
+                subPath: logs
+              - path: /tmp
+                subPath: tmp
     route:
       app:
         hostnames:
