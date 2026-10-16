@@ -5,3 +5,4 @@
 
 [env]
 KONFLATE_URL = "http://konflate-kritika.flux-system.svc.cluster.local:8080"
+KONFLATE_HIDE_URL = "true"
