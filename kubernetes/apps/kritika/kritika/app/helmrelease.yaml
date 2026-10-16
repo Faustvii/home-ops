@@ -71,9 +71,10 @@ spec:
       egress:
         allow:
           - "*"
-          # konflate.${SECRET_DOMAIN} resolves to the envoy-external LB, a
-          # private address the gateway refuses unless an entry covers it.
-          - 192.168.10.23
+          # konflate-kritika's pinned ClusterIP, for .kritika/mise.toml's
+          # KONFLATE_URL; the gateway refuses private addresses unless an
+          # entry covers them, so this opens konflate alone.
+          - 10.43.0.80
         deny: ["*.internal"]
       # Per-repository rules and ignores live in each repo's .kritika.yaml;
       # agent may only be set here.
@@ -161,16 +162,6 @@ spec:
       resources:
         requests: { cpu: 10m, memory: 256Mi }
         limits: { memory: 2Gi }
-      # Layered over the image's mise config. faustvii/agent-tools ships its
-      # tools in one archive; filter_bins picks the commands. konflate reads
-      # its server from KONFLATE_URL, which [env] hands every command.
-      mise:
-        config: |
-          [tools]
-          "github:Faustvii/agent-tools" = { version = "1.0.1", filter_bins = ["konflate"] }
-
-          [env]
-          KONFLATE_URL = "https://konflate.${SECRET_DOMAIN}"
 
     database:
       owner:
