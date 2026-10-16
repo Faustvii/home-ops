@@ -28,6 +28,7 @@ patches:
           - name: cnpg
             namespace: database
           - name: ${APP}-postgres
+            namespace: ${NAMESPACE}
         healthChecks:
           - apiVersion: postgresql.cnpg.io/v1
             kind: Database

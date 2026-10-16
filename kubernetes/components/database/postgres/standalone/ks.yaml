@@ -16,6 +16,9 @@ spec:
       namespace: database
     - name: garage-cluster
       namespace: storage
+  # Orphan, not the repo-wide WaitForTermination: removing the app leaves its
+  # cluster and backup bucket behind to delete by hand.
+  deletionPolicy: Orphan
   healthCheckExprs:
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster
@@ -29,8 +32,6 @@ spec:
       STORAGE: ${DATABASE_STORAGE:=5Gi}
       BUCKET_SIZE: ${DATABASE_BUCKET_SIZE:=20Gi}
       GENERATION: ${DATABASE_GENERATION:=v1}
-  # Never prune: removing the app leaves its cluster and backup bucket behind
-  # to delete by hand, instead of deleting both with it.
   prune: false
   retryInterval: 2m
   sourceRef:
