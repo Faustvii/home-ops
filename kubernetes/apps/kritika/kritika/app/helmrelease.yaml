@@ -95,9 +95,6 @@ spec:
             timeout: 45m
             # Qwen likes to use all the steps available. Lowering it seems to have no impact on findings.
             steps: 24
-            # The runner's -tools image provides the first six; konflate comes
-            # from runner.mise below.
-            commands: [gh, curl, jq, yq, rg, fd, konflate]
         # Image build files and CI workflows only, which the scorer always rates
         # high or critical risk, so the score alone decides; Renovate keeps
         # majors out of auto-merge.
@@ -106,11 +103,9 @@ spec:
             model: plan/~sol-latest
             threshold: 4
             risk: critical
-          # konflate only knows home-ops' Flux manifests.
           agent:
             timeout: 45m
             steps: 24
-            commands: [gh, curl, jq, yq, rg, fd]
         # Go tools; the scorer rates a toolchain bump high even with no
         # findings, so high passes on the score. Critical still stops.
         Faustvii/agent-tools:
@@ -121,7 +116,6 @@ spec:
           agent:
             timeout: 45m
             steps: 24
-            commands: [gh, curl, jq, yq, rg, fd]
         # Here rather than in .kritika.yaml to keep the domain out of the repo;
         # rules add up by id with the repo's own.
         Faustvii/home-ops:
