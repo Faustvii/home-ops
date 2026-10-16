@@ -17,3 +17,9 @@ spec:
     - dnsName: "*.web.garage.${SECRET_DOMAIN}"
       recordType: CNAME
       targets: ["adbd0ee2-7e98-40ac-9b14-f502c5bac329.cfargotunnel.com"]
+    - dnsName: "${SECRET_DOMAIN_1}"
+      recordType: CNAME
+      targets: ["adbd0ee2-7e98-40ac-9b14-f502c5bac329.cfargotunnel.com"]
+    - dnsName: "*.${SECRET_DOMAIN_1}"
+      recordType: CNAME
+      targets: ["adbd0ee2-7e98-40ac-9b14-f502c5bac329.cfargotunnel.com"]
