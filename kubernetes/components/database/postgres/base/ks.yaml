@@ -18,13 +18,13 @@ spec:
       name: postgres-${APP}
       namespace: *namespace
   interval: 1h
-  path: ./kubernetes/components/database/postgres/base/db
+  path: ${DATABASE_DB_PATH:=./kubernetes/components/database/postgres/base/db}
   postBuild:
     substitute:
       APP: *app
+      CLUSTER: postgres
       OWNER: ${DATABASE_OWNER:=${APP}}
       RECLAIM_POLICY: ${DATABASE_RECLAIM_POLICY:=delete}
-      emptyArray: "[]"
   prune: true
   retryInterval: 2m
   sourceRef:

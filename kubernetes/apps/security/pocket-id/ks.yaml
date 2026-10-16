@@ -27,7 +27,7 @@ metadata:
   namespace: &namespace security
 spec:
   components:
-    - ../../../../components/database/postgres
+    - ../../../../components/database/postgres/shared
   dependsOn:
     - name: pocket-id-operator
       namespace: security

@@ -19,6 +19,16 @@ spec:
       namespace: kritika
     - kind: GarageBucket
       namespace: kritika
+
+    - kind: GarageKey
+      namespace: media
+    - kind: GarageBucket
+      namespace: media
+
+    - kind: GarageKey
+      namespace: security
+    - kind: GarageBucket
+      namespace: security
   to:
     - kind: GarageCluster
       name: garage
