@@ -3,32 +3,15 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: vpn-proxy
+  name: vpn-proxy-ingress
 spec:
   # The proxy is unauthenticated, so only the listed clients may use it.
-  # The CNI only governs the pod's cluster interface (eth0). Internet traffic
-  # leaves over the Multus "vpn" interface and is not affected. Allowing only
-  # DNS on eth0 stops clients from using the proxy to reach cluster or LAN
-  # addresses (SSRF).
+  # The egress lock (DNS only on eth0) comes from components/vpn-egress-lock.
   podSelector:
     matchLabels:
       app.kubernetes.io/name: vpn-proxy
   policyTypes:
-    - Egress
     - Ingress
-  egress:
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: kube-system
-          podSelector:
-            matchLabels:
-              k8s-app: kube-dns
-      ports:
-        - port: 53
-          protocol: UDP
-        - port: 53
-          protocol: TCP
   ingress:
     - from:
         - namespaceSelector:

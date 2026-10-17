@@ -1,0 +1,31 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/networking.k8s.io/networkpolicy_v1.json
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ${APP}
+spec:
+  # For pods that have the Multus "vpn" interface (net1). Some apps, for
+  # example qBittorrent (libtorrent), bind a socket to every device, including
+  # eth0. Traffic from that socket leaves through Cilium and the node's LAN,
+  # and the internet sees the real WAN address, not the VPN address.
+  # Cilium only governs eth0. net1 is not affected. Allowing only DNS on eth0
+  # keeps all internet traffic on the VPN. Ingress is not restricted.
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: ${APP}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP

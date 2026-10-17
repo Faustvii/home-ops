@@ -6,6 +6,8 @@ metadata:
   name: &app vpn-proxy
   namespace: &namespace media-management
 spec:
+  components:
+    - ../../../../components/vpn-egress-lock
   dependsOn:
     - name: multus-networks
       namespace: network
