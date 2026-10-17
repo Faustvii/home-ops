@@ -7,7 +7,7 @@ metadata:
   namespace: &namespace media-management
 spec:
   components:
-    - ../../../../components/kopiur/no-pvc
+    - ../../../../components/kopiur
     - ../../../../components/oidc/envoy
   dependsOn:
     - name: kopiur
@@ -16,8 +16,6 @@ spec:
       namespace: media-management
     - name: pocket-id
       namespace: security
-    - name: volsync
-      namespace: storage
   interval: 1h
   path: ./kubernetes/apps/media-management/bazarr/app
   postBuild:
