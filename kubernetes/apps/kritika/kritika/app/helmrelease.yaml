@@ -71,10 +71,9 @@ spec:
       egress:
         allow:
           - "*"
-          # konflate-kritika's pinned ClusterIP, for .kritika/mise.toml's
-          # KONFLATE_URL; the gateway refuses private addresses unless an
-          # entry covers them, so this opens konflate alone.
-          - 10.43.0.80
+          # Envoy's external gateway serves konflate over HTTPS. Kritika's
+          # egress proxy requires an explicit allow for private addresses.
+          - 192.168.10.23
         deny: ["*.internal"]
       # Per-repository rules and ignores live in each repo's .kritika.yaml;
       # agent may only be set here.
@@ -156,12 +155,24 @@ spec:
       limits: { memory: 512Mi }
 
     runner:
-      runtimeClass: gvisor
-      # Local models doing multi-step research outrun the 15m default.
-      deadline: 30m
-      resources:
-        requests: { cpu: 10m, memory: 256Mi }
-        limits: { memory: 2Gi }
+      admissionPolicy:
+        enabled: true
+      jobTemplate:
+        spec:
+          # Local models doing multi-step research outrun the 15m default.
+          activeDeadlineSeconds: 1800
+      podTemplate:
+        spec:
+          runtimeClassName: gvisor
+          # Bounds the whole pod, including the run tool's commands.
+          resources:
+            requests: { cpu: 10m, memory: 256Mi }
+            limits: { memory: 2Gi }
+          containers:
+            - name: runner
+              env:
+                - name: KONFLATE_URL
+                  value: https://konflate.${SECRET_DOMAIN}
 
     database:
       owner:
@@ -182,10 +193,14 @@ spec:
 
     networkPolicy:
       enabled: true
+      # Keep standard Kubernetes policies; DNS names remain unfiltered.
+      type: default
+      postgres:
+        podSelector:
+          cnpg.io/cluster: kritika-postgres
       # 8080: modelrouter and the embedder in the ai namespace.
       # 10443: in-cluster *.${SECRET_DOMAIN} (e.g. Pocket ID) resolves to
-      # the envoy LB, and Cilium enforces even standard NetworkPolicies on
-      # the backend port.
+      # the envoy LB, and Cilium enforces the backend port.
       egressPorts: [443, 8080, 10443]
 
     monitoring:

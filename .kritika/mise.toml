@@ -4,5 +4,4 @@
 "github:Faustvii/agent-tools" = { version = "v1.1.0", filter_bins = ["konflate"] }
 
 [env]
-KONFLATE_URL = "http://konflate-kritika.flux-system.svc.cluster.local:8080"
 KONFLATE_HIDE_URL = "true"
