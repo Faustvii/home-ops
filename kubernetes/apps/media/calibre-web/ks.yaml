@@ -7,14 +7,12 @@ metadata:
   namespace: &namespace media
 spec:
   components:
-    - ../../../../components/kopiur/no-pvc
+    - ../../../../components/kopiur
   dependsOn:
     - name: kopiur
       namespace: storage
     - name: pocket-id
       namespace: security
-    - name: volsync
-      namespace: storage
   interval: 1h
   path: ./kubernetes/apps/media/calibre-web/app
   postBuild:
