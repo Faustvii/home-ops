@@ -9,6 +9,7 @@ namespace: media-management
 
 resources:
   - ./namespace.yaml
+  - ./flaresolverr/ks.yaml
   - ./plexanilistsync/ks.yaml
   - ./pvcs/ks.yaml
   - ./readarr/ks.yaml
