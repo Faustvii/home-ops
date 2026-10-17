@@ -1,0 +1,37 @@
+# Minimal explicit config (security audit of go-gost/gost v3.3.0, 2026-10-17).
+# Loaded with `-C`, which disables config auto-discovery. Everything that is
+# not listed here stays off: no recorder, observer, plugin, API, metrics,
+# profiling, sniffing/MITM, or UDP/BIND/Tor. Logging is discarded because the
+# default logger writes destinations and proxy usernames to stderr.
+log:
+  output: none
+
+api: null
+metrics: null
+profiling: null
+
+services:
+  - name: http
+    addr: ":8888"
+    handler:
+      type: http
+      metadata:
+        sniffing: false
+        sniffing.websocket: false
+        udp: false
+    listener:
+      type: tcp
+
+  - name: socks5
+    addr: ":1080"
+    handler:
+      type: socks5
+      metadata:
+        sniffing: false
+        sniffing.websocket: false
+        udp: false
+        bind: false
+        tor: false
+        notls: true
+    listener:
+      type: tcp
