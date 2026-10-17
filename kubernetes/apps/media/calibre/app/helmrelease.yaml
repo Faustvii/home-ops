@@ -22,7 +22,7 @@ spec:
           app:
             image:
               repository: ghcr.io/linuxserver/calibre
-              tag: 9.11.0@sha256:125e7fd526cff1a063dda092db08215d90bf35f3c541c750f6fa3390c137a2bb
+              tag: 9.16.0@sha256:48c8a5ba2a20c303012b1d4b2815a2b99b362a634a571fbec101b85bfa203ba3
             env:
               PGID: "1000"
               PUID: "1000"
