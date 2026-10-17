@@ -6,7 +6,9 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
+  - ./pocketidoidcclient.yaml
   - ./pocketidusergroup.yaml
   - ./pvc.yaml
   - ./replicationdestination.yaml
+  - ./securitypolicy.yaml
   - ./volsync-externalsecret.yaml

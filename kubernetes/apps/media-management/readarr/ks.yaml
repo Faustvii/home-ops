@@ -9,7 +9,6 @@ spec:
   components:
     - ../../../../components/kopiur/no-pvc
     - ../../../../components/dashbrr
-    - ../../../../components/oidc/envoy
   dependsOn:
     - name: kopiur
       namespace: storage
@@ -26,10 +25,6 @@ spec:
       APP: *app
       KOPIUR_CAPACITY: 10Gi
       NAMESPACE: *namespace
-      OIDC_APP_NAME: Readarr
-      OIDC_CALLBACK_PATH: /oauth2/callback
-      OIDC_LOGOUT_CALLBACK_PATH: /
-      OIDC_PROVIDER_LOGOUT_PATH: /logout
     substituteFrom:
       - kind: Secret
         name: cluster-secrets
