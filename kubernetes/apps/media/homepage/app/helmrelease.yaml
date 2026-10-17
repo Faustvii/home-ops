@@ -32,6 +32,10 @@ spec:
               HOMEPAGE_ALLOWED_HOSTS: home.${SECRET_DOMAIN_1}
               PORT: &port 3000
               TZ: UTC
+            envFrom:
+              - prefix: HOMEPAGE_VAR_
+                secretRef:
+                  name: *app
             probes:
               liveness: &probes
                 enabled: true
