@@ -1,0 +1,70 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app znc
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: znc
+  interval: 1h
+  values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+    controllers:
+      *app :
+        containers:
+          app:
+            image:
+              repository: docker.io/library/znc
+              tag: 1.10.2@sha256:040a38a8a146e28f9b17182827f3e37c4ca22d9a489e0aea4816bf8aabb405b5
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 3
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  tcpSocket:
+                    port: &port 6501
+                  timeoutSeconds: 1
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+              readOnlyRootFilesystem: true
+    persistence:
+      config:
+        existingClaim: "{{ .Release.Name }}"
+        globalMounts:
+          - path: /znc-data
+          # the restored znc.conf points SSLCertFile at /config/znc.pem
+          - path: /config
+      tmp:
+        type: emptyDir
+    route:
+      app:
+        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+    service:
+      app:
+        annotations:
+          lbipam.cilium.io/ips: 192.168.10.61
+        ports:
+          http:
+            port: *port
+        type: LoadBalancer
