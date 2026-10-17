@@ -59,7 +59,8 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               capabilities: { drop: ["ALL"] }
-              readOnlyRootFilesystem: true
+              # start.sh rewrites the UI files under /opt/app at boot
+              readOnlyRootFilesystem: false
     persistence:
       data:
         existingClaim: "{{ .Release.Name }}"
