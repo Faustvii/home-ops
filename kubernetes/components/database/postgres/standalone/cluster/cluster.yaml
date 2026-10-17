@@ -24,6 +24,9 @@ spec:
 
   storage:
     size: ${STORAGE}
+    # CNPG replicates between instances and backs up through barman, so the
+    # volume itself needs no replication.
+    storageClass: ${STORAGECLASS}
 
   bootstrap:
     initdb:

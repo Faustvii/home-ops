@@ -5,7 +5,9 @@ kind: Component
 # The app's database on its own "${APP}-postgres" cluster in the app's
 # namespace, with its own bucket and backups. The app's ks.yaml must set
 # NAMESPACE (namespace: *namespace) and can tune:
-# DATABASE_STORAGE (5Gi), DATABASE_BUCKET_SIZE (20Gi) and
+# DATABASE_STORAGE (5Gi), DATABASE_STORAGECLASS (miroir-local),
+# DATABASE_BUCKET_SIZE (20Gi), DATABASE_RETENTION (10d),
+# DATABASE_BACKUP_SCHEDULE (0 15 3 * * *, six-field cron with seconds) and
 # DATABASE_GENERATION (v1; bump to v2 etc. after a rebuild, see cluster/cluster.yaml).
 # For more (extensions, extra roles), point DATABASE_CLUSTER_PATH and/or
 # DATABASE_DB_PATH at an overlay of standalone/cluster or base/db.

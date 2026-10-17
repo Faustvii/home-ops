@@ -22,4 +22,4 @@ spec:
         name: ${APP}-postgres-key
     wal:
       compression: zstd
-  retentionPolicy: "10d"
+  retentionPolicy: "${RETENTION}"

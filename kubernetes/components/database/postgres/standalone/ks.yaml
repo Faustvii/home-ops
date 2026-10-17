@@ -30,8 +30,11 @@ spec:
       APP: *app
       OWNER: ${DATABASE_OWNER:=${APP}}
       STORAGE: ${DATABASE_STORAGE:=5Gi}
+      STORAGECLASS: ${DATABASE_STORAGECLASS:=miroir-local}
       BUCKET_SIZE: ${DATABASE_BUCKET_SIZE:=20Gi}
       GENERATION: ${DATABASE_GENERATION:=v1}
+      RETENTION: ${DATABASE_RETENTION:=10d}
+      BACKUP_SCHEDULE: ${DATABASE_BACKUP_SCHEDULE:=0 15 3 * * *}
   prune: false
   retryInterval: 2m
   sourceRef:
