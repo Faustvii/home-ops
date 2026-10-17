@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonarr-anime
+spec:
+  accessModes:
+    - ReadWriteOnce
+  dataSourceRef:
+    apiGroup: volsync.backube
+    kind: ReplicationDestination
+    name: sonarr-anime-dst
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: miroir-replicated

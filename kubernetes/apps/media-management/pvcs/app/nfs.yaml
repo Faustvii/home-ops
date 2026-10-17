@@ -138,3 +138,38 @@ spec:
     requests:
       storage: 1Mi
   storageClassName: media-management-series-nfs
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: media-management-anime-nfs-pv
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 1Mi
+  mountOptions:
+    - nfsvers=4
+    - tcp
+    - hard
+    - noresvport
+    - noatime
+    - nodiratime
+    - nolock
+  nfs:
+    path: ${NFS_PATH_MEDIA_ANIME}
+    server: ${NFS_SERVER_IP}
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: media-management-anime-nfs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-anime-nfs-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Mi
+  storageClassName: media-management-anime-nfs

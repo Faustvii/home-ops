@@ -16,5 +16,6 @@ resources:
   - ./readarr/ks.yaml
   - ./rreading-glasses-system/ks.yaml
   - ./sonarr/ks.yaml
+  - ./sonarr-anime/ks.yaml
   - ./tautulli/ks.yaml
   - ./vpn-proxy/ks.yaml
