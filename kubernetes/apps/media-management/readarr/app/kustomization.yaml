@@ -8,7 +8,4 @@ resources:
   - ./ocirepository.yaml
   - ./pocketidoidcclient.yaml
   - ./pocketidusergroup.yaml
-  - ./pvc.yaml
-  - ./replicationdestination.yaml
   - ./securitypolicy.yaml
-  - ./volsync-externalsecret.yaml
