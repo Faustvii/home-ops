@@ -19,12 +19,19 @@ spec:
             "ips": ["192.168.90.12/24"],
             "mac": "02:84:a6:de:a9:e0"
           }]
+      nodeSelector:
+        kubernetes.io/hostname: talos-03
       securityContext:
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
         runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
+      tolerations:
+        - effect: NoSchedule
+          key: dedicated
+          operator: Equal
+          value: talos-03
     configMaps:
       config:
         data:
