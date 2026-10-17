@@ -12,3 +12,4 @@ resources:
   - ./pvcs/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./qbooks/ks.yaml
+  - ./qui/ks.yaml
