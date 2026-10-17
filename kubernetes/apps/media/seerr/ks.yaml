@@ -6,6 +6,9 @@ metadata:
   name: &app seerr
   namespace: &namespace media
 spec:
+  components:
+    - ../../../../components/nfs-scaler
+    - ../../../../components/kopiur/no-pvc
   interval: 1h
   path: ./kubernetes/apps/media/seerr/app
   postBuild:
