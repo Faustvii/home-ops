@@ -75,6 +75,18 @@ spec:
         parentRefs:
           - name: envoy-external
             namespace: network
+        rules:
+          # calibre-web logs in from this header (reverse proxy login). Only the pocket-id
+          # group calibre-web-users (faust) passes OIDC, so every request is firefaust.
+          - backendRefs:
+              - identifier: app
+                port: *port
+            filters:
+              - requestHeaderModifier:
+                  set:
+                    - name: X-authentik-username
+                      value: firefaust
+                type: RequestHeaderModifier
     service:
       app:
         ports:
