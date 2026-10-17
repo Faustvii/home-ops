@@ -1,0 +1,40 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app sonarr
+  namespace: &namespace media-management
+spec:
+  components:
+    - ../../../../components/kopiur/no-pvc
+    - ../../../../components/oidc/envoy
+  dependsOn:
+    - name: kopiur
+      namespace: storage
+    - name: nfs-pvcs
+      namespace: media-management
+    - name: pocket-id
+      namespace: security
+    - name: volsync
+      namespace: storage
+  interval: 1h
+  path: ./kubernetes/apps/media-management/sonarr/app
+  postBuild:
+    substitute:
+      APP: *app
+      KOPIUR_CAPACITY: 10Gi
+      NAMESPACE: *namespace
+      OIDC_APP_NAME: Sonarr
+      OIDC_CALLBACK_PATH: /oauth2/callback
+      OIDC_LOGOUT_CALLBACK_PATH: /
+      OIDC_PROVIDER_LOGOUT_PATH: /logout
+    substituteFrom:
+      - kind: Secret
+        name: cluster-secrets
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace

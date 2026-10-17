@@ -68,3 +68,73 @@ spec:
     requests:
       storage: 1Mi
   storageClassName: media-management-downloads-nfs
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: media-management-downloads-shared-nfs-pv
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 1Mi
+  mountOptions:
+    - nfsvers=4
+    - tcp
+    - hard
+    - noresvport
+    - noatime
+    - nodiratime
+    - nolock
+  nfs:
+    path: ${NFS_PATH_DOWNLOADS}
+    server: ${NFS_SERVER_IP}
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: media-management-downloads-shared-nfs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: downloads-nfs-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Mi
+  storageClassName: media-management-downloads-shared-nfs
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: media-management-series-nfs-pv
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 1Mi
+  mountOptions:
+    - nfsvers=4
+    - tcp
+    - hard
+    - noresvport
+    - noatime
+    - nodiratime
+    - nolock
+  nfs:
+    path: ${NFS_PATH_MEDIA_SERIES}
+    server: ${NFS_SERVER_IP}
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: media-management-series-nfs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-series-nfs-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Mi
+  storageClassName: media-management-series-nfs
