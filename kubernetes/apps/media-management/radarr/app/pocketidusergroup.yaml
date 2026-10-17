@@ -3,9 +3,9 @@
 apiVersion: pocketid.internal/v1alpha1
 kind: PocketIDUserGroup
 metadata:
-  name: ${APP}-users
+  name: radarr-users
 spec:
-  friendlyName: ${OIDC_APP_NAME}
+  friendlyName: Radarr
   users:
     userRefs:
       - name: faust

@@ -13,6 +13,7 @@ resources:
   - ./plexanilistsync/ks.yaml
   - ./prowlarr/ks.yaml
   - ./pvcs/ks.yaml
+  - ./radarr/ks.yaml
   - ./readarr/ks.yaml
   - ./rreading-glasses-system/ks.yaml
   - ./sonarr/ks.yaml
