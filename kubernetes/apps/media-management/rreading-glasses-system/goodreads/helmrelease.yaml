@@ -1,0 +1,115 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rreading-glasses-gr
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: rreading-glasses-gr
+  interval: 1h
+  values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+    controllers:
+      rreading-glasses-gr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            args:
+              - --upstream=www.goodreads.com
+              - --verbose
+            command: ["/main", "serve"]
+            env:
+              POSTGRES_DATABASE:
+                valueFrom:
+                  secretKeyRef:
+                    key: database
+                    name: rreading-glasses-gr-postgres
+              POSTGRES_HOST:
+                valueFrom:
+                  secretKeyRef:
+                    key: host
+                    name: rreading-glasses-gr-postgres
+              POSTGRES_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    key: password
+                    name: rreading-glasses-gr-postgres
+              POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    key: username
+                    name: rreading-glasses-gr-postgres
+              TZ: ${TZ}
+            image:
+              repository: ghcr.io/faustvii/rreading-glasses
+              tag: 1.0.0@sha256:e406498dfa03c4fd53ec397b5dc5ed33d90e0e92ced79f814ddf4a8f31ca38ac
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 5
+                  periodSeconds: 15
+                  tcpSocket:
+                    port: &port 8788
+                  timeoutSeconds: 5
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+                  tcpSocket:
+                    port: *port
+            resources:
+              limits:
+                memory: 1Gi
+              requests:
+                cpu: 100m
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+              readOnlyRootFilesystem: true
+    persistence:
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          rreading-glasses-gr:
+            app:
+              - path: /tmp
+                subPath: tmp
+    route:
+      app:
+        hostnames:
+          - rggr.${SECRET_DOMAIN_1}
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+    serviceMonitor:
+      app:
+        endpoints:
+          - interval: 30s
+            path: /debug/metrics
+            port: http
+            relabelings:
+              # Replace the pod ip:port instance, which changes on every restart,
+              # with the release name: rreading-glasses-gr, rreading-glasses-hc.
+              - sourceLabels: [__meta_kubernetes_service_label_app_kubernetes_io_instance]
+                targetLabel: instance
+              - sourceLabels: [__meta_kubernetes_pod_name]
+                targetLabel: pod
