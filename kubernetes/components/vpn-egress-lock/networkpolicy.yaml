@@ -3,7 +3,7 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: ${APP}
+  name: ${APP}-vpn-lock
 spec:
   # For pods that have the Multus "vpn" interface (net1). Some apps, for
   # example qBittorrent (libtorrent), bind a socket to every device, including
