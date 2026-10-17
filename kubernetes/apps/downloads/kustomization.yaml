@@ -10,4 +10,5 @@ namespace: downloads
 resources:
   - ./namespace.yaml
   - ./pvcs/ks.yaml
+  - ./qbittorrent/ks.yaml
   - ./qbooks/ks.yaml
