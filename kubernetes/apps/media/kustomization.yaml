@@ -16,5 +16,6 @@ resources:
   - ./openbooks/ks.yaml
   - ./plex/ks.yaml
   - ./nfs-connector/ks.yaml
+  - ./ombi/ks.yaml
   - ./dashbrr/ks.yaml
   - ./seerr/ks.yaml

@@ -1,0 +1,79 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app ombi
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: ombi
+  interval: 1h
+  values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    controllers:
+      *app :
+        containers:
+          app:
+            image:
+              repository: ghcr.io/linuxserver/ombi
+              tag: 4.53.10@sha256:86ecbe5081f0824e667f536019e5f9a17da3be34abe1bf3d9a57df0afbbe8323
+            env:
+              PGID: "1000"
+              PUID: "1000"
+              TZ: UTC
+              UMASK: "0022"
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 5
+                  periodSeconds: 30
+                  tcpSocket:
+                    port: &port 3579
+                  timeoutSeconds: 5
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+                  tcpSocket:
+                    port: *port
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                add: ["CHOWN", "DAC_OVERRIDE", "FOWNER", "SETGID", "SETUID"]
+                drop: ["ALL"]
+              runAsGroup: 0
+              runAsNonRoot: false
+              runAsUser: 0
+              seccompProfile:
+                type: RuntimeDefault
+    persistence:
+      config:
+        existingClaim: "{{ .Release.Name }}"
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - ombi.${SECRET_DOMAIN_1}
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+    service:
+      app:
+        ports:
+          http:
+            port: *port
