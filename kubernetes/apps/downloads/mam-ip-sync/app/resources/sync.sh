@@ -1,0 +1,34 @@
+#!/bin/sh
+# Registers the VPN egress IP with MyAnonamouse's dynamic seedbox endpoint.
+# Every request goes through vpn-proxy, so MAM sees the same VPN IP as qbooks.
+set -eu
+
+CACHE=/data/MAM.ip
+BASE=https://t.myanonamouse.net/json
+
+# the IP that MAM sees through the VPN
+NEWIP=$(curl -fsS --max-time 30 -x "$PROXY" "$BASE/jsonIp.php" | sed -n 's/.*"ip":"\([^"]*\)".*/\1/p')
+if [ -z "$NEWIP" ]; then
+  echo "Could not determine the VPN IP" >&2
+  exit 1
+fi
+
+OLDIP=$(cat "$CACHE" 2>/dev/null || true)
+if [ "$OLDIP" = "$NEWIP" ]; then
+  echo "Nothing to do - $NEWIP"
+  exit 0
+fi
+
+echo "New IP detected: old=$OLDIP new=$NEWIP"
+RESPONSE=$(curl -sS --max-time 30 -x "$PROXY" -b "mam_id=$MAM_ID" "$BASE/dynamicSeedbox.php")
+echo "$RESPONSE"
+
+if echo "$RESPONSE" | grep -q '"Success":true'; then
+  echo "$NEWIP" > "$CACHE"
+  echo "New IP cached"
+else
+  MSG=$(echo "$RESPONSE" | sed -n 's/.*"msg":"\([^"]*\)".*/\1/p')
+  [ -n "$MSG" ] || MSG="Unknown error"
+  echo "Failed to update - Error: $MSG" >&2
+  exit 1
+fi

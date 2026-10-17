@@ -12,5 +12,6 @@ resources:
   - ./autobrr/ks.yaml
   - ./pvcs/ks.yaml
   - ./qbittorrent/ks.yaml
+  - ./mam-ip-sync/ks.yaml
   - ./qbooks/ks.yaml
   - ./qui/ks.yaml

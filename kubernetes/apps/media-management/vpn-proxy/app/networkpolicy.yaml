@@ -25,3 +25,13 @@ spec:
           protocol: TCP
         - port: 1080
           protocol: TCP
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: downloads
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: mam-ip-sync
+      ports:
+        - port: 8888
+          protocol: TCP
