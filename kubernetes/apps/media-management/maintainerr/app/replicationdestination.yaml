@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/volsync.backube/replicationdestination_v1alpha1.json
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: maintainerr-dst
+  labels:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
+spec:
+  restic:
+    accessModes:
+      - ReadWriteOnce
+    cacheAccessModes:
+      - ReadWriteOnce
+    cacheCapacity: 2Gi
+    cacheStorageClassName: miroir-replicated-staging
+    capacity: 2Gi
+    cleanupCachePVC: true
+    cleanupTempPVC: false # miroir snapshots need their source volume to restore
+    copyMethod: Snapshot
+    enableFileDeletion: true
+    moverSecurityContext:
+      fsGroup: 1000
+      runAsGroup: 1000
+      runAsUser: 1000
+    repository: maintainerr-volsync-secret
+    storageClassName: miroir-replicated
+    volumeSnapshotClassName: miroir-snap
+  trigger:
+    manual: restore-once

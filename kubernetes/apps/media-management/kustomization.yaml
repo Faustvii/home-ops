@@ -12,6 +12,7 @@ resources:
   - ./bazarr/ks.yaml
   - ./flaresolverr/ks.yaml
   - ./plexanilistsync/ks.yaml
+  - ./maintainerr/ks.yaml
   - ./prowlarr/ks.yaml
   - ./pvcs/ks.yaml
   - ./radarr/ks.yaml
