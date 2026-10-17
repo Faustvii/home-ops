@@ -7,12 +7,10 @@ metadata:
   namespace: &namespace media-management
 spec:
   components:
-    - ../../../../components/kopiur/no-pvc
+    - ../../../../components/kopiur
     - ../../../../components/dashbrr
   dependsOn:
     - name: kopiur
-      namespace: storage
-    - name: volsync
       namespace: storage
   interval: 1h
   path: ./kubernetes/apps/media-management/prowlarr/app
