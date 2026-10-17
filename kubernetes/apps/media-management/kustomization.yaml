@@ -16,6 +16,7 @@ resources:
   - ./pvcs/ks.yaml
   - ./radarr/ks.yaml
   - ./readarr/ks.yaml
+  - ./recyclarr/ks.yaml
   - ./rreading-glasses-system/ks.yaml
   - ./sonarr/ks.yaml
   - ./sonarr-anime/ks.yaml
