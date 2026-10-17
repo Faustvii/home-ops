@@ -8,6 +8,5 @@ resources:
   - ./ocirepository.yaml
   - ./pocketidoidcclient.yaml
   - ./pocketidusergroup.yaml
-  - ./pvc.yaml
   - ./rbac.yaml
   - ./securitypolicy.yaml
