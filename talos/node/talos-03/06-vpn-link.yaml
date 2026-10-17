@@ -1,0 +1,18 @@
+# talos-03 is a VM. Its cluster NIC sits on a tagged VLAN 10 port on the
+# hypervisor, so VLAN 90 cannot be tagged inside the guest. A second vNIC is
+# attached to the hypervisor's vlan90 interface (untagged inside the guest,
+# "Trust Guest Filters" on so the macvlan pod MACs pass). It is named
+# bond0.90 so the shared "vpn" NetworkAttachmentDefinition works unchanged.
+#
+# Drop the global VLAN of that name (all/09-vlan.yaml) on this node ...
+apiVersion: v1alpha1
+kind: VLANConfig
+name: bond0.90
+$patch: delete
+---
+# ... and give the new vNIC (matched by MAC) the same name.
+apiVersion: v1alpha1
+kind: LinkAliasConfig
+name: bond0.90
+selector:
+  match: glob("00:a0:98:62:bc:51", mac(link.hardware_addr))
