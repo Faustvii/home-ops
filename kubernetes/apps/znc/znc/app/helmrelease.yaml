@@ -23,7 +23,7 @@ spec:
           app:
             image:
               repository: docker.io/library/znc
-              tag: 1.10.2@sha256:040a38a8a146e28f9b17182827f3e37c4ca22d9a489e0aea4816bf8aabb405b5
+              tag: 1.10.3@sha256:79c84323411966378dbce62c0af4a5a6ed809d20154431475fde0c129cef35aa
             probes:
               liveness: &probes
                 enabled: true
