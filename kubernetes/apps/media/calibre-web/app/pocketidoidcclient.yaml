@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/dist/schemas/pocketidoidcclient_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: calibre-web
+spec:
+  allowedUserGroups:
+    - name: calibre-web-users
+  callbackUrls:
+    - https://books.${SECRET_DOMAIN_1}/oauth2/callback
+  launchUrl: https://books.${SECRET_DOMAIN_1}
+  logoutCallbackUrls:
+    - https://books.${SECRET_DOMAIN_1}/
+  name: Calibre-Web
+  pkceEnabled: false
+  secret:
+    keys:
+      clientID: client-id
+      clientSecret: client-secret
+    name: calibre-web-oidc-credentials

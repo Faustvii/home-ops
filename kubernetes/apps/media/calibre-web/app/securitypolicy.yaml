@@ -1,0 +1,20 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.envoyproxy.io/securitypolicy_v1alpha1.json
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: calibre-web
+spec:
+  oidc:
+    clientIDRef:
+      name: calibre-web-oidc-credentials
+    clientSecret:
+      name: calibre-web-oidc-credentials
+    logoutPath: /logout
+    provider:
+      issuer: https://idm.${SECRET_DOMAIN}
+    redirectURL: https://books.${SECRET_DOMAIN_1}/oauth2/callback
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: calibre-web
