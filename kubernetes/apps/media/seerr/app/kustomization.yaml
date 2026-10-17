@@ -8,4 +8,3 @@ resources:
   - ./ocirepository.yaml
   - ./httproutefilter.yaml
   - ./httproute.yaml
-  - ./pvc.yaml
