@@ -193,17 +193,8 @@ spec:
 
     networkPolicy:
       enabled: true
-      type: cilium
-      dns:
-        # curl may resolve destinations even through the proxy; allow
-        # konflate and GitHub's API, content and locked tool downloads.
-        runnerNames:
-          - konflate.${SECRET_DOMAIN}
-          - api.github.com
-          - github.com
-          - raw.githubusercontent.com
-          - objects.githubusercontent.com
-          - release-assets.githubusercontent.com
+      # Keep standard Kubernetes policies; DNS names remain unfiltered.
+      type: default
       postgres:
         podSelector:
           cnpg.io/cluster: kritika-postgres
