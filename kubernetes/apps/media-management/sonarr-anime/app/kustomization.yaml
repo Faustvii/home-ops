@@ -6,6 +6,3 @@ resources:
   - ./helmrelease.yaml
   - ./ocirepository.yaml
   - ./pocketidusergroup.yaml
-  - ./pvc.yaml
-  - ./replicationdestination.yaml
-  - ./volsync-externalsecret.yaml
