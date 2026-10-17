@@ -11,6 +11,7 @@ resources:
   - ./namespace.yaml
   - ./flaresolverr/ks.yaml
   - ./plexanilistsync/ks.yaml
+  - ./prowlarr/ks.yaml
   - ./pvcs/ks.yaml
   - ./readarr/ks.yaml
   - ./rreading-glasses-system/ks.yaml
