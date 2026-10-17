@@ -1,0 +1,13 @@
+---
+# A Service without a selector; the EndpointSlice below points it at the device
+apiVersion: v1
+kind: Service
+metadata:
+  name: hass-external-service
+spec:
+  ports:
+    - name: http
+      port: 8123
+      protocol: TCP
+      targetPort: 8123
+  type: ClusterIP

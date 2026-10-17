@@ -1,0 +1,13 @@
+---
+# A Service without a selector; the EndpointSlice below points it at the device
+apiVersion: v1
+kind: Service
+metadata:
+  name: truenas-external-service
+spec:
+  ports:
+    - name: http
+      port: 81
+      protocol: TCP
+      targetPort: 81
+  type: ClusterIP

@@ -1,0 +1,17 @@
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: hass-external-service
+  labels:
+    kubernetes.io/service-name: hass-external-service
+addressType: IPv4
+endpoints:
+  - addresses:
+      - ${HASS_IP}
+    conditions:
+      ready: true
+ports:
+  - name: http
+    port: 8123
+    protocol: TCP
