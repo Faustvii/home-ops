@@ -29,6 +29,11 @@ if echo "$RESPONSE" | grep -q '"Success":true'; then
 else
   MSG=$(echo "$RESPONSE" | sed -n 's/.*"msg":"\([^"]*\)".*/\1/p')
   [ -n "$MSG" ] || MSG="Unknown error"
+  # MAM allows one change per hour; the cache stays stale, so the next run retries
+  if [ "$MSG" = "Last change too recent" ]; then
+    echo "Rate limited by MAM, will retry"
+    exit 0
+  fi
   echo "Failed to update - Error: $MSG" >&2
   exit 1
 fi
