@@ -17,3 +17,4 @@ resources:
   - ./plex/ks.yaml
   - ./nfs-connector/ks.yaml
   - ./dashbrr/ks.yaml
+  - ./seerr/ks.yaml
