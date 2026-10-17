@@ -1,8 +1,15 @@
 # talos-03 is a VM. Its cluster NIC sits on a tagged VLAN 10 port on the
 # hypervisor, so VLAN 90 cannot be tagged inside the guest. A second vNIC is
 # attached to the hypervisor's vlan90 interface (untagged inside the guest,
-# "Trust Guest Filters" on so the macvlan pod MACs pass). It is named
-# bond0.90 so the shared "vpn" NetworkAttachmentDefinition works unchanged.
+# "Trust Guest Filters" on so the macvlan pod MACs pass).
+#
+# The shared "vpn" NetworkAttachmentDefinition uses master: bond0.90, a kernel
+# interface name. An alias does not rename the kernel link, so build a
+# single-member bond with that name on the vNIC instead of the global VLAN.
+#
+# The hypervisor tap (macvtap, bridge mode) only delivers frames for the vNIC's
+# own MAC, so pods on this node use the "vpn-ipvlan" network (ipvlan shares
+# the vNIC's MAC) instead of the macvlan-based "vpn" network.
 #
 # Drop the global VLAN of that name (all/09-vlan.yaml) on this node ...
 apiVersion: v1alpha1
@@ -10,9 +17,18 @@ kind: VLANConfig
 name: bond0.90
 $patch: delete
 ---
-# ... and give the new vNIC (matched by MAC) the same name.
+# ... name the vNIC by MAC ...
 apiVersion: v1alpha1
 kind: LinkAliasConfig
-name: bond0.90
+name: vpn0
 selector:
   match: glob("00:a0:98:62:bc:51", mac(link.hardware_addr))
+---
+# ... and put a bond with the NAD's expected name on it.
+apiVersion: v1alpha1
+kind: BondConfig
+name: bond0.90
+links:
+  - vpn0
+bondMode: active-backup
+mtu: 1500
