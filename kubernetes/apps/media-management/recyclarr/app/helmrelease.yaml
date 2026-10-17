@@ -27,6 +27,9 @@ spec:
             env:
               CRON_SCHEDULE: "@daily"
               TZ: UTC
+            envFrom:
+              - secretRef:
+                  name: *app
             resources:
               requests:
                 cpu: 10m
