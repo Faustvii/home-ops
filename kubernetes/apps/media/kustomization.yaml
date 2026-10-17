@@ -9,7 +9,6 @@ namespace: media
 
 resources:
   - ./namespace.yaml
-  - ./qbittorrent/ks.yaml
   - ./qui/ks.yaml
   - ./pvcs/ks.yaml
   - ./booklore/ks.yaml
