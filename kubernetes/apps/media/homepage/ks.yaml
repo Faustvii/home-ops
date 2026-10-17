@@ -6,11 +6,19 @@ metadata:
   name: &app homepage
   namespace: &namespace media
 spec:
+  components:
+    - ../../../../components/kopiur/no-pvc
+  dependsOn:
+    - name: kopiur
+      namespace: storage
+    - name: pocket-id
+      namespace: security
   interval: 1h
   path: ./kubernetes/apps/media/homepage/app
   postBuild:
     substitute:
       APP: *app
+      KOPIUR_CAPACITY: 1Gi
       NAMESPACE: *namespace
     substituteFrom:
       - kind: Secret
