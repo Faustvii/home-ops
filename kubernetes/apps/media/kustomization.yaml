@@ -20,3 +20,4 @@ resources:
   - ./ombi/ks.yaml
   - ./dashbrr/ks.yaml
   - ./seerr/ks.yaml
+  - ./homepage/ks.yaml
