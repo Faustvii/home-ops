@@ -6,8 +6,8 @@ set -eu
 CACHE=/data/MAM.ip
 BASE=https://t.myanonamouse.net/json
 
-# the IP that MAM sees through the VPN
-NEWIP=$(curl -fsS --max-time 30 -x "$PROXY" "$BASE/jsonIp.php" | sed -n 's/.*"ip":"\([^"]*\)".*/\1/p')
+# Public IPv4 address through the VPN (ipify returns plain text).
+NEWIP=$(curl -fsS --max-time 30 -x "$PROXY" https://api.ipify.org)
 if [ -z "$NEWIP" ]; then
   echo "Could not determine the VPN IP" >&2
   exit 1
