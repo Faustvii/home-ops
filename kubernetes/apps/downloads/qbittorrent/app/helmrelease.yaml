@@ -14,17 +14,23 @@ spec:
       annotations:
         k8s.v1.cni.cncf.io/networks: |-
           [{
-            "name": "vpn",
+            "name": "vpn-ipvlan",
             "namespace": "network",
-            "ips": ["192.168.90.10/24"],
-            "mac": "02:84:a6:de:a9:de"
+            "ips": ["192.168.90.10/24"]
           }]
+      nodeSelector:
+        kubernetes.io/hostname: talos-03
       securityContext:
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
         runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
+      tolerations:
+        - effect: NoSchedule
+          key: dedicated
+          operator: Equal
+          value: talos-03
     configMaps:
       config:
         data:
