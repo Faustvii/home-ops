@@ -10,5 +10,7 @@ namespace: media-management
 resources:
   - ./namespace.yaml
   - ./plexanilistsync/ks.yaml
+  - ./pvcs/ks.yaml
+  - ./readarr/ks.yaml
   - ./rreading-glasses-system/ks.yaml
   - ./tautulli/ks.yaml
