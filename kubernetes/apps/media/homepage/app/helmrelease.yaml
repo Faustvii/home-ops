@@ -39,6 +39,9 @@ spec:
                 spec:
                   failureThreshold: 3
                   httpGet:
+                    httpHeaders:
+                      - name: Host
+                        value: home.${SECRET_DOMAIN_1}
                     path: /api/healthcheck
                     port: *port
                   initialDelaySeconds: 0
