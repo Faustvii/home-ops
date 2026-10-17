@@ -7,11 +7,9 @@ metadata:
   namespace: &namespace znc
 spec:
   components:
-    - ../../../../components/kopiur/no-pvc
+    - ../../../../components/kopiur
   dependsOn:
     - name: kopiur
-      namespace: storage
-    - name: volsync
       namespace: storage
   interval: 1h
   path: ./kubernetes/apps/znc/znc/app
