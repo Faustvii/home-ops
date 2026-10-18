@@ -4,6 +4,8 @@ Whenever asked to sort these files, follow these instructions:
 
 - **Default rule**: All fields and properties should be sorted alphabetically at every level of the YAML structure, regardless of how deeply nested they are, unless a specific override rule is provided below or in other applicable instructions files.
 
+- **Probes**: when `livenessProbe`, `readinessProbe` and `startupProbe` are siblings (for example in a chart's values), keep them together in that order instead of alphabetically, placed where the first of them would sort alphabetically (normally where `livenessProbe` sorts). Siblings of `probes` in app-template (`liveness`, `readiness`, `startup`) are already adjacent, so this only matters for charts that use `*Probe` keys.
+
 ## Override rules for Kubernetes related file types
 
 - Whenever they are present on the same level of a YAML structure, these fields should be sorted as follows:
