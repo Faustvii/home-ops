@@ -13,6 +13,7 @@ resources:
   - ./pvcs/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./mam-ip-sync/ks.yaml
+  - ./openbooks/ks.yaml
   - ./qbooks/ks.yaml
   - ./qui/ks.yaml
   - ./unpackerr/ks.yaml

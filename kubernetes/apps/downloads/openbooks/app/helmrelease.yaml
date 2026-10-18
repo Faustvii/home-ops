@@ -68,11 +68,10 @@ spec:
                 memory: 1Gi
     persistence:
       books:
-        type: persistentVolumeClaim
-        accessMode: ReadWriteOnce
-        enabled: true
-        size: 10Gi
-        storageClass: miroir-replicated
+        existingClaim: downloads-nfs-pvc
+        globalMounts:
+          - path: /books
+            subPath: openbooks
     route:
       app:
         hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
