@@ -6,6 +6,8 @@ metadata:
   name: unifi
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
+    # The kopiur mover runs as root here (see unifi/ks.yaml)
+    kopiur.home-operations.com/privileged-movers: "true"
   labels:
     # UniFi OS Server runs systemd and needs a privileged container
     pod-security.kubernetes.io/enforce: privileged
