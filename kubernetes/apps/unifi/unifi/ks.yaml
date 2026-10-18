@@ -19,6 +19,9 @@ spec:
       KOPIUR_CAPACITY: 10Gi
       # UniFi OS runs mongodb, postgres and rabbitmq as their own users; the
       # mover must be root to read and restore those files with their owners.
+      # Root alone cannot read the owner-only files; the mover drops every
+      # capability, so add the file-access ones back.
+      KOPIUR_MOVER_CAPS: '["CHOWN", "DAC_OVERRIDE", "DAC_READ_SEARCH", "FOWNER"]'
       KOPIUR_PGID: "0"
       KOPIUR_PUID: "0"
       NAMESPACE: *namespace

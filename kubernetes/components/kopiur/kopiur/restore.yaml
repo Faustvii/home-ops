@@ -9,6 +9,8 @@ spec:
     enabled: true
   mover:
     securityContext:
+      capabilities:
+        add: ${KOPIUR_MOVER_CAPS:=[]}
       runAsGroup: ${KOPIUR_PGID:=1000}
       runAsUser: ${KOPIUR_PUID:=1000}
   policy:
