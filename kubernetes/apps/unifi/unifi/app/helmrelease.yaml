@@ -180,6 +180,9 @@ spec:
         externalTrafficPolicy: Cluster
         ports:
           https:
+            # wss makes Envoy talk HTTP/1.1 to the backend; over HTTP/2 the
+            # console's websocket upgrades get a 400 from its nginx
+            appProtocol: kubernetes.io/wss
             port: 11443
             targetPort: 443
           inform:
