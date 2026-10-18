@@ -10,6 +10,10 @@ spec:
     name: unifi
   interval: 1h
   values:
+    defaultPodOptions:
+      # Trial: run the systemd container in the gVisor sandbox, so SYS_ADMIN
+      # acts on gVisor's kernel instead of the host's.
+      runtimeClassName: gvisor
     controllers:
       *app :
         annotations:
