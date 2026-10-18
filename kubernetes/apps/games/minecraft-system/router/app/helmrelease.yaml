@@ -28,7 +28,7 @@ spec:
         runAsUser: 1000
     controllers:
       router:
-        replicas: 2
+        replicas: 1
         serviceAccount:
           identifier: mc-router
         strategy: RollingUpdate
@@ -40,8 +40,12 @@ spec:
               tag: 1.48.0@sha256:3a9ece070b97c8c55666810fc81cb209e1dd775fce792187e296626b786859cc
             env:
               API_BINDING: ":8081"
+              AUTO_SCALE_ASLEEP_MOTD: "Server is sleeping. Connect to wake it up, then give it a few minutes to start."
+              AUTO_SCALE_DOWN: "true"
+              AUTO_SCALE_DOWN_AFTER: 2h
+              AUTO_SCALE_LOADING_MOTD: "Server is starting up, please try again in a minute."
+              AUTO_SCALE_UP: "true"
               CONNECTION_RATE_LIMIT: "10"
-              DEFAULT: "192.168.10.31:25565"
               IN_KUBE_CLUSTER: "true"
               PORT: "25565"
               WEBHOOK_REQUIRE_USER: "true"
@@ -50,10 +54,6 @@ spec:
               allowPrivilegeEscalation: false
               capabilities: { drop: ["ALL"] }
               readOnlyRootFilesystem: true
-              # AUTO_SCALE_UP: "true"
-              # AUTO_SCALE_DOWN: "true"
-              # AUTO_SCALE_DOWN_AFTER: "2h"
-              # AUTO_SCALE_ASLEEP_MOTD: "Server is sleeping. Connecting will wake it -- please give it a moment."
           svc-router:
             image:
               pullPolicy: IfNotPresent
@@ -87,8 +87,11 @@ spec:
               resources: ["services"]
               verbs: ["watch", "list"]
             - apiGroups: ["apps"]
-              resources: ["statefulsets", "statefulsets/scale"]
-              verbs: ["watch", "list", "get", "update", "patch"]
+              resources: ["statefulsets"]
+              verbs: ["watch", "list", "patch"]
+            - apiGroups: ["apps"]
+              resources: ["statefulsets/scale"]
+              verbs: ["get"]
           type: ClusterRole
     service:
       router:

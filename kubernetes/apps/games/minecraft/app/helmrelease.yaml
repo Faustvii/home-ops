@@ -153,6 +153,10 @@ spec:
 
     serviceAnnotations:
       lbipam.cilium.io/ips: "192.168.10.31"
+      # autoscale needs a StatefulSet, drop the opt-outs once this is one
+      mc-router.itzg.me/autoScaleDown: "false"
+      mc-router.itzg.me/autoScaleUp: "false"
+      mc-router.itzg.me/defaultServer: "true"
       mc-router.itzg.me/externalServerName: "mc.${SECRET_DOMAIN}"
     serviceLabels:
       io.cilium/ippool: public

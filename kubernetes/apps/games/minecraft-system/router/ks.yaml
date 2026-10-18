@@ -7,7 +7,7 @@ metadata:
   namespace: &namespace games
 spec:
   interval: 1h
-  path: ./kubernetes/apps/games/mc-router/app
+  path: ./kubernetes/apps/games/minecraft-system/router/app
   postBuild:
     substituteFrom:
       - kind: Secret
