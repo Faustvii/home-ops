@@ -31,6 +31,11 @@ spec:
       namespace: media-management
 
     - kind: GarageKey
+      namespace: nextcloud
+    - kind: GarageBucket
+      namespace: nextcloud
+
+    - kind: GarageKey
       namespace: security
     - kind: GarageBucket
       namespace: security

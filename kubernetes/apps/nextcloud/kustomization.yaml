@@ -1,0 +1,13 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+components:
+  - ../../components/sops
+  - ../../components/alerts
+namespace: nextcloud
+
+resources:
+  - ./namespace.yaml
+  - ./pvcs/ks.yaml
+  - ./nextcloud/ks.yaml
