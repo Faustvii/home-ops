@@ -174,30 +174,10 @@ spec:
     serviceAnnotations:
       lbipam.cilium.io/ips: "192.168.10.31"
       mc-router.itzg.me/autoScaleDown: "false"
-      mc-router.itzg.me/externalServerName: "mc.${SECRET_DOMAIN}"
+      mc-router.itzg.me/externalServerName: "mc.${SECRET_DOMAIN},minecraft.${SECRET_DOMAIN_1}"
     serviceLabels:
       io.cilium/ippool: public
 
-    sidecarContainers:
-      - args:
-          - --auth
-          - none
-        image: ghcr.io/coder/code-server:4.141.0@sha256:72ab24b5680ee597dd647b30d82625752f40109b5f61bef90ffbf1ea1f02dbb8
-        imagePullPolicy: IfNotPresent
-        name: vscode
-        ports:
-          - containerPort: 8080
-            name: vscode
-        resources:
-          limits:
-            cpu: 1
-            memory: 1Gi
-          requests:
-            cpu: 10m
-            memory: 64Mi
-        volumeMounts:
-          - mountPath: /data # mount Minecraft world + configs
-            name: datadir
     # mc-router only scales StatefulSets
     strategyType: RollingUpdate
     terminationGracePeriodSeconds: 90
