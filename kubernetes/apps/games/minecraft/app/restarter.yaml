@@ -16,7 +16,7 @@ spec:
             - args:
                 - |
                   NAMESPACE=games
-                  TARGET="deployment/minecraft"
+                  TARGET="statefulset/minecraft"
 
                   echo "Starting rolling restart of $TARGET at $(date)"
 
@@ -58,7 +58,7 @@ metadata:
   namespace: games
 rules:
   - apiGroups: ["apps"]
-    resources: ["deployments"]
+    resources: ["statefulsets"]
     verbs: ["get", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1

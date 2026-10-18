@@ -153,10 +153,6 @@ spec:
 
     serviceAnnotations:
       lbipam.cilium.io/ips: "192.168.10.31"
-      # autoscale needs a StatefulSet, drop the opt-outs once this is one
-      mc-router.itzg.me/autoScaleDown: "false"
-      mc-router.itzg.me/autoScaleUp: "false"
-      mc-router.itzg.me/defaultServer: "true"
       mc-router.itzg.me/externalServerName: "mc.${SECRET_DOMAIN}"
     serviceLabels:
       io.cilium/ippool: public
@@ -181,7 +177,10 @@ spec:
         volumeMounts:
           - mountPath: /data # mount Minecraft world + configs
             name: datadir
+    # mc-router only scales StatefulSets
+    strategyType: RollingUpdate
     terminationGracePeriodSeconds: 90
+    workloadAsStatefulSet: true
       # - "https://cdn.modrinth.com/data/YoRtMPzM/versions/ze2xyOSp/SHA1Runtime-1.21.10-1.4.1.jar" # SHA1Runtime crashes the server on player connect
 
   valuesFrom:
