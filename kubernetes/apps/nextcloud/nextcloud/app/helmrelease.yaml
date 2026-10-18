@@ -9,9 +9,6 @@ spec:
     kind: OCIRepository
     name: nextcloud
   interval: 1h
-  # Suspended until the old html/config/database are copied in; a start on
-  # empty volumes would run the installer against the live data share.
-  suspend: true
   values:
     cronjob:
       enabled: true
