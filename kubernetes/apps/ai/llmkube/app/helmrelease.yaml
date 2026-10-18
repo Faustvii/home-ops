@@ -35,6 +35,7 @@ spec:
       keep: true
     metrics:
       enabled: true
+      secure: false
     metalRelay:
       secretCreatePolicy:
         enabled: false
