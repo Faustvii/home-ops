@@ -17,6 +17,10 @@ spec:
     substitute:
       APP: *app
       KOPIUR_CAPACITY: 10Gi
+      # UniFi OS runs mongodb, postgres and rabbitmq as their own users; the
+      # mover must be root to read and restore those files with their owners.
+      KOPIUR_PGID: "0"
+      KOPIUR_PUID: "0"
       NAMESPACE: *namespace
     substituteFrom:
       - kind: Secret
