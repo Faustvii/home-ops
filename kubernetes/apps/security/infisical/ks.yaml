@@ -7,7 +7,7 @@ metadata:
   namespace: &namespace security
 spec:
   components:
-    - ../../../../components/database/postgres/shared
+    - ../../../../components/database/postgres/standalone
     - ../../../../components/database/dragonfly
   dependsOn:
     - name: cnpg
@@ -19,7 +19,8 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      DATABASE_RECLAIM_POLICY: retain
+      DATABASE_STORAGE: 5Gi
+      NAMESPACE: *namespace
     substituteFrom:
       - kind: Secret
         name: cluster-secrets
