@@ -7,9 +7,9 @@ metadata:
   namespace: &namespace games
 spec:
   components:
-    - ../../../../components/kopiur
+    - ../../../../../../components/kopiur
   interval: 1h
-  path: ./kubernetes/apps/games/minecraft/app
+  path: ./kubernetes/apps/games/minecraft-system/servers/main/app
   postBuild:
     substitute:
       APP: *app

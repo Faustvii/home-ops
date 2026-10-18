@@ -9,7 +9,7 @@ namespace: games
 
 resources:
   - ./namespace.yaml
-  - ./minecraft/ks.yaml
   - ./minecraft-system/router/ks.yaml
   - ./minecraft-system/servers/chunklock/ks.yaml
+  - ./minecraft-system/servers/main/ks.yaml
   - ./archisteamfarm/ks.yaml
