@@ -52,7 +52,7 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: &store garage-store
-        serverName: postgres-v1
+        serverName: postgres-v2
 
   externalClusters:
     - name: source
