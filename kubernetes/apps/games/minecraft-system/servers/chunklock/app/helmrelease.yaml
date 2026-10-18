@@ -151,7 +151,7 @@ spec:
         memory: 1Gi
 
     serviceAnnotations:
-      mc-router.itzg.me/externalServerName: "chunklock.mc.${SECRET_DOMAIN}"
+      mc-router.itzg.me/externalServerName: "chunklock.mc.${SECRET_DOMAIN},chunk.${SECRET_DOMAIN_1}"
 
     # mc-router only scales StatefulSets
     strategyType: RollingUpdate
