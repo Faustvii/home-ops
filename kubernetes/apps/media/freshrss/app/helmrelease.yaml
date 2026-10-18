@@ -1,0 +1,79 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app freshrss
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: freshrss
+  interval: 1h
+  values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    controllers:
+      *app :
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/linuxserver/freshrss
+              tag: 1.29.1@sha256:b67eb8dbe1e6944ce45f761645858b25b2a852d5dd3e5e49f001bd5cf2534350
+            env:
+              PGID: "1000"
+              PUID: "1000"
+              TZ: ${TZ}
+              UMASK: "0022"
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 5
+                  periodSeconds: 30
+                  tcpSocket:
+                    port: &port 80
+                  timeoutSeconds: 5
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+                  tcpSocket:
+                    port: *port
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                add: ["CHOWN", "DAC_OVERRIDE", "FOWNER", "SETGID", "SETUID"]
+                drop: ["ALL"]
+              runAsGroup: 0
+              runAsNonRoot: false
+              runAsUser: 0
+              seccompProfile:
+                type: RuntimeDefault
+    persistence:
+      config:
+        existingClaim: "{{ .Release.Name }}"
+    route:
+      app:
+        hostnames: ["rss.${SECRET_DOMAIN_1}"]
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+    service:
+      app:
+        ports:
+          http:
+            port: *port
