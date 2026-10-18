@@ -104,6 +104,19 @@ spec:
               - path: /usr/local/bin/timedatectl
                 subPath: timedatectl
                 readOnly: true
+      tls:
+        type: secret
+        name: unifi-tls
+        defaultMode: 0600
+        advancedMounts:
+          *app :
+            app:
+              - path: /data/unifi-core/config/unifi-core.crt
+                subPath: tls.crt
+                readOnly: true
+              - path: /data/unifi-core/config/unifi-core.key
+                subPath: tls.key
+                readOnly: true
       config:
         existingClaim: "{{ .Release.Name }}"
         advancedMounts:
