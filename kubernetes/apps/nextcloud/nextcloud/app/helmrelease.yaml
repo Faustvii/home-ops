@@ -72,12 +72,12 @@ spec:
               key: phone-region
       host: cloud.${SECRET_DOMAIN_1}
       podSecurityContext:
-        fsGroup: 568
+        fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
       securityContext:
-        runAsGroup: 568
+        runAsGroup: 1000
         runAsNonRoot: true
-        runAsUser: 568
+        runAsUser: 1000
     nginx:
       enabled: true
       image:

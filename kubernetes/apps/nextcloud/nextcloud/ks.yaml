@@ -22,8 +22,6 @@ spec:
       APP: *app
       DATABASE_STORAGE: 5Gi
       KOPIUR_CAPACITY: 5Gi
-      KOPIUR_PGID: "568"
-      KOPIUR_PUID: "568"
       NAMESPACE: *namespace
     substituteFrom:
       - kind: Secret
