@@ -22,3 +22,4 @@ resources:
   - ./snmp-exporter/ks.yaml
   - ./opentelemetry/ks.yaml
   - ./speedtest-tracker/ks.yaml
+  - ./kromgo/ks.yaml
