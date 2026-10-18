@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: minecraft-chunklock-datapacks
+data:
+  datapacks.txt: |
+    https://cdn.modrinth.com/data/Z5JdfNas/versions/jhE0yXs7/chunklock_2.1.0.zip?mr_download_reason=standalone

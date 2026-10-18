@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minecraft-chunklock
+spec:
+  accessModes:
+    - ReadWriteOnce
+  dataSourceRef:
+    apiGroup: kopiur.home-operations.com
+    kind: Restore
+    name: minecraft-chunklock-from-test
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: miroir-replicated

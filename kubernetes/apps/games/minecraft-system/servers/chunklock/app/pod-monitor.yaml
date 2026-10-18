@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/podmonitor_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: &app minecraft-chunklock
+  labels:
+    metrics: *app
+spec:
+  podMetricsEndpoints:
+    - port: metrics
+      relabelings:
+        - action: replace
+          replacement: chunk-lock
+          targetLabel: instance
+        - action: replace
+          replacement: minecraft
+          targetLabel: job
+  podTargetLabels:
+    - app
+  selector:
+    matchLabels:
+      app: *app
