@@ -1,0 +1,79 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app archisteamfarm
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: archisteamfarm
+  interval: 1h
+  values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+    controllers:
+      *app :
+        containers:
+          app:
+            image:
+              repository: ghcr.io/justarchinet/archisteamfarm
+              tag: 6.3.7.0@sha256:c4d0f409594b211f224834daccc1a6922f149d9a990e3b991579c7446ce94f8b
+            env:
+              TZ: UTC
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 3
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  tcpSocket:
+                    port: &port 1242
+                  timeoutSeconds: 1
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 5m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+              readOnlyRootFilesystem: true
+    persistence:
+      config:
+        existingClaim: "{{ .Release.Name }}"
+        advancedMounts:
+          *app :
+            app:
+              - path: /app/config
+                subPath: config
+              - path: /app/plugins
+                subPath: plugins
+      logs:
+        type: emptyDir
+        advancedMounts:
+          *app :
+            app:
+              - path: /app/logs
+      tmp:
+        type: emptyDir
+    route:
+      app:
+        hostnames: ["asf.${SECRET_DOMAIN_1}"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+    service:
+      app:
+        ports:
+          http:
+            port: *port

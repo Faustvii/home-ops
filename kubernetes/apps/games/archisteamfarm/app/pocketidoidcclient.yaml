@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/main/dist/schemas/pocketidoidcclient_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: archisteamfarm
+spec:
+  allowedUserGroups:
+    - name: archisteamfarm-users
+  callbackUrls:
+    - https://asf.${SECRET_DOMAIN_1}/oauth2/callback
+  launchUrl: https://asf.${SECRET_DOMAIN_1}
+  logoutCallbackUrls:
+    - https://asf.${SECRET_DOMAIN_1}/
+  name: ArchiSteamFarm
+  pkceEnabled: false
+  secret:
+    keys:
+      clientID: client-id
+      clientSecret: client-secret
+    name: archisteamfarm-oidc-credentials
