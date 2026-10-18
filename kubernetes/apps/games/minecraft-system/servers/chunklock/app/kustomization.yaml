@@ -7,5 +7,3 @@ resources:
   - ./minecraft-datapacks.yaml
   - ./ocirepository.yaml
   - ./pod-monitor.yaml
-  - ./pvc.yaml
-  - ./restore-from-test.yaml
