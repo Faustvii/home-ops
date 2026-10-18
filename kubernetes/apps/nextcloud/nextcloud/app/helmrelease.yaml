@@ -12,6 +12,17 @@ spec:
   values:
     cronjob:
       enabled: true
+      sidecar:
+        # The stock /cron.sh needs root; cron.php must run as the user that
+        # owns config.php.
+        command:
+          - /bin/sh
+          - -c
+          - while true; do php -f /var/www/html/cron.php; sleep 300; done
+        securityContext:
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
       type: sidecar
     externalDatabase:
       enabled: true
