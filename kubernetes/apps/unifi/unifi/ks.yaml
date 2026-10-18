@@ -25,6 +25,30 @@ spec:
     substituteFrom:
       - kind: Secret
         name: cluster-secrets
+  # Root alone cannot read the owner-only files of mongodb, postgres and
+  # rabbitmq: the mover drops every capability. Give it the file-access ones,
+  # for the snapshots and for the restores.
+  patches:
+    - patch: |-
+        apiVersion: kopiur.home-operations.com/v1alpha1
+        kind: SnapshotPolicy
+        metadata:
+          name: unifi
+        spec:
+          mover:
+            securityContext:
+              capabilities:
+                add: ["CHOWN", "DAC_OVERRIDE", "DAC_READ_SEARCH", "FOWNER"]
+    - patch: |-
+        apiVersion: kopiur.home-operations.com/v1alpha1
+        kind: Restore
+        metadata:
+          name: unifi
+        spec:
+          mover:
+            securityContext:
+              capabilities:
+                add: ["CHOWN", "DAC_OVERRIDE", "DAC_READ_SEARCH", "FOWNER"]
   prune: true
   sourceRef:
     kind: GitRepository
