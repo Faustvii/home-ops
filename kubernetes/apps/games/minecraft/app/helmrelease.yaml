@@ -173,6 +173,7 @@ spec:
 
     serviceAnnotations:
       lbipam.cilium.io/ips: "192.168.10.31"
+      mc-router.itzg.me/autoScaleDown: "false"
       mc-router.itzg.me/externalServerName: "mc.${SECRET_DOMAIN}"
     serviceLabels:
       io.cilium/ippool: public
