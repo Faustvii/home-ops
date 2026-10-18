@@ -40,6 +40,9 @@ spec:
       port: "6379"
     httpRoute:
       enabled: true
+      annotations:
+        gatus.home-operations.com/endpoint: |-
+          conditions: ["[STATUS] == 401"]
       hostnames:
         - cloud.${SECRET_DOMAIN_1}
       parentRefs:
