@@ -42,7 +42,7 @@ spec:
               API_BINDING: ":8081"
               AUTO_SCALE_ASLEEP_MOTD: "Server is sleeping. Connect to wake it up, then give it a few minutes to start."
               AUTO_SCALE_DOWN: "true"
-              AUTO_SCALE_DOWN_AFTER: 2m
+              AUTO_SCALE_DOWN_AFTER: 2h
               AUTO_SCALE_LOADING_MOTD: "Server is starting up, please try again in a minute."
               AUTO_SCALE_UP: "true"
               CONNECTION_RATE_LIMIT: "10"
