@@ -23,6 +23,17 @@ spec:
     kind: OCIRepository
     name: minecraft
   interval: 1h
+  postRenderers:
+    - kustomize:
+        patches:
+          # mc-router scales the server between 0 and 1; keep replicas out of
+          # the rendered manifest so an upgrade does not reset it to 1
+          - patch: |-
+              - op: remove
+                path: /spec/replicas
+            target:
+              kind: StatefulSet
+              name: minecraft
   values:
     deploymentAnnotations:
       configmap.reloader.stakater.com/reload: "minecraft-datapacks"
