@@ -1,0 +1,113 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app speedtest-tracker
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: speedtest-tracker
+  interval: 1h
+  values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    controllers:
+      *app :
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/linuxserver/speedtest-tracker
+              tag: 1.14.5@sha256:4c698dc3a5d989c8d92512600d303f23ff2e6e789c89674adb083372ac67fe2c
+            env:
+              APP_NAME: Speedtest Tracker
+              APP_URL: https://speedtest.${SECRET_DOMAIN_1}
+              ASSET_URL: https://speedtest.${SECRET_DOMAIN_1}
+              CACHE_DRIVER: redis
+              DB_CONNECTION: pgsql
+              DB_DATABASE:
+                valueFrom:
+                  secretKeyRef:
+                    name: speedtest-tracker-postgres
+                    key: database
+              DB_HOST:
+                valueFrom:
+                  secretKeyRef:
+                    name: speedtest-tracker-postgres
+                    key: host
+              DB_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: speedtest-tracker-postgres
+                    key: password
+              DB_PORT: "5432"
+              DB_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: speedtest-tracker-postgres
+                    key: username
+              PGID: "1000"
+              PRUNE_RESULTS_OLDER_THAN: "14"
+              PUBLIC_DASHBOARD: "false"
+              PUID: "1000"
+              REDIS_HOST: dragonfly.database.svc.cluster.local
+              REDIS_PORT: "6379"
+              SPEEDTEST_SCHEDULE: 43 * * * *
+              TZ: ${TZ}
+              UMASK: "0022"
+            envFrom:
+              - secretRef:
+                  name: speedtest-tracker-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 5
+                  periodSeconds: 30
+                  tcpSocket:
+                    port: &port 80
+                  timeoutSeconds: 5
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+                  tcpSocket:
+                    port: *port
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                add: ["CHOWN", "DAC_OVERRIDE", "FOWNER", "SETGID", "SETUID"]
+                drop: ["ALL"]
+              runAsGroup: 0
+              runAsNonRoot: false
+              runAsUser: 0
+              seccompProfile:
+                type: RuntimeDefault
+    persistence:
+      config:
+        type: emptyDir
+    route:
+      app:
+        hostnames: ["speedtest.${SECRET_DOMAIN_1}"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+    service:
+      app:
+        ports:
+          http:
+            port: *port

@@ -1,0 +1,20 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.envoyproxy.io/securitypolicy_v1alpha1.json
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: speedtest-tracker
+spec:
+  oidc:
+    clientIDRef:
+      name: speedtest-tracker-oidc-credentials
+    clientSecret:
+      name: speedtest-tracker-oidc-credentials
+    logoutPath: /logout
+    provider:
+      issuer: https://idm.${SECRET_DOMAIN}
+    redirectURL: https://speedtest.${SECRET_DOMAIN_1}/oauth2/callback
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: speedtest-tracker

@@ -36,6 +36,11 @@ spec:
       namespace: nextcloud
 
     - kind: GarageKey
+      namespace: observability
+    - kind: GarageBucket
+      namespace: observability
+
+    - kind: GarageKey
       namespace: security
     - kind: GarageBucket
       namespace: security

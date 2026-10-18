@@ -21,3 +21,4 @@ resources:
   - ./truenas-exporter/ks.yaml
   - ./snmp-exporter/ks.yaml
   - ./opentelemetry/ks.yaml
+  - ./speedtest-tracker/ks.yaml
