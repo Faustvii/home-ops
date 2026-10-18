@@ -64,8 +64,12 @@ spec:
               - /bin/bash
               - -c
               - mount -o remount,rw /sys/fs/cgroup; exec /root/uos-entrypoint.sh
+            # allowPrivilegeEscalation must stay true: UniFi OS runs
+            # `sudo ubnt-tools id` as a service user, and no_new_privs breaks
+            # sudo ("effective uid is not 0"), which leaves ulp-go without
+            # device info and the setup wizard with an error.
             securityContext:
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
               capabilities:
                 add: ["NET_ADMIN", "NET_RAW", "SYS_ADMIN"]
     persistence:
