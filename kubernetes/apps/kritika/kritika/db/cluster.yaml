@@ -36,11 +36,17 @@ spec:
   # apply them one at a time.
   primaryUpdateMethod: switchover
 
+  # CNPG replicates between instances and backs up through barman, so the
+  # volumes stay on a single node instead of being replicated by miroir too.
+  affinity:
+    podAntiAffinityType: required
   storage:
     size: 10Gi
+    storageClass: miroir-local
 
   bootstrap:
-    initdb:
+    recovery:
+      source: source
       database: kritika
       owner: kritika
       secret:
@@ -53,7 +59,15 @@ spec:
         barmanObjectName: kritika-garage-store
         # Bump on every rebuild: a fresh initdb refuses a WAL archive that
         # already holds another timeline under the same name.
-        serverName: kritika-postgres-v2
+        serverName: kritika-postgres-v3
+
+  externalClusters:
+    - name: source
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: kritika-garage-store
+          serverName: kritika-postgres-v2
 
   monitoring:
     enablePodMonitor: true
