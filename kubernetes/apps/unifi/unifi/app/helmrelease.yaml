@@ -1,0 +1,166 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app unifi
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: unifi
+  interval: 1h
+  values:
+    controllers:
+      *app :
+        annotations:
+          reloader.stakater.com/auto: "true"
+        strategy: Recreate
+        containers:
+          app:
+            image:
+              repository: ghcr.io/lemker/unifi-os-server
+              tag: v1.8.0@sha256:c0136d42d238b9574d93676aada3f61971ffb6bcbe2a3050627a9fa7ced7c878
+            env:
+              HOST_IP:
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.hostIP
+              # The address devices use for set-inform (the LoadBalancer IP)
+              UOS_SYSTEM_IP: 192.168.10.62
+            lifecycle:
+              postStart:
+                exec:
+                  command: ["/bin/bash", "-c", "echo $HOST_IP host.docker.internal >> /etc/hosts"]
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 3
+                  httpGet:
+                    path: /api/ping
+                    port: 80
+                  initialDelaySeconds: 10
+                  periodSeconds: 60
+                  timeoutSeconds: 5
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 60
+                  periodSeconds: 10
+                  tcpSocket:
+                    port: 443
+            resources:
+              requests:
+                cpu: 200m
+                memory: 1Gi
+              limits:
+                memory: 4Gi
+            # Trial 1: no privileged. The upstream compose file only adds
+            # these two capabilities, tmpfs mounts and a writable host cgroup.
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                add: ["NET_ADMIN", "NET_RAW"]
+    persistence:
+      config:
+        existingClaim: "{{ .Release.Name }}"
+        advancedMounts:
+          *app :
+            app:
+              - path: /persistent
+                subPath: persistent
+              - path: /var/log
+                subPath: log
+              - path: /data
+                subPath: data
+              - path: /srv
+                subPath: srv
+              - path: /var/lib/unifi
+                subPath: unifi
+              - path: /var/lib/mongodb
+                subPath: mongodb
+              - path: /etc/rabbitmq/ssl
+                subPath: rabbitmq
+      cgroup:
+        type: hostPath
+        hostPath: /sys/fs/cgroup
+        hostPathType: Directory
+        advancedMounts:
+          *app :
+            app:
+              - path: /sys/fs/cgroup
+      run:
+        type: emptyDir
+        medium: Memory
+        advancedMounts:
+          *app :
+            app:
+              - path: /run
+      run-lock:
+        type: emptyDir
+        medium: Memory
+        advancedMounts:
+          *app :
+            app:
+              - path: /run/lock
+      tmp:
+        type: emptyDir
+        medium: Memory
+        advancedMounts:
+          *app :
+            app:
+              - path: /tmp
+      journal:
+        type: emptyDir
+        medium: Memory
+        advancedMounts:
+          *app :
+            app:
+              - path: /var/lib/journal
+      unifi-tmp:
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 64Mi
+        advancedMounts:
+          *app :
+            app:
+              - path: /var/opt/unifi/tmp
+    service:
+      app:
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: 192.168.10.62
+        externalTrafficPolicy: Cluster
+        ports:
+          https:
+            port: 11443
+            targetPort: 443
+          inform:
+            port: 8080
+          stun:
+            port: 3478
+            protocol: UDP
+          discovery:
+            port: 10003
+            protocol: UDP
+          rtp:
+            port: 5005
+          id-hub:
+            port: 9543
+          speedtest:
+            port: 6789
+          hotspot-secure:
+            port: 8444
+          syslog:
+            port: 5514
+            protocol: UDP
+          aqmps:
+            port: 5671
+          hotspot-redirect-0:
+            port: 8880
+          hotspot-redirect-1:
+            port: 8881
+          hotspot-redirect-2:
+            port: 8882
