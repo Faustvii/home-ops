@@ -10,6 +10,27 @@ spec:
     name: unifi
   interval: 1h
   values:
+    configMaps:
+      timedatectl:
+        data:
+          timedatectl: |
+            #!/bin/sh
+            # UniFi OS refuses the Ubiquiti sign-in unless timedatectl reports
+            # NTP=yes and NTPSynchronized=yes. A container has no timesyncd
+            # (NTP always reads "no"), but it shares the host clock, which
+            # Talos keeps in sync. Report the service as on and keep the real
+            # NTPSynchronized value.
+            case "$*" in
+              *--property=NTP*)
+                for arg in "$@"; do
+                  case "$arg" in
+                    --property=NTPSynchronized) /usr/bin/timedatectl show --value --property=NTPSynchronized ;;
+                    --property=NTP) echo yes ;;
+                  esac
+                done
+                ;;
+              *) exec /usr/bin/timedatectl "$@" ;;
+            esac
     controllers:
       *app :
         annotations:
@@ -73,6 +94,16 @@ spec:
               capabilities:
                 add: ["NET_ADMIN", "NET_RAW", "SYS_ADMIN"]
     persistence:
+      timedatectl:
+        type: configMap
+        identifier: timedatectl
+        defaultMode: 0755
+        advancedMounts:
+          *app :
+            app:
+              - path: /usr/local/bin/timedatectl
+                subPath: timedatectl
+                readOnly: true
       config:
         existingClaim: "{{ .Release.Name }}"
         advancedMounts:
