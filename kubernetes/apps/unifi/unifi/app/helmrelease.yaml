@@ -57,12 +57,17 @@ spec:
                 memory: 1Gi
               limits:
                 memory: 4Gi
-            # Trial 1: no privileged. The upstream compose file only adds
-            # these two capabilities, tmpfs mounts and a writable host cgroup.
+            # Not privileged. systemd needs a writable cgroup, so the command
+            # remounts /sys/fs/cgroup (needs SYS_ADMIN) before the entrypoint
+            # (the upstream compose file uses cgroup: host instead).
+            command:
+              - /bin/bash
+              - -c
+              - mount -o remount,rw /sys/fs/cgroup; exec /root/uos-entrypoint.sh
             securityContext:
               allowPrivilegeEscalation: false
               capabilities:
-                add: ["NET_ADMIN", "NET_RAW"]
+                add: ["NET_ADMIN", "NET_RAW", "SYS_ADMIN"]
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
@@ -83,14 +88,6 @@ spec:
                 subPath: mongodb
               - path: /etc/rabbitmq/ssl
                 subPath: rabbitmq
-      cgroup:
-        type: hostPath
-        hostPath: /sys/fs/cgroup
-        hostPathType: Directory
-        advancedMounts:
-          *app :
-            app:
-              - path: /sys/fs/cgroup
       run:
         type: emptyDir
         medium: Memory
