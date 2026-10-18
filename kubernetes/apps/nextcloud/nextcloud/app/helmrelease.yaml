@@ -124,9 +124,25 @@ spec:
               spec:
                 template:
                   spec:
+                    # The chart always mounts the data volume at a "data"
+                    # subPath. The share is the data directory itself, so
+                    # mount its root.
                     containers:
                       - name: nextcloud
                         volumeMounts:
                           - name: php-confd
                             mountPath: /usr/local/etc/php/conf.d/redis-session.ini
                             subPath: redis-session.ini
+                          - name: nextcloud-data
+                            mountPath: /var/www/html/data
+                            subPath: null
+                      - name: nextcloud-nginx
+                        volumeMounts:
+                          - name: nextcloud-data
+                            mountPath: /var/www/html/data
+                            subPath: null
+                      - name: nextcloud-cron
+                        volumeMounts:
+                          - name: nextcloud-data
+                            mountPath: /var/www/html/data
+                            subPath: null
