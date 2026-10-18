@@ -61,6 +61,24 @@ spec:
           $CONFIG = array (
             'default_phone_region' => getenv('NEXTCLOUD_PHONE_REGION'),
           );
+      # The entrypoint (non-root) writes redis-session.ini, so put it on a
+      # writable volume
+      extraInitContainers:
+        - name: init-redis-session-ini
+          image: docker.io/library/alpine:3.24@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6
+          command:
+            - /bin/sh
+            - -c
+            - touch /php-confd/redis-session.ini
+          securityContext:
+            runAsGroup: 1000
+            runAsUser: 1000
+          volumeMounts:
+            - name: php-confd
+              mountPath: /php-confd
+      extraVolumes:
+        - name: php-confd
+          emptyDir: {}
       extraEnv:
         - name: NEXTCLOUD_PHONE_REGION
           valueFrom:
@@ -92,3 +110,23 @@ spec:
       requests:
         cpu: 100m
         memory: 512Mi
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: nextcloud
+            patch: |-
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: nextcloud
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: nextcloud
+                        volumeMounts:
+                          - name: php-confd
+                            mountPath: /usr/local/etc/php/conf.d/redis-session.ini
+                            subPath: redis-session.ini
