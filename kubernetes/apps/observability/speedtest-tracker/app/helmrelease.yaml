@@ -22,7 +22,7 @@ spec:
           app:
             image:
               repository: ghcr.io/linuxserver/speedtest-tracker
-              tag: 1.14.5@sha256:c33d119bb60fb58a5848564d85926caeadb61c813c8c536850215cdf9f3b48a7
+              tag: 1.15.0@sha256:1eeed2307699c083407bd4c1eb86f14d5179f9e1cd960f57d4cbab6f1f8b8a42
             env:
               APP_NAME: Speedtest Tracker
               APP_URL: https://speedtest.${SECRET_DOMAIN_1}
