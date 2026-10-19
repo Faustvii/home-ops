@@ -19,11 +19,63 @@ spec:
         runAsUser: 1000
     controllers:
       *app :
+        # Calibre-Web stores proxy trust in app.db; migrate it before adding the Envoy CIDRs.
+        initContainers:
+          configure-trusted-proxies:
+            image: &image
+              repository: oci.trueforge.org/containerforge/calibre-web
+              tag: 0.6.27@sha256:de470a91dd0bbef215fdc43ddf746d671a259e245944347fc62672ce41f8e023
+            args:
+              - |
+                import os
+                import sqlite3
+                import subprocess
+
+                database = "/config/app.db"
+                database_existed = os.path.exists(database)
+                os.environ["CALIBRE_DBPATH"] = "/config"
+                subprocess.run(
+                    ["python3", "/app/calibre-web/cps.py", "-d", "-p", database],
+                    check=True,
+                    stdout=subprocess.DEVNULL,
+                )
+
+                with sqlite3.connect(database) as connection:
+                    row = connection.execute(
+                        "SELECT id, config_reverse_proxy_trusted_ips FROM settings LIMIT 1"
+                    ).fetchone()
+                    if row is None:
+                        raise RuntimeError("Calibre-Web settings row was not initialized")
+
+                    if not database_existed:
+                        connection.execute(
+                            "UPDATE settings SET config_kepubifypath = '/usr/bin/kepubify' "
+                            "WHERE config_kepubifypath IS NULL OR LENGTH(config_kepubifypath) = 0"
+                        )
+
+                    trusted_ips = [ip.strip() for ip in (row[1] or "").split(",") if ip.strip()]
+                    envoy_cidrs = ("10.42.0.0/16", "::ffff:10.42.0.0/112")
+                    for envoy_cidr in envoy_cidrs:
+                        if envoy_cidr not in trusted_ips:
+                            trusted_ips.append(envoy_cidr)
+                    connection.execute(
+                        "UPDATE settings SET config_reverse_proxy_trusted_ips = ? WHERE id = ?",
+                        (", ".join(trusted_ips), row[0]),
+                    )
+            command: ["python3", "-c"]
+            resources: &resources
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 1Gi
+            securityContext: &containerSecurityContext
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+              readOnlyRootFilesystem: true
         containers:
           app:
-            image:
-              repository: oci.trueforge.org/containerforge/calibre-web
-              tag: 0.6.26@sha256:e51f69c1758a4842dd8313947eeb0bcbe470a257e15bedcd6b158c97d659a97b
+            image: *image
             env:
               TZ: UTC
             probes:
@@ -45,16 +97,8 @@ spec:
                   periodSeconds: 10
                   tcpSocket:
                     port: *port
-            resources:
-              requests:
-                cpu: 10m
-                memory: 128Mi
-              limits:
-                memory: 1Gi
-            securityContext:
-              allowPrivilegeEscalation: false
-              capabilities: { drop: ["ALL"] }
-              readOnlyRootFilesystem: true
+            resources: *resources
+            securityContext: *containerSecurityContext
     persistence:
       books:
         existingClaim: media-books-nfs-pvc
