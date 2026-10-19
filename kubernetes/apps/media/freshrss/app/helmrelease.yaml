@@ -22,7 +22,7 @@ spec:
           app:
             image:
               repository: ghcr.io/linuxserver/freshrss
-              tag: 1.29.1@sha256:b67eb8dbe1e6944ce45f761645858b25b2a852d5dd3e5e49f001bd5cf2534350
+              tag: 1.29.1@sha256:7f7f276244da91720e40fee50dd0895b5d59d7888ea75a404ec7495c46fbfbb6
             env:
               PGID: "1000"
               PUID: "1000"
