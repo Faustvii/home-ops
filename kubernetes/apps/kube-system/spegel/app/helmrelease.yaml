@@ -9,11 +9,9 @@ spec:
     name: spegel
   interval: 1h
   values:
-    grafanaDashboard:
-      enabled: true
     service:
       registry:
-        hostPort: 29999
+        nodePort: 30021
     serviceMonitor:
       enabled: true
     spegel:
