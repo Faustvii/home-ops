@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/sonarr
-              tag: 4.0.18.2978@sha256:2cd77fb3d81909a734d61bb8f71462044cb9d2f187e626a28a05a5c4e4be8fd2
+              tag: 4.0.20.3012@sha256:1f19eb5e0f421418c1a956bbe01310a0141423afe28bd9a4b1dcb8629ff2bce2
             env:
               SONARR__APP__INSTANCENAME: Sonarr Anime
               SONARR__APP__THEME: dark
@@ -39,6 +39,8 @@ spec:
               SONARR__LOG__DBENABLED: "False"
               SONARR__LOG__LEVEL: info
               SONARR__SERVER__PORT: &port 80
+              # Trust Envoy and Arr clients on the cluster pod network.
+              SONARR__SERVER__TRUSTEDNETWORKS: 10.42.0.0/16
             probes:
               liveness: &probes
                 enabled: true
