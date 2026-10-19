@@ -12,7 +12,7 @@ spec:
   values:
     controllerManager:
       leaderElection:
-        enabled: false
+        enabled: true
       podSecurityContext:
         runAsNonRoot: true
         seccompProfile:
