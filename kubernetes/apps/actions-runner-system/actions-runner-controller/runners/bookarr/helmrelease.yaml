@@ -40,8 +40,3 @@ spec:
           fsGroup: 1001
           fsGroupChangePolicy: OnRootMismatch
         serviceAccountName: *name
-        tolerations:
-          - effect: NoSchedule
-            key: dedicated
-            operator: Equal
-            value: talos-03

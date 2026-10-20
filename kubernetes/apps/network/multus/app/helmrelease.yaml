@@ -9,23 +9,6 @@ spec:
     kind: OCIRepository
     name: multus
   interval: 1h
-  postRenderers:
-    - kustomize:
-        patches:
-          # The chart only tolerates CriticalAddonsOnly. talos-03 is tainted
-          # dedicated=talos-03, so without this Multus does not run there and
-          # pods pinned to it start without their secondary (vpn) network.
-          - patch: |
-              - op: add
-                path: /spec/template/spec/tolerations/-
-                value:
-                  effect: NoSchedule
-                  key: dedicated
-                  operator: Equal
-                  value: talos-03
-            target:
-              kind: DaemonSet
-              name: multus
   values:
     cni:
       binPath: /opt/cni/bin
