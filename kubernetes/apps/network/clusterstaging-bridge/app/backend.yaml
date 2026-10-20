@@ -37,5 +37,5 @@ spec:
       name: clusterstaging-nginx-external
       sectionName: https
   validation:
-    hostname: "${SECRET_DOMAIN_1}"
+    hostname: "${SECRET_DOMAIN}"
     wellKnownCACertificates: System

@@ -68,7 +68,7 @@ spec:
       app:
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
-          - ombi.${SECRET_DOMAIN_1}
+          - ombi.${SECRET_DOMAIN}
         parentRefs:
           - name: envoy-external
             namespace: network

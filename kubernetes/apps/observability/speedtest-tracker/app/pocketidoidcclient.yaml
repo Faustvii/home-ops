@@ -8,10 +8,10 @@ spec:
   allowedUserGroups:
     - name: speedtest-tracker-users
   callbackUrls:
-    - https://speedtest.${SECRET_DOMAIN_1}/oauth2/callback
-  launchUrl: https://speedtest.${SECRET_DOMAIN_1}
+    - https://speedtest.${SECRET_DOMAIN}/oauth2/callback
+  launchUrl: https://speedtest.${SECRET_DOMAIN}
   logoutCallbackUrls:
-    - https://speedtest.${SECRET_DOMAIN_1}/
+    - https://speedtest.${SECRET_DOMAIN}/
   name: Speedtest Tracker
   pkceEnabled: false
   secret:

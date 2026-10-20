@@ -101,7 +101,6 @@ spec:
       codeserver:
         hostnames:
           - "anilist-sync.${SECRET_DOMAIN}"
-          - "anilist-sync.${SECRET_DOMAIN_1}"
         parentRefs:
           - name: envoy-internal
             namespace: network

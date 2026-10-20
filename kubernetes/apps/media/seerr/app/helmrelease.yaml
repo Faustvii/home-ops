@@ -78,7 +78,7 @@ spec:
             conditions: ["[STATUS] == 200"]
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
-          - anime.${SECRET_DOMAIN_1}
+          - anime.${SECRET_DOMAIN}
         parentRefs:
           - name: envoy-external
             namespace: network

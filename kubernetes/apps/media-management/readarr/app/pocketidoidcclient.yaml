@@ -8,10 +8,10 @@ spec:
   allowedUserGroups:
     - name: readarr-users
   callbackUrls:
-    - https://readarr.${SECRET_DOMAIN_1}/oauth2/callback
-  launchUrl: https://readarr.${SECRET_DOMAIN_1}
+    - https://readarr.${SECRET_DOMAIN}/oauth2/callback
+  launchUrl: https://readarr.${SECRET_DOMAIN}
   logoutCallbackUrls:
-    - https://readarr.${SECRET_DOMAIN_1}/
+    - https://readarr.${SECRET_DOMAIN}/
   name: Readarr
   pkceEnabled: false
   secret:

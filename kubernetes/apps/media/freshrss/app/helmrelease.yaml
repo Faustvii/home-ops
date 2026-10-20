@@ -68,7 +68,7 @@ spec:
         existingClaim: "{{ .Release.Name }}"
     route:
       app:
-        hostnames: ["rss.${SECRET_DOMAIN_1}"]
+        hostnames: ["rss.${SECRET_DOMAIN}"]
         parentRefs:
           - name: envoy-external
             namespace: network

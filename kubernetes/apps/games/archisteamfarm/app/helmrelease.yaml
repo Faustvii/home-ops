@@ -68,7 +68,7 @@ spec:
         type: emptyDir
     route:
       app:
-        hostnames: ["asf.${SECRET_DOMAIN_1}"]
+        hostnames: ["asf.${SECRET_DOMAIN}"]
         parentRefs:
           - name: envoy-internal
             namespace: network

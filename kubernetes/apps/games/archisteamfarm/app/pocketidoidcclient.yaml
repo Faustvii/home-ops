@@ -8,10 +8,10 @@ spec:
   allowedUserGroups:
     - name: archisteamfarm-users
   callbackUrls:
-    - https://asf.${SECRET_DOMAIN_1}/oauth2/callback
-  launchUrl: https://asf.${SECRET_DOMAIN_1}
+    - https://asf.${SECRET_DOMAIN}/oauth2/callback
+  launchUrl: https://asf.${SECRET_DOMAIN}
   logoutCallbackUrls:
-    - https://asf.${SECRET_DOMAIN_1}/
+    - https://asf.${SECRET_DOMAIN}/
   name: ArchiSteamFarm
   pkceEnabled: false
   secret:

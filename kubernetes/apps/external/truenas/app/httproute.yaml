@@ -6,7 +6,7 @@ metadata:
   name: truenas
 spec:
   hostnames:
-    - nas.${SECRET_DOMAIN_1}
+    - nas.${SECRET_DOMAIN}
   parentRefs:
     - name: envoy-internal
       namespace: network

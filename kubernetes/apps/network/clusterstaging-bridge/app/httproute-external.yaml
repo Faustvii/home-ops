@@ -13,8 +13,8 @@ metadata:
     k8s-gateway.dns/ignore: "true"
 spec:
   hostnames:
-    - "${SECRET_DOMAIN_1}"
-    - "*.${SECRET_DOMAIN_1}"
+    - "${SECRET_DOMAIN}"
+    - "*.${SECRET_DOMAIN}"
   parentRefs:
     - name: envoy-external
       namespace: network

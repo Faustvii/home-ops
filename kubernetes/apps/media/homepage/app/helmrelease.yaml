@@ -29,7 +29,7 @@ spec:
               repository: ghcr.io/gethomepage/homepage
               tag: v2.6.0@sha256:3e38fe788223cb46a3ce1f046ef11667b40f7707fdca0dcbfa3f86c5c42bf1e8
             env:
-              HOMEPAGE_ALLOWED_HOSTS: home.${SECRET_DOMAIN_1}
+              HOMEPAGE_ALLOWED_HOSTS: home.${SECRET_DOMAIN}
               PORT: &port 3000
               TZ: UTC
             envFrom:
@@ -45,7 +45,7 @@ spec:
                   httpGet:
                     httpHeaders:
                       - name: Host
-                        value: home.${SECRET_DOMAIN_1}
+                        value: home.${SECRET_DOMAIN}
                     path: /api/healthcheck
                     port: *port
                   initialDelaySeconds: 0
@@ -76,7 +76,7 @@ spec:
     route:
       app:
         hostnames:
-          - home.${SECRET_DOMAIN_1}
+          - home.${SECRET_DOMAIN}
         parentRefs:
           - name: envoy-internal
             namespace: network

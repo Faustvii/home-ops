@@ -63,7 +63,7 @@ spec:
             readOnly: true
     route:
       app:
-        hostnames: ["kromgo.${SECRET_DOMAIN_1}"]
+        hostnames: ["kromgo.${SECRET_DOMAIN}"]
         parentRefs:
           - name: envoy-external
             namespace: network

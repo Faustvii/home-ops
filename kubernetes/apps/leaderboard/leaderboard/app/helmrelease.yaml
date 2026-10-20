@@ -42,7 +42,7 @@ spec:
               tag: latest@sha256:6f30c04601910be84ea2f772a1b3530b2db0d2ff42460e8b909f8f42c948d95b
             env:
               DATABASE_CONNECTION_TYPE: local-replica
-              HOST_URL: https://leaderboard.${SECRET_DOMAIN_1}
+              HOST_URL: https://leaderboard.${SECRET_DOMAIN}
               LOG_LEVEL: info
               NODE_ENV: production
               TZ: ${TZ}
@@ -104,7 +104,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN_1}"
+          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
         parentRefs:
           - name: envoy-external
             namespace: network

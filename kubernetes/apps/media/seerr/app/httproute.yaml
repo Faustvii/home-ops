@@ -9,7 +9,7 @@ metadata:
 spec:
   hostnames:
     - seerr.${SECRET_DOMAIN}
-    - anime.${SECRET_DOMAIN_1}
+    - anime.${SECRET_DOMAIN}
   parentRefs:
     - name: envoy-external
       namespace: network
@@ -35,7 +35,7 @@ metadata:
 spec:
   hostnames:
     - seerr.${SECRET_DOMAIN}
-    - anime.${SECRET_DOMAIN_1}
+    - anime.${SECRET_DOMAIN}
   parentRefs:
     - name: envoy-external
       namespace: network

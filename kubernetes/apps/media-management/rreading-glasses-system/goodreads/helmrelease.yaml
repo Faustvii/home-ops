@@ -91,7 +91,7 @@ spec:
     route:
       app:
         hostnames:
-          - rggr.${SECRET_DOMAIN_1}
+          - rggr.${SECRET_DOMAIN}
         parentRefs:
           - name: envoy-internal
             namespace: network

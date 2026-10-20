@@ -8,10 +8,10 @@ spec:
   allowedUserGroups:
     - name: homepage-users
   callbackUrls:
-    - https://home.${SECRET_DOMAIN_1}/oauth2/callback
-  launchUrl: https://home.${SECRET_DOMAIN_1}
+    - https://home.${SECRET_DOMAIN}/oauth2/callback
+  launchUrl: https://home.${SECRET_DOMAIN}
   logoutCallbackUrls:
-    - https://home.${SECRET_DOMAIN_1}/
+    - https://home.${SECRET_DOMAIN}/
   name: Homepage
   pkceEnabled: false
   secret:

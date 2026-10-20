@@ -16,7 +16,7 @@ spec:
     replicas: 2
 
     config:
-      webUrl: https://${APP}.${SECRET_DOMAIN}
+      webUrl: https://${APP}.${SECRET_DOMAIN_1}
       reviewWorkers: 1
       comments:
         dashboard: false
@@ -26,7 +26,7 @@ spec:
           password: { env: ADMIN_PASSWORD }
         oidc:
           name: Pocket ID
-          issuer: https://idm.${SECRET_DOMAIN_1}
+          issuer: https://idm.${SECRET_DOMAIN}
           clientId: ${APP}
           clientSecret: { env: OIDC_CLIENT_SECRET }
           scopes: [openid, email, profile, groups]
@@ -191,7 +191,7 @@ spec:
           namespace: network
           sectionName: https
       hostnames:
-        - ${APP}.${SECRET_DOMAIN}
+        - ${APP}.${SECRET_DOMAIN_1}
 
     networkPolicy:
       enabled: true

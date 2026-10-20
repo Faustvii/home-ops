@@ -6,7 +6,7 @@ metadata:
   name: pocket-id
 spec:
   analyticsDisabled: true
-  appUrl: https://idm.${SECRET_DOMAIN_1}
+  appUrl: https://idm.${SECRET_DOMAIN}
   databaseUrl:
     valueFrom:
       secretKeyRef:

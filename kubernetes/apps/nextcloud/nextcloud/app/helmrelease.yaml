@@ -44,7 +44,7 @@ spec:
         gatus.home-operations.com/endpoint: |-
           conditions: ["[STATUS] == 401"]
       hostnames:
-        - cloud.${SECRET_DOMAIN_1}
+        - cloud.${SECRET_DOMAIN}
       parentRefs:
         - name: envoy-external
           namespace: network
@@ -99,7 +99,7 @@ spec:
             secretKeyRef:
               name: nextcloud-secret
               key: phone-region
-      host: cloud.${SECRET_DOMAIN_1}
+      host: cloud.${SECRET_DOMAIN}
       podSecurityContext:
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch

@@ -8,10 +8,10 @@ spec:
   allowedUserGroups:
     - name: calibre-web-users
   callbackUrls:
-    - https://books.${SECRET_DOMAIN_1}/oauth2/callback
-  launchUrl: https://books.${SECRET_DOMAIN_1}
+    - https://books.${SECRET_DOMAIN}/oauth2/callback
+  launchUrl: https://books.${SECRET_DOMAIN}
   logoutCallbackUrls:
-    - https://books.${SECRET_DOMAIN_1}/
+    - https://books.${SECRET_DOMAIN}/
   name: Calibre-Web
   pkceEnabled: false
   secret:

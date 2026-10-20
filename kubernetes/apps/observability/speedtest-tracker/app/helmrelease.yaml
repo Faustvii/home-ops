@@ -25,8 +25,8 @@ spec:
               tag: 1.15.0@sha256:1eeed2307699c083407bd4c1eb86f14d5179f9e1cd960f57d4cbab6f1f8b8a42
             env:
               APP_NAME: Speedtest Tracker
-              APP_URL: https://speedtest.${SECRET_DOMAIN_1}
-              ASSET_URL: https://speedtest.${SECRET_DOMAIN_1}
+              APP_URL: https://speedtest.${SECRET_DOMAIN}
+              ASSET_URL: https://speedtest.${SECRET_DOMAIN}
               CACHE_DRIVER: redis
               DB_CONNECTION: pgsql
               DB_DATABASE:
@@ -102,7 +102,7 @@ spec:
         type: emptyDir
     route:
       app:
-        hostnames: ["speedtest.${SECRET_DOMAIN_1}"]
+        hostnames: ["speedtest.${SECRET_DOMAIN}"]
         parentRefs:
           - name: envoy-internal
             namespace: network

@@ -115,7 +115,7 @@ spec:
     route:
       app:
         hostnames:
-          - books.${SECRET_DOMAIN_1}
+          - books.${SECRET_DOMAIN}
         parentRefs:
           - name: envoy-external
             namespace: network
