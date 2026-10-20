@@ -33,6 +33,20 @@ spec:
               QUI__METRICS_ENABLED: "true"
               QUI__METRICS_HOST: "0.0.0.0"
               QUI__METRICS_PORT: &metrics_port 9000
+              QUI__OIDC_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: qui-oidc-credentials
+                    key: client-id
+              QUI__OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: qui-oidc-credentials
+                    key: client-secret
+              QUI__OIDC_DISABLE_BUILT_IN_LOGIN: "true"
+              QUI__OIDC_ENABLED: "true"
+              QUI__OIDC_ISSUER: https://idm.${SECRET_DOMAIN}
+              QUI__OIDC_REDIRECT_URL: https://qui.${SECRET_DOMAIN}/api/auth/oidc/callback
               QUI__PORT: &port 80
               QUI__TRACKER_ICONS_FETCH_ENABLED: false
               TZ: America/New_York
