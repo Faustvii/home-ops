@@ -23,7 +23,7 @@ spec:
         volumeSource:
           nfs:
             path: /mnt/standard/volsync/kopia
-            server: truenas.faust
+            server: ${NFS_SERVER_IP}
     parallelism: 2
     repository: ${APP}-volsync-secret
     retain:

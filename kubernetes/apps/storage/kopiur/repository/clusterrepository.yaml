@@ -13,7 +13,7 @@ spec:
       volume:
         nfs:
           path: /mnt/standard/volsync/kopiur
-          server: truenas.faust
+          server: ${NFS_SERVER_IP}
   create:
     enabled: true
   credentialProjection:

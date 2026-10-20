@@ -17,7 +17,7 @@ spec:
       - name: repo
         nfs:
           path: /mnt/standard/volsync/kopiur
-          server: truenas.faust
+          server: ${NFS_SERVER_IP}
 
     features:
       credentialProjection:

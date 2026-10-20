@@ -28,7 +28,7 @@ spec:
         volumeSource:
           nfs:
             path: /mnt/standard/volsync/kopia
-            server: truenas.faust
+            server: ${NFS_SERVER_IP}
     repository: ${APP}-volsync-secret
     sourceIdentity:
       sourceName: ${APP}
