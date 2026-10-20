@@ -35,6 +35,14 @@ spec:
               kind: StatefulSet
               name: minecraft
   values:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: home-ops/cpu-single
+                  operator: Gt
+                  values: ["3500"]
     deploymentAnnotations:
       configmap.reloader.stakater.com/reload: "minecraft-datapacks"
       secret.reloader.stakater.com/reload: &secret minecraft-secret

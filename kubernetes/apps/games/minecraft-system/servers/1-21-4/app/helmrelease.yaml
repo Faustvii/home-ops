@@ -21,6 +21,14 @@ spec:
               kind: StatefulSet
               name: minecraft-1-21-4
   values:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: home-ops/cpu-single
+                  operator: Gt
+                  values: ["3500"]
     extraEnv:
       ALLOW_FLIGHT: true
       ENABLE_ROLLING_LOGS: true

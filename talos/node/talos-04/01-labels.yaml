@@ -1,6 +1,10 @@
+# CPU labels are PassMark CPU Mark averages (cpubenchmark.net)
+# rounded down: multi to 1000, single to 100.
 apiVersion: v1alpha1
 kind: KubeNodeConfig
 labels:
+  home-ops/cpu-multi: "54000"
+  home-ops/cpu-single: "4100"
   topology.kubernetes.io/gpus: amd
   node-role.kubernetes.io/rocm-worker: "true"
 taints:

@@ -1,0 +1,7 @@
+# CPU labels are PassMark CPU Mark averages (cpubenchmark.net)
+# rounded down: multi to 1000, single to 100.
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+labels:
+  home-ops/cpu-multi: "32000"
+  home-ops/cpu-single: "2700"
