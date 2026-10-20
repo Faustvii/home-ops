@@ -13,6 +13,7 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
+    autoDiskfulAfter: 30m
     autoEvictAfter: 2h
     drbd:
       alExtents: 6007
