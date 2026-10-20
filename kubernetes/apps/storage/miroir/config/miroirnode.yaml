@@ -38,6 +38,9 @@ spec:
   pools:
     - lvmthin:
         device: /dev/disk/by-partlabel/r-miroir
+      name: replicated
+    - lvmthin:
+        device: /dev/disk/by-partlabel/r-miroir-local
       name: local
 
 ---
