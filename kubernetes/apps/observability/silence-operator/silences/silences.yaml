@@ -11,3 +11,18 @@ spec:
     - matchType: "=~"
       name: horizontalpodautoscaler
       value: keda-hpa-.*
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/observability.giantswarm.io/silence_v1alpha2.json
+# mc-router scales the Minecraft servers to 0 when nobody plays, which leaves
+# their PodMonitor scrape pools without targets.
+apiVersion: observability.giantswarm.io/v1alpha2
+kind: Silence
+metadata:
+  name: minecraft-scaled-to-zero
+spec:
+  matchers:
+    - name: alertname
+      value: ScrapePoolHasNoTargets
+    - matchType: "=~"
+      name: scrape_job
+      value: podScrape/games/minecraft.*
