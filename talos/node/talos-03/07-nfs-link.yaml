@@ -1,15 +1,20 @@
 # talos-03 is a VM on the TrueNAS host. This second vNIC is attached to the
 # hypervisor's br0 bridge, the same bridge that holds the TrueNAS address
 # (192.168.1.94). NFS to TrueNAS then stays inside the host instead of leaving
-# through the physical port, through pfSense and back in.
+# through the physical port.
 apiVersion: v1alpha1
 kind: LinkAliasConfig
 name: nfs0
 selector:
   match: glob("00:a0:98:3c:7a:4e", mac(link.hardware_addr))
 ---
+# Only TrueNAS goes this way: a /32 address and one host route, not the /24.
+# The rest of 192.168.1.0/24 goes through bond0 like on the other nodes.
 apiVersion: v1alpha1
-kind: DHCPv4Config
+kind: LinkConfig
 name: nfs0
-ignoreRoutes: true
-ignoreHostname: true
+addresses:
+  - address: 192.168.1.95/32
+routes:
+  - destination: 192.168.1.94/32
+    source: 192.168.1.95
