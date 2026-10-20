@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnodeconfig_v2.json
+# talos-03 reaches TrueNAS (192.168.1.94/32 only) directly over its br0 vNIC ens5.
+# Without ens5 as a Cilium device, pod traffic leaving that way is not
+# masqueraded and keeps its 10.42.x source, so pods on talos-03 cannot reach TrueNAS.
+apiVersion: cilium.io/v2
+kind: CiliumNodeConfig
+metadata:
+  name: talos-03-nfs-link
+  namespace: kube-system
+spec:
+  nodeSelector:
+    matchLabels:
+      kubernetes.io/hostname: talos-03
+  defaults:
+    devices: bond+ ens5
+    direct-routing-device: bond0
