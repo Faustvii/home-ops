@@ -12,7 +12,7 @@ spec:
       name: ${APP}-oidc-credentials
     logoutPath: ${OIDC_PROVIDER_LOGOUT_PATH:=/logout}
     provider:
-      issuer: https://idm.${SECRET_DOMAIN}
+      issuer: https://idm.${SECRET_DOMAIN_1}
     redirectURL: https://${APP}.${SECRET_DOMAIN}${OIDC_CALLBACK_PATH:=/oauth2/callback}
   targetRefs:
     - group: gateway.networking.k8s.io

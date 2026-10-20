@@ -12,7 +12,7 @@ spec:
       name: readarr-oidc-credentials
     logoutPath: /logout
     provider:
-      issuer: https://idm.${SECRET_DOMAIN}
+      issuer: https://idm.${SECRET_DOMAIN_1}
     redirectURL: https://readarr.${SECRET_DOMAIN_1}/oauth2/callback
   targetRefs:
     - group: gateway.networking.k8s.io
