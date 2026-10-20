@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: multus-reconciler
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: multus-reconciler
+  interval: 1h
+  values:
+    defaultPodOptions:
+      automountServiceAccountToken: true
+      securityContext:
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+
+    controllers:
+      multus-reconciler:
+        type: cronjob
+        cronjob:
+          concurrencyPolicy: Forbid
+          failedJobsHistory: 1
+          schedule: "*/5 * * * *"
+          successfulJobsHistory: 1
+        serviceAccount:
+          name: multus-reconciler
+        containers:
+          app:
+            image:
+              repository: docker.io/alpine/k8s
+              tag: 1.37.1@sha256:712dc5385d1c1a3f83b747fa9e40f64d433a97f72ff42f9755ff7dd1f62846e4
+            env:
+              HOME: /tmp
+            # A pod created before Multus was ready on its node (e.g. right
+            # after a reboot) runs with only the Cilium interface and never
+            # gets its secondary networks. Multus sets network-status when it
+            # attaches them, so a Running pod that asks for networks but has
+            # no network-status missed Multus. Delete it so it is recreated.
+            command:
+              - /bin/sh
+              - -c
+              - |
+                set -euo pipefail
+                kubectl get pods -A --field-selector=status.phase=Running -o json |
+                jq -r '.items[]
+                  | select(.metadata.annotations["k8s.v1.cni.cncf.io/networks"]
+                      and (.metadata.annotations["k8s.v1.cni.cncf.io/network-status"] | not))
+                  | "\(.metadata.namespace) \(.metadata.name)"' |
+                while read -r ns name; do
+                  echo "deleting ${ns}/${name}: no Multus network-status"
+                  kubectl delete pod -n "${ns}" "${name}" --wait=false
+                done
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+              readOnlyRootFilesystem: true
+
+    persistence:
+      tmp:
+        type: emptyDir

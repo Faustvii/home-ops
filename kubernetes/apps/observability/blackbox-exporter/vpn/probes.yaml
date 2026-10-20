@@ -34,3 +34,24 @@ spec:
     staticConfig:
       static:
         - https://one.one.one.one
+---
+# Pods on the vpn network. A pod that started before Multus was ready on its
+# node has no net1, so its VPN IP stops answering.
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/probe_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: vpn-pods-icmp
+spec:
+  metricRelabelings:
+    - action: replace
+      replacement: blackbox-exporter-vpn
+      targetLabel: service
+  module: icmp
+  prober:
+    url: blackbox-exporter-vpn.observability.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static:
+        - 192.168.90.10 # qbittorrent
+        - 192.168.90.12 # qbooks
