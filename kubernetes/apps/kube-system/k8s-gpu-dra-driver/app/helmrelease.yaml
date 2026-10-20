@@ -13,6 +13,8 @@ spec:
     cdi:
       dynamicPath: /run/cdi
     kubeletPlugin:
+      nodeSelector:
+        topology.kubernetes.io/gpus: amd
       tolerations:
         - effect: NoSchedule
           key: llm-workload
