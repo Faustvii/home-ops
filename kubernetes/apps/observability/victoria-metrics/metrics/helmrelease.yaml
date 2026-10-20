@@ -66,6 +66,9 @@ spec:
       rules:
         "count:up0":
           enabled: false
+        # Replaced by node-memory-rules below (ZFS ARC aware)
+        NodeMemoryHighUtilization:
+          enabled: false
     extraRules:
       dockerhub-rules:
         groups:
@@ -77,6 +80,47 @@ spec:
                 expr: count(time() - container_last_seen{image=~"(docker.io).*",container!=""} < 30) > 100
                 labels:
                   severity: critical
+      # The default rule counts the ZFS ARC as used, so TrueNAS sits at ~96%.
+      # Count ARC above its minimum (zfs_arc_min) as available. Nodes without
+      # ZFS metrics get 0 added and keep the default calculation.
+      node-memory-rules:
+        groups:
+          - name: node-memory
+            rules:
+              - record: instance:node_memory_used_excluding_arc:percent
+                expr: |
+                  100 - (
+                    (
+                      sum by (instance, job) (node_memory_MemAvailable_bytes{job="node-exporter"})
+                      + (
+                        sum by (instance, job) (clamp_min(node_zfs_arc_size{job="node-exporter"} - node_zfs_arc_c_min{job="node-exporter"}, 0))
+                        or sum by (instance, job) (node_memory_MemTotal_bytes{job="node-exporter"}) * 0
+                      )
+                    )
+                    / sum by (instance, job) (node_memory_MemTotal_bytes{job="node-exporter"}) * 100
+                  )
+              - alert: NodeMemoryHighUtilization
+                annotations:
+                  description: |
+                    Memory is filling up at {{ $labels.instance }}, has been above 90% for the last 15 minutes, is currently at {{ printf "%.2f" $value }}%.
+                  runbook_url: https://runbooks.prometheus-operator.dev/runbooks/node/nodememoryhighutilization
+                  summary: Host is running out of memory.
+                expr: instance:node_memory_used_excluding_arc:percent{instance!="192.168.10.13:9100"} > 90
+                for: 15m
+                labels:
+                  severity: warning
+              # talos-04 (192.168.10.13) runs at ~91% by design: the LLM models
+              # hold their memory. Alert only when the last ~3.7 GiB are in use.
+              - alert: NodeMemoryHighUtilization
+                annotations:
+                  description: |
+                    Memory is filling up at {{ $labels.instance }}, has been above 97% for the last 15 minutes, is currently at {{ printf "%.2f" $value }}%.
+                  runbook_url: https://runbooks.prometheus-operator.dev/runbooks/node/nodememoryhighutilization
+                  summary: Host is running out of memory.
+                expr: instance:node_memory_used_excluding_arc:percent{instance="192.168.10.13:9100"} > 97
+                for: 15m
+                labels:
+                  severity: warning
       oom-rules:
         groups:
           - name: oom
