@@ -1,7 +1,0 @@
-# Tools for kritika's reviews of this repository; lock with
-# `mise -C .kritika lock --platform linux-x64,linux-arm64`.
-[tools]
-"github:Faustvii/agent-tools" = { version = "v1.1.0", filter_bins = ["konflate"] }
-
-[env]
-KONFLATE_HIDE_URL = "true"
