@@ -34,7 +34,7 @@ spec:
                 value: --requeue-dependency=5s
             target:
               kind: Deployment
-              name: (kustomize-controller|helm-controller|source-controller)
+              name: (helm-controller|source-controller)
           - # Increase the memory limits
             patch: |
               apiVersion: apps/v1
@@ -57,12 +57,32 @@ spec:
               - op: add
                 path: /spec/template/spec/containers/0/args/-
                 value: --concurrent=20
+              - op: add
+                path: /spec/template/spec/containers/0/args/-
+                value: --requeue-dependency=5s
               - op: replace
                 path: /spec/template/spec/volumes/0
                 value:
                   name: temp
                   emptyDir:
                     medium: Memory
+            target:
+              kind: Deployment
+              name: kustomize-controller
+          - # Raise the CPU limit: 20 parallel builds with SOPS decryption burst past 1 CPU
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: kustomize-controller
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: manager
+                        resources:
+                          limits:
+                            cpu: "2"
             target:
               kind: Deployment
               name: kustomize-controller
@@ -77,6 +97,14 @@ spec:
               - op: add
                 path: /spec/template/spec/containers/0/args/-
                 value: --helm-cache-purge-interval=5m
+            target:
+              kind: Deployment
+              name: source-controller
+          - # Cache Secrets and ConfigMaps
+            patch: |
+              - op: add
+                path: /spec/template/spec/containers/0/args/-
+                value: --feature-gates=CacheSecretsAndConfigMaps=true
             target:
               kind: Deployment
               name: source-controller
