@@ -9,10 +9,10 @@ spec:
     - name: ${APP}-admins
     - name: ${APP}-users
   callbackUrls:
-    - https://${APP}.${SECRET_DOMAIN}/auth/callback/oidc
+    - https://${APP}.${SECRET_DOMAIN_1}/auth/callback/oidc
   # Fixed so the HelmRelease can set it inline (auth.oidc.clientId).
   clientID: ${APP}
-  launchUrl: https://${APP}.${SECRET_DOMAIN}
+  launchUrl: https://${APP}.${SECRET_DOMAIN_1}
   name: Kritika
   pkceEnabled: true
   secret:
