@@ -2,6 +2,11 @@
 # yaml-language-server: $schema=https://kritika.home-operations.com/kritika.schema.json
 # SOPS files are ciphertext: noise in the index and search.
 ignore: ["**/?*.sops.*"]
+tools:
+  # renovate: datasource=github-releases depName=Faustvii/agent-tools
+  "github:Faustvii/agent-tools":
+    version: "1.1.0"
+    filter_bins: konflate
 rules:
   # Started from onedr0p/home-ops' renovate rule. Ordered steps with an end:
   # the open-ended version had the agent read upstream source file by file,

@@ -175,6 +175,8 @@ spec:
               env:
                 - name: KONFLATE_URL
                   value: https://konflate.${SECRET_DOMAIN}
+                - name: KONFLATE_HIDE_URL
+                  value: "true"
 
     database:
       owner:
