@@ -42,6 +42,7 @@ spec:
               PASEO_RELAY_ENABLED: "true"
               PASEO_LOG_FILE_LEVEL: info
               GIT_CONFIG_GLOBAL: /etc/paseo/.gitconfig
+              LITELLM_API_KEY: "not_set"
             envFrom:
               - secretRef:
                   name: *app
@@ -112,6 +113,8 @@ spec:
                   path: paseo.json
                 - key: gitconfig
                   path: .gitconfig
+                - key: opencode.json
+                  path: opencode.json
         advancedMounts:
           paseo:
             app:
