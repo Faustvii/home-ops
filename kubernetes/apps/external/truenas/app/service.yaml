@@ -6,8 +6,10 @@ metadata:
   name: truenas-external-service
 spec:
   ports:
-    - name: http
-      port: 81
+    # TrueNAS WebSocket upgrades require HTTP/1.1 on the TLS upstream.
+    - name: https
+      appProtocol: kubernetes.io/wss
+      port: 444
       protocol: TCP
-      targetPort: 81
+      targetPort: 444
   type: ClusterIP

@@ -12,6 +12,6 @@ endpoints:
     conditions:
       ready: true
 ports:
-  - name: http
-    port: 81
+  - name: https
+    port: 444
     protocol: TCP

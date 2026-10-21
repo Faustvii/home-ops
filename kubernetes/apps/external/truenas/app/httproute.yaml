@@ -13,4 +13,4 @@ spec:
   rules:
     - backendRefs:
         - name: truenas-external-service
-          port: 81
+          port: 444

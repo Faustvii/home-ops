@@ -1,0 +1,31 @@
+---
+# Public self-signed TrueNAS certificate, explicitly trusted by Envoy.
+# Replace this bundle when the TrueNAS UI certificate is renewed or regenerated.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: truenas-upstream-ca
+data:
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIDrTCCApWgAwIBAgIECNcFvDANBgkqhkiG9w0BAQsFADCBgDELMAkGA1UEBhMC
+    VVMxEjAQBgNVBAoMCWlYc3lzdGVtczESMBAGA1UEAwwJbG9jYWxob3N0MSEwHwYJ
+    KoZIhvcNAQkBFhJpbmZvQGl4c3lzdGVtcy5jb20xEjAQBgNVBAgMCVRlbm5lc3Nl
+    ZTESMBAGA1UEBwwJTWFyeXZpbGxlMB4XDTI2MTAxODE5MDQ1OVoXDTI3MTExOTE5
+    MDQ1OVowgYAxCzAJBgNVBAYTAlVTMRIwEAYDVQQKDAlpWHN5c3RlbXMxEjAQBgNV
+    BAMMCWxvY2FsaG9zdDEhMB8GCSqGSIb3DQEJARYSaW5mb0BpeHN5c3RlbXMuY29t
+    MRIwEAYDVQQIDAlUZW5uZXNzZWUxEjAQBgNVBAcMCU1hcnl2aWxsZTCCASIwDQYJ
+    KoZIhvcNAQEBBQADggEPADCCAQoCggEBAILeZDhPG4yKaFXkeiKj/Ub8ob1AnK2E
+    ZoEiFObuVZycRl/MjiwVwKmn543qaOQzyFaXPVGY91I/eaHIaFivbAXpIXZEiSUU
+    YgSbbbeILz5Q0dFaAPnQ/OyNO2PuB36VNkxz9oTqLwMiv7o+VCiub2jFPcplPkHo
+    kJZae4Pscysg+vstnOnfcPbWv/g/jLuGJuaqrRC8KpBW1CgMgT21OAZbQ8nAloVg
+    SX+BGREOVQYujfIwZg7Nxeh3p8kq7dC7GWeiNh/EpmDzKM5Kx3moLuLO23J+SjwI
+    B2wI8mw7rf7Irys3XbpX3NnXU2ak4YiibUl3TI8t3ojsYhjDeBcRcmUCAwEAAaMt
+    MCswFAYDVR0RBA0wC4IJbG9jYWxob3N0MBMGA1UdJQQMMAoGCCsGAQUFBwMBMA0G
+    CSqGSIb3DQEBCwUAA4IBAQAEtbZ3fxkpky/2xLFTN7NYoCoaEaGGIoQeyS6Mmp/5
+    CLVKbQJxRa9PyCH8tkn0h65ZzDe0FOaC+WDj1rnj0wkMKTeY0nlQJYSnNGWVUMzE
+    Ic06vwmWIRsEDWrkq1ZzhMDjre8luGltHE1hxfLROANHv0sadHYENcJNrrJRPIPQ
+    iER+0JvgELH2GOlRnA/veUgK/vlwsBn+Y2H6r0SOl5KVOGMGdLhU42+JzMhgvfZ5
+    I0YVuWS9QOn0yvjvRo2GIZoOskkwlUWdOOSyx5MmS3x479YxWR/3/xWbXY3tQTeQ
+    vY66Lyh9AoZVnqgr674MRqyfnC8B8G3/ntWsA6yyaic8
+    -----END CERTIFICATE-----
