@@ -8,7 +8,6 @@ metadata:
     gatus.home-operations.com/enabled: "false"
 spec:
   hostnames:
-    - seerr.${SECRET_DOMAIN}
     - anime.${SECRET_DOMAIN}
   parentRefs:
     - name: envoy-external
@@ -34,7 +33,6 @@ metadata:
     gatus.home-operations.com/enabled: "false"
 spec:
   hostnames:
-    - seerr.${SECRET_DOMAIN}
     - anime.${SECRET_DOMAIN}
   parentRefs:
     - name: envoy-external
