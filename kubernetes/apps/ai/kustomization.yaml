@@ -10,3 +10,4 @@ resources:
   - ./llmkube/ks.yaml
   - ./modelrouter/ks.yaml
   - ./searxng/ks.yaml
+  - ./paseo/ks.yaml
