@@ -6,11 +6,18 @@ metadata:
   name: &app paseo
   namespace: &namespace ai
 spec:
+  components:
+    - ../../../../components/kopiur
+  dependsOn:
+    - name: kopiur
+      namespace: storage
   interval: 1h
   path: ./kubernetes/apps/ai/paseo/app
   postBuild:
     substitute:
       APP: *app
+      KOPIUR_CAPACITY: 15Gi
+      NAMESPACE: *namespace
     substituteFrom:
       - kind: Secret
         name: cluster-secrets
