@@ -11,6 +11,16 @@ spec:
   interval: 1h
   values:
     defaultPodOptions:
+      # macvlan cannot work on talos-03 (see talos/node/talos-03/06-vpn-link.yaml)
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values:
+                      - talos-03
       automountServiceAccountToken: false
       annotations:
         k8s.v1.cni.cncf.io/networks: |-
