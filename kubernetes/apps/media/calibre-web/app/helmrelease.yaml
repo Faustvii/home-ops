@@ -24,7 +24,7 @@ spec:
           configure-trusted-proxies:
             image: &image
               repository: oci.trueforge.org/containerforge/calibre-web
-              tag: 0.6.27@sha256:de470a91dd0bbef215fdc43ddf746d671a259e245944347fc62672ce41f8e023
+              tag: 0.6.27@sha256:081669c9ee8e3d8a435a9ba74f59dbad245febada05e55ebb0cf12c3aaadbc0c
             args:
               - |
                 import os
