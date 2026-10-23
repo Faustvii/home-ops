@@ -4,13 +4,9 @@ kind: HelmRelease
 metadata:
   name: &app infisical
 spec:
-  chart:
-    spec:
-      chart: infisical-standalone
-      sourceRef:
-        kind: HelmRepository
-        name: infisical
-      version: 1.11.1
+  chartRef:
+    kind: OCIRepository
+    name: infisical
   install:
     remediation:
       retries: 3
