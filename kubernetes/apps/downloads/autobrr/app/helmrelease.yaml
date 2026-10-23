@@ -19,6 +19,8 @@ spec:
         runAsUser: 1000
     controllers:
       *app :
+        annotations:
+          reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
@@ -27,6 +29,20 @@ spec:
             env:
               AUTOBRR__CHECK_FOR_UPDATES: "false"
               AUTOBRR__HOST: 0.0.0.0
+              AUTOBRR__OIDC_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: autobrr-oidc-credentials
+                    key: client-id
+              AUTOBRR__OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: autobrr-oidc-credentials
+                    key: client-secret
+              AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN: "true"
+              AUTOBRR__OIDC_ENABLED: "true"
+              AUTOBRR__OIDC_ISSUER: https://idm.${SECRET_DOMAIN}
+              AUTOBRR__OIDC_REDIRECT_URL: https://autobrr.${SECRET_DOMAIN}/api/auth/oidc/callback
               AUTOBRR__PORT: &port 7474
               TZ: UTC
             probes:
