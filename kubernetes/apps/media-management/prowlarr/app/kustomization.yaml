@@ -15,3 +15,4 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
+  - ./pocketidusergroup.yaml

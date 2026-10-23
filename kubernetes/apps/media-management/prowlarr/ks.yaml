@@ -9,15 +9,22 @@ spec:
   components:
     - ../../../../components/kopiur
     - ../../../../components/dashbrr
+    - ../../../../components/oidc/envoy
   dependsOn:
     - name: kopiur
       namespace: storage
+    - name: pocket-id
+      namespace: security
   interval: 1h
   path: ./kubernetes/apps/media-management/prowlarr/app
   postBuild:
     substitute:
       APP: *app
       NAMESPACE: *namespace
+      OIDC_APP_NAME: Prowlarr
+      OIDC_CALLBACK_PATH: /oauth2/callback
+      OIDC_LOGOUT_CALLBACK_PATH: /
+      OIDC_PROVIDER_LOGOUT_PATH: /logout
     substituteFrom:
       - kind: Secret
         name: cluster-secrets
