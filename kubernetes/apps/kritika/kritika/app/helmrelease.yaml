@@ -66,6 +66,22 @@ spec:
         similarFloor: 0.7
       review:
         model: modelrouter/self-qwen3.8-flash-next
+        approve: true
+        # low matched medium on every important finding in 300 eval runs,
+        # with fewer steps and failed calls.
+        effort: low
+      confidence:
+        model: plan/~sol-latest
+        threshold: 4
+        # Instance ceiling; each repository's .kritika.yaml sets its own cap:
+        # containers critical, agent-tools high, home-ops and bookarr medium.
+        # Set a repository cap before enabling additional repositories.
+        risk: critical
+      agent:
+        # Default is 20m; the review runner's deadline stretches to fit.
+        timeout: 45m
+        # Qwen finds the same issues with fewer steps.
+        steps: 24
       limits:
         concurrency: 2
       trigger:
@@ -77,70 +93,6 @@ spec:
           # egress proxy requires an explicit allow for private addresses.
           - 192.168.10.23
         deny: ["*.internal"]
-      # Per-repository rules and ignores live in each repo's .kritika.yaml;
-      # agent may only be set here.
-      repositories:
-        Faustvii/*:
-          review:
-            approve: true
-            # low matched medium on every important finding in the eval of 300 runs across 10 different cases,
-            # with fewer steps and failed calls.
-            effort: low
-          confidence:
-            model: plan/~sol-latest
-            threshold: 4
-            risk: medium
-          agent:
-            # Default is 20m; the review runner's deadline stretches to fit.
-            timeout: 45m
-            # Qwen likes to use all the steps available. Lowering it seems to have no impact on findings.
-            steps: 24
-        # Image build files and CI workflows only, which the scorer always rates
-        # high or critical risk, so the score alone decides; Renovate keeps
-        # majors out of auto-merge.
-        Faustvii/containers:
-          confidence:
-            model: plan/~sol-latest
-            threshold: 4
-            risk: critical
-          agent:
-            timeout: 45m
-            steps: 24
-        # Go tools; the scorer rates a toolchain bump high even with no
-        # findings, so high passes on the score. Critical still stops.
-        Faustvii/agent-tools:
-          confidence:
-            model: plan/~sol-latest
-            threshold: 4
-            risk: high
-          agent:
-            timeout: 45m
-            steps: 24
-        # Here rather than in .kritika.yaml to keep the domain out of the repo;
-        # rules add up by id with the repo's own.
-        Faustvii/home-ops:
-          rules:
-            - id: konflate
-              paths: ["kubernetes/**"]
-              rule: >-
-                konflate renders this pull request's Flux manifests with flate
-                at the head and at the merge base and diffs the result, so it
-                shows what the change does to the cluster that the git diff
-                hides. Before anything else, run `konflate <number>` with this
-                pull request's number. It prints plain text, ready to
-                read: konflate's summary (blast radius, cautions, image changes,
-                render failures), a unified diff of every changed resource, and
-                each CRD's schema changes as added, removed and changed paths.
-                Where it cuts something for size it prints the exact command
-                that fetches it. If it says the pull request is not tracked or
-                still rendering, go on without it. Its output is what Flux will
-                apply: use it to judge what the change really does and to catch
-                a rendered change the diff or description does not explain. It
-                is complete, so do not search the repository or the registry
-                for rendered effects it does not list. When the summary says
-                Routine, the change is only the version bump shown. Do not
-                repeat its summary, which konflate already posts on the pull
-                request.
 
     envFrom:
       - secretRef:
