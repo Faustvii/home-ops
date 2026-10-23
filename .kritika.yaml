@@ -7,7 +7,30 @@ tools:
   "github:Faustvii/agent-tools":
     version: "1.1.0"
     filter_bins: konflate
+confidence:
+  risk: medium
 rules:
+  - id: konflate
+    paths: ["kubernetes/**"]
+    rule: >-
+      konflate renders this pull request's Flux manifests with flate
+      at the head and at the merge base and diffs the result, so it
+      shows what the change does to the cluster that the git diff
+      hides. Before anything else, run `konflate <number>` with this
+      pull request's number. It prints plain text, ready to
+      read: konflate's summary (blast radius, cautions, image changes,
+      render failures), a unified diff of every changed resource, and
+      each CRD's schema changes as added, removed and changed paths.
+      Where it cuts something for size it prints the exact command
+      that fetches it. If it says the pull request is not tracked or
+      still rendering, go on without it. Its output is what Flux will
+      apply: use it to judge what the change really does and to catch
+      a rendered change the diff or description does not explain. It
+      is complete, so do not search the repository or the registry
+      for rendered effects it does not list. When the summary says
+      Routine, the change is only the version bump shown. Do not
+      repeat its summary, which konflate already posts on the pull
+      request.
   # Started from onedr0p/home-ops' renovate rule. Ordered steps with an end:
   # the open-ended version had the agent read upstream source file by file,
   # and it burned steps on base64 file contents and huge listings. The second
