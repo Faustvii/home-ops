@@ -12,3 +12,8 @@ spec:
   values:
     instance:
       enabled: false
+    operator:
+      image:
+        repository: ghcr.io/aclerici38/pocket-id-operator
+        tag: pr-726
+        pullPolicy: IfNotPresent
