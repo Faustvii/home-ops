@@ -1,0 +1,43 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/renovate-operator.mogenius.com/renovatejob_v1alpha1.json
+apiVersion: renovate-operator.mogenius.com/v1alpha1
+kind: RenovateJob
+metadata:
+  name: renovate-warden
+spec:
+  extraEnv:
+    - name: LOG_LEVEL
+      value: debug
+    - name: RENOVATE_ONBOARDING_CONFIG
+      value: |
+        {
+          "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+          "extends": [
+            'config:recommended'
+          ]
+        }
+    - name: RENOVATE_ALLOWED_COMMANDS
+      value: '["^install-tool mise \\d+\\.\\d+\\.\\d+$", "^mise (trust --quiet \\.mise/config\\.toml|lock|install --locked|run regenerate)$"]'
+    - name: RENOVATE_ALLOWED_UNSAFE_EXECUTIONS
+      value: '["mise"]'
+    - name: RENOVATE_REDIS_URL
+      value: "redis://dragonfly.database.svc.cluster.local:6379/2"
+  image: ghcr.io/renovatebot/renovate:44.181.0@sha256:1a06e15f2d8bc08342828ec43c0a90de0ac9192900f513af90e77765e0991b6d
+  parallelism: 10
+  provider:
+    name: github
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  schedule: "17,47 * * * *"
+  secretRef: renovate-secret
+  discoveryFilters:
+    - "Faustvii/warden"
+  webhook:
+    authentication:
+      enabled: true
+      secretRef:
+        key: token
+        name: renovate-webhook-token
+    enabled: true
