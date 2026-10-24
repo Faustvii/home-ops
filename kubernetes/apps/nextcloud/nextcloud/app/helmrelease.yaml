@@ -57,7 +57,6 @@ spec:
             request: 0s
     image:
       flavor: fpm-alpine
-      tag: 33.0.3-fpm-alpine@sha256:f2f6f40258e613d58db1c746293e382311165feaac293b5e2e8c9d278cea165d
     internalDatabase:
       enabled: false
     nextcloud:
@@ -110,8 +109,7 @@ spec:
     nginx:
       enabled: true
       image:
-        repository: docker.io/library/nginx
-        tag: 1.31-alpine@sha256:a3554c0d0b48177b1413c26e01f695334428020d9df01243fbae3e11cfd17417
+        repository: mirror.gcr.io/library/nginx
     persistence:
       enabled: true
       existingClaim: nextcloud
