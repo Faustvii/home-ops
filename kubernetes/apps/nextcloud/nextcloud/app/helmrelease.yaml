@@ -59,7 +59,7 @@ spec:
       registry: mirror.gcr.io
       repository: library/nextcloud
       flavor: fpm-alpine
-      tag: 34.0.5-fpm-alpine@sha256:a71718394b5269b532f00f9fc7eb930c90f04355ba998240eccaa3aafad86497
+      tag: 35.0.2-fpm-alpine@sha256:ee5b5612f24984941cdfaeeccb073e048370fd1e44104719149820eae3e28419
     internalDatabase:
       enabled: false
     nextcloud:
