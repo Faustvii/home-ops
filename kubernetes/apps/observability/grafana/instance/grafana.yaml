@@ -17,6 +17,19 @@ spec:
       disable_login_form: "false"
     auth.anonymous:
       enabled: "true"
+    auth.generic_oauth:
+      enabled: "true"
+      allow_sign_up: "true"
+      api_url: https://idm.${SECRET_DOMAIN}/api/oidc/userinfo
+      auth_url: https://idm.${SECRET_DOMAIN}/authorize
+      auto_login: "false"
+      login_attribute_path: sub
+      name: Pocket ID
+      role_attribute_path: "contains(groups[*], 'grafana-admin-users') && 'Admin' || 'Viewer'"
+      scopes: openid profile email groups
+      token_url: https://idm.${SECRET_DOMAIN}/api/oidc/token
+      use_pkce: "true"
+      use_refresh_token: "true"
     log:
       mode: console
     metrics:
@@ -38,6 +51,17 @@ spec:
         spec:
           containers:
             - name: grafana
+              env:
+                - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      key: client-id
+                      name: grafana-oidc-credentials
+                - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      key: client-secret
+                      name: grafana-oidc-credentials
               securityContext:
                 allowPrivilegeEscalation: false
                 capabilities: { drop: ["ALL"] }

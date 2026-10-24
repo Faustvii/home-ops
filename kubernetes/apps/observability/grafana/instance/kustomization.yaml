@@ -6,4 +6,6 @@ resources:
   - ./grafanadatasource.yaml
   - ./grafana.yaml
   - ./httproute.yaml
+  - ./pocketidoidcclient.yaml
+  - ./pocketidusergroup.yaml
   - ./servicemonitor.yaml
