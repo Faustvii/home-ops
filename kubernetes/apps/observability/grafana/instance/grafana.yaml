@@ -14,7 +14,7 @@ spec:
       feedback_links_enabled: "false"
       reporting_enabled: "false"
     auth:
-      disable_login_form: "false"
+      disable_login_form: "true"
     auth.anonymous:
       enabled: "true"
     auth.generic_oauth:
@@ -24,7 +24,7 @@ spec:
       auth_url: https://idm.${SECRET_DOMAIN}/authorize
       auto_login: "false"
       login_attribute_path: sub
-      name: Pocket ID
+      name: Faust ID
       role_attribute_path: "contains(groups[*], 'grafana-admin-users') && 'Admin' || 'Viewer'"
       scopes: openid profile email groups
       token_url: https://idm.${SECRET_DOMAIN}/api/oidc/token
