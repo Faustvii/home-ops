@@ -1,0 +1,128 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: pocket-id-operator-api
+spec:
+  allowCrossNamespaceImport: true
+  folder: security
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  json: |-
+    {
+      "uid": "pocket-id-operator-api",
+      "title": "Pocket ID Operator API Requests",
+      "description": "Compare status PATCH requests before and after the pr-726 deployment on 2026-10-24 at 09:58 UTC (11:58 Europe/Copenhagen). The fixed baseline is 09:55 UTC that day. PATCH requests do not necessarily cause etcd writes.",
+      "tags": ["pocket-id", "kubernetes", "operators"],
+      "timezone": "browser",
+      "schemaVersion": 39,
+      "version": 1,
+      "editable": true,
+      "refresh": "30s",
+      "time": {"from": "now-6h", "to": "now"},
+      "panels": [
+        {
+          "id": 1,
+          "title": "Status PATCH requests per minute",
+          "description": "Solid lines show the five-minute average. Dashed lines show the fixed pre-deployment baseline at 2026-10-24 09:55 UTC. The deployment completed at 09:58:42 UTC. Allow five minutes for old requests to leave the rate window. Occasional requests are expected when status changes. The baseline requires retained metrics from that date.",
+          "type": "timeseries",
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "gridPos": {"h": 12, "w": 24, "x": 0, "y": 0},
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqpm",
+              "min": 0,
+              "decimals": 1,
+              "custom": {"drawStyle": "line", "lineWidth": 2, "fillOpacity": 0, "spanNulls": false}
+            },
+            "overrides": [
+              {
+                "matcher": {"id": "byRegexp", "options": "^Baseline:.*"},
+                "properties": [
+                  {"id": "custom.lineStyle", "value": {"fill": "dash", "dash": [6, 6]}},
+                  {"id": "custom.lineWidth", "value": 1}
+                ]
+              }
+            ]
+          },
+          "options": {
+            "legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]},
+            "tooltip": {"mode": "multi", "sort": "desc"}
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "60 * sum by (resource) (rate(apiserver_request_total{group=\"pocketid.internal\",verb=\"PATCH\",subresource=\"status\"}[5m]))",
+              "legendFormat": "Current: {{resource}}",
+              "range": true
+            },
+            {
+              "refId": "B",
+              "expr": "60 * sum by (resource) (rate(apiserver_request_total{group=\"pocketid.internal\",verb=\"PATCH\",subresource=\"status\"}[5m] @ 1792835700))",
+              "legendFormat": "Baseline: {{resource}}",
+              "range": true
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "Status PATCH requests in the last 10 minutes",
+          "description": "Rolling ten-minute request counts by resource. Use this panel to check whether routine status PATCH requests remain near zero after deployment. Gaps mean no samples; they do not confirm zero requests.",
+          "type": "timeseries",
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "gridPos": {"h": 10, "w": 12, "x": 0, "y": 12},
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "min": 0,
+              "decimals": 0,
+              "custom": {"drawStyle": "line", "lineWidth": 2, "fillOpacity": 0, "spanNulls": false}
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]},
+            "tooltip": {"mode": "multi", "sort": "desc"}
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by (resource) (increase(apiserver_request_total{group=\"pocketid.internal\",verb=\"PATCH\",subresource=\"status\"}[10m]))",
+              "legendFormat": "{{resource}}",
+              "range": true
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "title": "Failed PATCH requests in the last 10 minutes",
+          "description": "Rolling ten-minute counts of non-2xx PATCH responses for Pocket ID resources, including status and other subresources. Expect zero, or no series if no errors were recorded. No series alone does not confirm that monitoring is healthy.",
+          "type": "timeseries",
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "gridPos": {"h": 10, "w": 12, "x": 12, "y": 12},
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "min": 0,
+              "decimals": 0,
+              "custom": {"drawStyle": "line", "lineWidth": 2, "fillOpacity": 0, "spanNulls": false}
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]},
+            "tooltip": {"mode": "multi", "sort": "desc"}
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by (resource, code) (increase(apiserver_request_total{group=\"pocketid.internal\",verb=\"PATCH\",code!~\"2..\"}[10m]))",
+              "legendFormat": "{{resource}} HTTP {{code}}",
+              "range": true
+            }
+          ]
+        }
+      ]
+    }
