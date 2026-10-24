@@ -31,6 +31,8 @@ spec:
                   matchLabels:
                     runner: *name
                 topologyKey: kubernetes.io/hostname
+        # Docker builds and tests do not need Kubernetes API credentials.
+        automountServiceAccountToken: false
         containers:
           - command:
               - /home/runner/run.sh
@@ -39,4 +41,3 @@ spec:
         securityContext:
           fsGroup: 1001
           fsGroupChangePolicy: OnRootMismatch
-        serviceAccountName: *name

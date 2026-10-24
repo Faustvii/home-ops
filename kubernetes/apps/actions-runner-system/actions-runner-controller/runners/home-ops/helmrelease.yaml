@@ -10,15 +10,6 @@ spec:
     name: home-ops-runner
   interval: 1h
   values:
-    containerMode:
-      kubernetesModeWorkVolumeClaim:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 10Gi
-        storageClassName: miroir-local
-      type: kubernetes
     controllerServiceAccount:
       name: actions-runner-controller
       namespace: actions-runner-system
@@ -38,15 +29,13 @@ spec:
                   matchLabels:
                     runner: *name
                 topologyKey: kubernetes.io/hostname
+        # Plain jobs do not need Kubernetes API credentials.
+        automountServiceAccountToken: false
         containers:
           - command:
               - /home/runner/run.sh
-            env:
-              - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
-                value: "false"
             image: ghcr.io/home-operations/actions-runner:2.338.1@sha256:9011bec82009308072bb8677229181791f96bada721df8a91108290ad4a3fdc5
             name: runner
         securityContext:
           fsGroup: 1001
           fsGroupChangePolicy: OnRootMismatch
-        serviceAccountName: *name
