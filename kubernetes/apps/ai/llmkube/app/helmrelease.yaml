@@ -40,8 +40,8 @@ spec:
       secretCreatePolicy:
         enabled: false
     modelCache:
-      accessMode: ReadWriteOnce
       enabled: true
+      mode: perService
       size: 100Gi
       storageClass: miroir-replicated
     namespace: ai
