@@ -28,7 +28,7 @@ spec:
     requests:
       cpu: 100m
       memory: 128Mi
-  schedule: "*/30 * * * *"
+  schedule: "17,47 * * * *"
   secretRef: renovate-secret
   webhook:
     authentication:
