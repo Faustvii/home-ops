@@ -75,12 +75,14 @@ spec:
           # Keep Renovate on local Qwen, including user-authored bot branches.
           - name: human
             model: plan/~sol-latest
+            fallback: modelrouter/self-qwen3.8-flash-next
             effort: high
             when:
               - name: human-pr
                 expr: '!pr.bot && !pr.headRef.startsWith("renovate/")'
       confidence:
         model: plan/~sol-latest
+        fallback: modelrouter/self-qwen3.8-flash-next
         threshold: 4
         # Instance ceiling; each repository's .kritika.yaml sets its own cap:
         # containers critical, agent-tools high, home-ops and bookarr medium.
