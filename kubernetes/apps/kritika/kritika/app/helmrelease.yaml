@@ -70,6 +70,15 @@ spec:
         # low matched medium on every important finding in 300 eval runs,
         # with fewer steps and failed calls.
         effort: low
+        agents:
+          # No categories: replace the default pass for human PRs.
+          # Keep Renovate on local Qwen, including user-authored bot branches.
+          - name: human
+            model: plan/~sol-latest
+            effort: high
+            when:
+              - name: human-pr
+                expr: '!pr.bot && !pr.headRef.startsWith("renovate/")'
       confidence:
         model: plan/~sol-latest
         threshold: 4
@@ -85,7 +94,11 @@ spec:
       limits:
         concurrency: 2
       trigger:
-        exclude: [{ name: forks, expr: pr.fork }]
+        exclude:
+          - { name: forks, expr: pr.fork }
+          # Release Please PRs collect already-reviewed changes.
+          - name: release-please
+            expr: 'pr.labels.exists(l, l.name == "autorelease: pending")'
       egress:
         allow:
           - "*"
