@@ -22,6 +22,10 @@ spec:
             k8s:io.kubernetes.pod.namespace: kritika
             app.kubernetes.io/name: kritika
             app.kubernetes.io/instance: kritika
+        # kguardian's LLM Bridge sends AI requests directly to ModelRouter.
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kguardian
+            app.kubernetes.io/name: kguardian-llm-bridge
         # envoy-internal data-plane proxies, so the ingress/HTTPRoute
         # path (modelrouter.${SECRET_DOMAIN}) keeps working
         - matchLabels:

@@ -33,6 +33,10 @@ spec:
 
     ai:
       enabled: true
+      provider: openai
+      secret: *app
+      model: self-qwen3.8-flash-next
+      baseUrl: http://modelrouter-router-proxy.ai.svc.cluster.local:8080/v1
       mcp:
         enabled: true
         auth:
@@ -41,3 +45,7 @@ spec:
 
     seccomp:
       distribute: false
+
+    frontend:
+      allowedHosts:
+        - kguardian.${SECRET_DOMAIN}
