@@ -80,14 +80,14 @@ spec:
             when:
               - name: human-pr
                 expr: '!pr.bot && !pr.headRef.startsWith("renovate/")'
-      confidence:
-        model: plan/~sol-latest
-        fallback: modelrouter/self-qwen3.8-flash-next
-        threshold: 4
-        # Instance ceiling; each repository's .kritika.yaml sets its own cap:
-        # containers critical, agent-tools high, home-ops and bookarr medium.
-        # Set a repository cap before enabling additional repositories.
-        risk: critical
+      # confidence:
+      #   model: plan/~sol-latest
+      #   fallback: modelrouter/self-qwen3.8-flash-next
+      #   threshold: 4
+      #   # Instance ceiling; each repository's .kritika.yaml sets its own cap:
+      #   # containers critical, agent-tools high, home-ops and bookarr medium.
+      #   # Set a repository cap before enabling additional repositories.
+      #   risk: critical
       agent:
         # Default is 20m; the review runner's deadline stretches to fit.
         timeout: 45m
