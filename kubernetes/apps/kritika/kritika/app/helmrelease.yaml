@@ -76,7 +76,7 @@ spec:
           - name: human
             model: plan/~sol-latest
             fallback: modelrouter/self-qwen3.8-flash-next
-            effort: high
+            effort: medium
             when:
               - name: human-pr
                 expr: '!pr.bot && !pr.headRef.startsWith("renovate/")'
