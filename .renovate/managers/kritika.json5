@@ -6,10 +6,9 @@
       description: "Track kritika repository tools in .kritika.yaml",
       managerFilePatterns: ["/^\\.kritika\\.yaml$/"],
       matchStrings: [
-        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?: versioning=(?<versioning>\\S+))?\\n\\s*\"?[^\"\\n]+\"?:[ \\t]*(?:\\{[ \\t]*)?(?:\\n\\s+version:[ \\t]*)?\"?(?<currentValue>[^\"\\s,}]+)\"?",
+        '# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?: versioning=(?<versioning>\\S+))?\\n\\s*"?[^"\\n]+"?:[ \\t]*(?:\\{[ \\t]*)?(?:\\n\\s+version:[ \\t]*)?"?(?<currentValue>[^"\\s,}]+)"?',
       ],
       versioningTemplate: "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}",
-      extractVersionTemplate: "^v?(?<version>.+)$",
     },
   ],
 }
