@@ -16,6 +16,8 @@ spec:
     replicas: 2
 
     config:
+      # This registry supplies konflate for repository reviews.
+      aquaRegistryUrl: https://raw.githubusercontent.com/Faustvii/agent-tools/main/registry.yaml
       webUrl: https://${APP}.${SECRET_DOMAIN_1}
       reviewWorkers: 1
       comments:
