@@ -38,7 +38,7 @@ spec:
         containers:
           - command:
               - /home/runner/run.sh
-            image: ghcr.io/faustvii/containers/action-runner:1.0.0@sha256:bb5967eb79e0131670dfa951262a9089efeed67ddd5bc020129471ee034d2824
+            image: ghcr.io/faustvii/containers/actions-runner:1.0.0@sha256:bb5967eb79e0131670dfa951262a9089efeed67ddd5bc020129471ee034d2824
             name: runner
         securityContext:
           fsGroup: 1001
