@@ -18,7 +18,7 @@ spec:
     githubConfigSecret: warden-runner-secret
     githubConfigUrl: https://github.com/Faustvii/warden
     maxRunners: 10
-    minRunners: 0
+    minRunners: 1
     template:
       metadata:
         labels:
@@ -38,7 +38,7 @@ spec:
         containers:
           - command:
               - /home/runner/run.sh
-            image: ghcr.io/home-operations/actions-runner:2.338.1@sha256:9011bec82009308072bb8677229181791f96bada721df8a91108290ad4a3fdc5
+            image: ghcr.io/faustvii/containers/action-runner:1.0.0@sha256:bb5967eb79e0131670dfa951262a9089efeed67ddd5bc020129471ee034d2824
             name: runner
         securityContext:
           fsGroup: 1001
