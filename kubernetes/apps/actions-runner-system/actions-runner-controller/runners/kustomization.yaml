@@ -6,3 +6,4 @@ resources:
   - ./home-ops
   - ./bookarr
   - ./review
+  - ./warden
