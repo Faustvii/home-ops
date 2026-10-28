@@ -125,12 +125,12 @@ spec:
           - backendRefs:
               - identifier: app
                 port: *port
-            filters:
-              - requestHeaderModifier:
-                  set:
-                    - name: X-authentik-username
-                      value: firefaust
-                type: RequestHeaderModifier
+            # filters:
+            #   - requestHeaderModifier:
+            #       set:
+            #         - name: X-authentik-username
+            #           value: firefaust
+            #     type: RequestHeaderModifier
     service:
       app:
         ports:
