@@ -9,6 +9,8 @@ spec:
     - name: test-users
   callbackUrls:
     - https://localhost:7133/oauth2/callback
+    - http://localhost:5202/signin-oidc
+    - http://localhost:5201/signin-oidc
   launchUrl: https://localhost:7133
   logoutCallbackUrls:
     - https://localhost:7133/logout
