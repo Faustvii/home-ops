@@ -14,6 +14,6 @@ spec:
       sectionName: https
   rules:
     - backendRefs:
-        - name: minecraft-bluemap
+        - name: main
           namespace: games
           port: 8100

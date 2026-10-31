@@ -1,0 +1,131 @@
+---
+# yaml-language-server: $schema=https://schemas.web.garage.faust.space/warden.faustvii.github.io/minecraftserver_v1alpha1.json
+apiVersion: warden.faustvii.github.io/v1alpha1
+kind: MinecraftServer
+metadata:
+  name: main
+spec:
+  acceptEula: true
+  admin:
+    rconPasswordSecretRef:
+      name: minecraft-secret
+      key: RCON_PASSWORD
+  autoScale:
+    down: false
+  datapacks:
+    urls:
+      - https://github.com/Faustvii/minds_packs/releases/download/v0.0.3-mc1.21.11/MindsAdvancements_v0.0.3_mc_1.21.11_dp.zip
+      - https://github.com/Faustvii/minds_packs/releases/download/v0.0.3-mc1.21.11/MindsDeepcutting_v0.0.3_mc_1.21.11_dp.zip
+      - https://github.com/Faustvii/minds_packs/releases/download/v0.0.3-mc1.21.11/MindsGhasts_v0.0.3_mc_1.21.11_dp.zip
+      - https://github.com/Faustvii/minds_packs/releases/download/v0.0.3-mc1.21.11/MindsMemories_v0.0.3_mc_1.21.11_dp.zip
+      - https://github.com/henkelmax/hermitcraft-server/raw/d7a1a940dcd14cdda91a6c92e533d7de07cee689/overrides/datapacks/ModelApplierV4.zip
+  env:
+    - name: ENABLE_ROLLING_LOGS
+      value: 'true'
+    - name: GENERATE_LOG4J2_CONFIG
+      value: 'true'
+    - name: GID
+      value: '1000'
+    - name: HIDE_ONLINE_PLAYERS
+      value: 'true'
+    - name: RESOURCE_PACK
+      value: https://github.com/Faustvii/minds_packs/releases/download/v0.0.2-mc1.21.11/MindsResources_v0.0.2_mc_1.21.11_rp.zip
+    - name: RESOURCE_PACK_ENFORCE
+      value: 'true'
+    - name: RESOURCE_PACK_SHA1
+      value: d25b960c398c9ad111de8c42316b6f6bb48f9d05
+    - name: TZ
+      value: Europe/Paris
+    - name: UID
+      value: '1000'
+    - name: USE_AIKAR_FLAGS
+      value: 'true'
+    - name: VANILLATWEAKS_SHARECODE
+      value: JV0FV7,FF8soj
+  extraPorts:
+    - name: bluemap
+      port: 8100
+  hostnames:
+    - mc.${SECRET_DOMAIN}
+    - minecraft.${SECRET_DOMAIN}
+  image: ghcr.io/itzg/minecraft-server:2026.10.1-java25@sha256:d12aed7e35981dfe259b60fbfee77d23a19b5898a7a31dca298d18b47b7b5776
+  maxHeap: 8Gi
+  mods:
+    modrinth:
+      dependencies: Required
+      versionType: Alpha
+      projects:
+        - bluemap
+        - armor-poser
+        - audioplayer
+        - fabric-api
+        - chunky
+        - spark
+        - simple-voice-chat
+        - servux:0.9.6
+        - vmp-fabric
+        - c2me-fabric
+        - scalablelux
+        - ferrite-core
+        - lithium
+        - servercore
+        - carpet:JV4Dlp7j
+  ops:
+    names:
+      - liope
+  properties:
+    difficulty: Hard
+    motd: Let's goo
+    pvp: true
+    maxPlayers: 24
+    viewDistance: 16
+    levelName: Wonderland
+    levelSeed:
+      value: '5143877906783391683'
+  resources:
+    limits:
+      memory: 10Gi
+    requests:
+      cpu: 1000m
+      memory: 4Gi
+  restart:
+    schedule: 15 3 * * *
+    timeZone: Europe/Copenhagen
+  scheduling:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: home-ops/cpu-single
+                  operator: Gt
+                  values:
+                    - '3500'
+  storage:
+    existingClaim: minecraft
+  type: Fabric
+  version: 1.21.11
+  voiceChat:
+    enabled: true
+  whitelist:
+    names:
+      - liope
+      - OliverWHennings
+      - roflbobl
+      - FranzVDB
+      - lil_havfrue
+      - AndyBeTrollin
+      - inebuni
+      - Djonn
+      - Noerlem
+      - Svend_Bueskytte
+      - v1z3s
+      - dkcom
+      - FoshuMG
+      - Shazbotz
+      - Simmetopia
+      - Alveel
+      - DerRune
+      - HueN77
+      - EHasseltoft
+      - Sanctidus

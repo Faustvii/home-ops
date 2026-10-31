@@ -1,0 +1,106 @@
+---
+# yaml-language-server: $schema=https://schemas.web.garage.faust.space/warden.faustvii.github.io/minecraftserver_v1alpha1.json
+apiVersion: warden.faustvii.github.io/v1alpha1
+kind: MinecraftServer
+metadata:
+  name: mindscraft-1-21-4
+spec:
+  acceptEula: true
+  admin:
+    rconPasswordSecretRef:
+      name: minecraft-secret
+      key: RCON_PASSWORD
+  env:
+    - name: ALLOW_FLIGHT
+      value: 'true'
+    - name: ENABLE_ROLLING_LOGS
+      value: 'true'
+    - name: GENERATE_LOG4J2_CONFIG
+      value: 'true'
+    - name: GID
+      value: '1000'
+    - name: HIDE_ONLINE_PLAYERS
+      value: 'true'
+    - name: SPAWN_PROTECTION
+      value: '0'
+    - name: TZ
+      value: Europe/Paris
+    - name: UID
+      value: '1000'
+    - name: USE_AIKAR_FLAGS
+      value: 'true'
+  hostnames:
+    - 1-21-4.mc.${SECRET_DOMAIN}
+  image: ghcr.io/itzg/minecraft-server:2026.10.1-java21@sha256:07ab333a8542208c4c863a78fd3cf3fd1138d5a2e118306e1a316d202f69ab74
+  maxHeap: 4Gi
+  mods:
+    modrinth:
+      dependencies: Required
+      versionType: Alpha
+      projects:
+        - armor-poser
+        - async
+        - audioplayer
+        - c2me-fabric
+        - carpet
+        - chunky
+        - collective
+        - fabric-api
+        - ferrite-core
+        - krypton
+        - lithium
+        - noisium
+        - scaffolding-drops-nearby
+        - scalablelux
+        - servercore
+        - servux
+        - simple-voice-chat
+        - spark
+        - vmp-fabric
+  ops:
+    names:
+      - liope
+  properties:
+    difficulty: Hard
+    motd: MindsCraft
+    pvp: true
+    maxPlayers: 24
+    viewDistance: 10
+    levelName: world
+    levelSeed:
+      value: '-7207479545471200141'
+    simulationDistance: 10
+  resources:
+    limits:
+      memory: 6Gi
+    requests:
+      cpu: 1000m
+      memory: 1Gi
+  scheduling:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: home-ops/cpu-single
+                  operator: Gt
+                  values:
+                    - '3500'
+  storage:
+    existingClaim: minecraft-1-21-4
+  type: Fabric
+  version: 1.21.4
+  voiceChat:
+    enabled: true
+  whitelist:
+    names:
+      - Liope
+      - inebuni
+      - AndyBeTrollin
+      - roflbobl
+      - Noerlem
+      - OliverWHennings
+      - lil_havfrue
+      - Svend_Bueskytte
+      - Djonn
+      - FranzVDB

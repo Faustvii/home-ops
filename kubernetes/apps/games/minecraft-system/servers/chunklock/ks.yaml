@@ -11,7 +11,8 @@ spec:
   dependsOn:
     - name: kopiur
       namespace: storage
-    - name: minecraft
+    - name: warden
+      namespace: games
   interval: 1h
   path: ./kubernetes/apps/games/minecraft-system/servers/chunklock/app
   postBuild:

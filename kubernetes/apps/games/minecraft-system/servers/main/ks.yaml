@@ -8,6 +8,11 @@ metadata:
 spec:
   components:
     - ../../../../../../components/kopiur
+  dependsOn:
+    - name: kopiur
+      namespace: storage
+    - name: warden
+      namespace: games
   interval: 1h
   path: ./kubernetes/apps/games/minecraft-system/servers/main/app
   postBuild:

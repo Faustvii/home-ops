@@ -1,0 +1,95 @@
+---
+# yaml-language-server: $schema=https://schemas.web.garage.faust.space/warden.faustvii.github.io/minecraftserver_v1alpha1.json
+apiVersion: warden.faustvii.github.io/v1alpha1
+kind: MinecraftServer
+metadata:
+  name: chunklock
+spec:
+  acceptEula: true
+  admin:
+    rconPasswordSecretRef:
+      name: minecraft-secret
+      key: RCON_PASSWORD
+  datapacks:
+    urls:
+      - https://cdn.modrinth.com/data/Z5JdfNas/versions/jhE0yXs7/chunklock_2.1.0.zip?mr_download_reason=standalone
+  env:
+    - name: ENABLE_ROLLING_LOGS
+      value: 'true'
+    - name: GENERATE_LOG4J2_CONFIG
+      value: 'true'
+    - name: GID
+      value: '1000'
+    - name: HIDE_ONLINE_PLAYERS
+      value: 'true'
+    - name: TZ
+      value: Europe/Paris
+    - name: UID
+      value: '1000'
+    - name: USE_AIKAR_FLAGS
+      value: 'true'
+    - name: VANILLATWEAKS_SHARECODE
+      value: JV0FV7,FF8soj
+  hostnames:
+    - chunklock.mc.${SECRET_DOMAIN}
+    - chunk.${SECRET_DOMAIN}
+  image: ghcr.io/itzg/minecraft-server:2026.10.1-java25@sha256:d12aed7e35981dfe259b60fbfee77d23a19b5898a7a31dca298d18b47b7b5776
+  maxHeap: 6Gi
+  mods:
+    modrinth:
+      dependencies: Required
+      versionType: Alpha
+      projects:
+        - armor-poser
+        - audioplayer
+        - fabric-api
+        - chunky
+        - spark
+        - simple-voice-chat
+        - servux:0.9.6
+        - vmp-fabric
+        - c2me-fabric
+        - scalablelux
+        - ferrite-core
+        - lithium
+        - servercore
+        - jade
+    urls:
+      - https://github.com/gnembon/fabric-carpet/releases/download/1.4.193/fabric-carpet-1.21.11-1.4.193+v251211.jar
+  ops:
+    names:
+      - liope
+  properties:
+    difficulty: Hard
+    motd: Testing 1..2..3
+    pvp: true
+    maxPlayers: 24
+    viewDistance: 16
+    levelName: Chunklock
+  resources:
+    limits:
+      memory: 8Gi
+    requests:
+      cpu: 1000m
+      memory: 1Gi
+  scheduling:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: home-ops/cpu-single
+                  operator: Gt
+                  values:
+                    - '3500'
+  storage:
+    existingClaim: minecraft-chunklock
+  type: Fabric
+  version: 1.21.11
+  voiceChat:
+    enabled: true
+  whitelist:
+    names:
+      - liope
+      - djonn
+      - inebuni
