@@ -26,7 +26,7 @@ spec:
     names: ["Liope"]
   properties:
     difficulty: Hard
-    motd: "From the Fog (Warden test)"
+    motd: "From the Fog (Spooooky)"
   resources:
     limits:
       memory: 8Gi
