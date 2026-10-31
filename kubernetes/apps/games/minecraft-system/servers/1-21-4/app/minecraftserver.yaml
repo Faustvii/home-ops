@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=https://schemas.web.garage.faust.space/warden.faustvii.github.io/minecraftserver_v1alpha1.json
 apiVersion: warden.faustvii.github.io/v1alpha1
 kind: MinecraftServer
 metadata:
@@ -32,7 +31,6 @@ spec:
   hostnames:
     - 1-21-4.mc.${SECRET_DOMAIN}
   image: ghcr.io/itzg/minecraft-server:2026.10.1-java21@sha256:07ab333a8542208c4c863a78fd3cf3fd1138d5a2e118306e1a316d202f69ab74
-  maxHeap: 4Gi
   mods:
     modrinth:
       dependencies: Required
@@ -72,7 +70,7 @@ spec:
     simulationDistance: 10
   resources:
     limits:
-      memory: 6Gi
+      memory: 4Gi
     requests:
       cpu: 1000m
       memory: 1Gi

@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=https://schemas.web.garage.faust.space/warden.faustvii.github.io/minecraftserver_v1alpha1.json
 apiVersion: warden.faustvii.github.io/v1alpha1
 kind: MinecraftServer
 metadata:
@@ -34,7 +33,6 @@ spec:
     - chunklock.mc.${SECRET_DOMAIN}
     - chunk.${SECRET_DOMAIN}
   image: ghcr.io/itzg/minecraft-server:2026.10.1-java25@sha256:d12aed7e35981dfe259b60fbfee77d23a19b5898a7a31dca298d18b47b7b5776
-  maxHeap: 6Gi
   mods:
     modrinth:
       dependencies: Required
@@ -68,7 +66,7 @@ spec:
     levelName: Chunklock
   resources:
     limits:
-      memory: 8Gi
+      memory: 4Gi
     requests:
       cpu: 1000m
       memory: 1Gi
