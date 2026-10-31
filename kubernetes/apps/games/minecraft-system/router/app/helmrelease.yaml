@@ -37,7 +37,7 @@ spec:
             image:
               pullPolicy: IfNotPresent
               repository: ghcr.io/itzg/mc-router
-              tag: 1.50.1@sha256:bef025ca5123871598761a678701f706fcef3b7ee6721fc5e308a23f3b832d19
+              tag: 1.51.0@sha256:0ffc4f772863b6b09a5bcbe3f86538ef8723f267f27bb474169b363c47da6127
             env:
               API_BINDING: ":8081"
               AUTO_SCALE_ASLEEP_MOTD: "Server is sleeping. Connect to wake it up, then give it a few minutes to start."
