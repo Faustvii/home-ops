@@ -1,0 +1,15 @@
+---
+apiVersion: warden.faustvii.github.io/v1alpha1
+kind: MinecraftRouter
+metadata:
+  name: warden
+spec:
+  default: true
+  # a connection to the IP has no known hostname, so it goes to fog
+  fallbackServerRef:
+    name: fog
+  service:
+    annotations:
+      # k8s-gateway only: cloudflare-dns reads DNSEndpoints, so the name stays on the LAN
+      external-dns.kubernetes.io/hostname: fog.mc.${SECRET_DOMAIN}
+      lbipam.cilium.io/ips: 192.168.10.32

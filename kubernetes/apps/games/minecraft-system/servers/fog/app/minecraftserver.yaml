@@ -1,0 +1,56 @@
+---
+apiVersion: warden.faustvii.github.io/v1alpha1
+kind: MinecraftServer
+metadata:
+  name: fog
+spec:
+  acceptEula: true
+  env:
+    # with the default malloc, this modpack was OOMKilled at 6Gi
+    - name: MALLOC_ARENA_MAX
+      value: "2"
+  hostnames:
+    - fog.mc.${SECRET_DOMAIN}
+  modpack:
+    curseforge:
+      # From the Fog Reimagined v6.4.1
+      fileId: 9355455
+      slug: from-the-fog-reimagined
+  ops:
+    names: ["Liope"]
+  properties:
+    difficulty: Hard
+    motd: "From the Fog (Warden test)"
+  resources:
+    limits:
+      memory: 8Gi
+    requests:
+      cpu: 1000m
+      memory: 8Gi
+  scheduling:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: home-ops/cpu-single
+                  operator: Gt
+                  values: ["3500"]
+  storage:
+    size: 20Gi
+  type: Forge
+  version: "1.20.1"
+  whitelist:
+    names:
+      [
+        "Liope",
+        "inebuni",
+        "AndyBeTrollin",
+        "roflbobl",
+        "Noerlem",
+        "OliverWHennings",
+        "lil_havfrue",
+        "Svend_Bueskytte",
+        "Djonn",
+        "FranzVDB",
+      ]
