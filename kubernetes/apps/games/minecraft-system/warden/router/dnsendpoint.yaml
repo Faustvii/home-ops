@@ -12,3 +12,9 @@ spec:
           value: "false"
       recordType: CNAME
       targets: ["ddns.${SECRET_DOMAIN}"]
+    - dnsName: "*.mc.${SECRET_DOMAIN}"
+      providerSpecific:
+        - name: external-dns.kubernetes.io/cloudflare-proxied
+          value: "false"
+      recordType: CNAME
+      targets: ["ddns.${SECRET_DOMAIN}"]
