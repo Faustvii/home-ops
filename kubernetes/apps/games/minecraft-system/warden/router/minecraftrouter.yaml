@@ -6,7 +6,7 @@ metadata:
   name: warden
 spec:
   voiceChat:
-    port: 24454
+    enabled: true
   default: true
   # a connection to the IP has no known hostname, so it goes to fog
   fallbackServerRef:
