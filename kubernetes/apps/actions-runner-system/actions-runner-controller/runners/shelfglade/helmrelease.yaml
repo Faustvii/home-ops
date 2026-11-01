@@ -1,0 +1,45 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &name shelfglade-runner
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: shelfglade-runner
+  interval: 1h
+  values:
+    containerMode:
+      type: dind
+    controllerServiceAccount:
+      name: actions-runner-controller
+      namespace: actions-runner-system
+    githubConfigSecret: shelfglade-runner-secret
+    githubConfigUrl: https://github.com/Faustvii/shelfglade
+    maxRunners: 10
+    minRunners: 1
+    template:
+      metadata:
+        labels:
+          runner: *name
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - podAffinityTerm:
+                  labelSelector:
+                    matchLabels:
+                      runner: *name
+                  topologyKey: kubernetes.io/hostname
+                weight: 100
+        # Docker builds and tests do not need Kubernetes API credentials.
+        automountServiceAccountToken: false
+        containers:
+          - command:
+              - /home/runner/run.sh
+            image: ghcr.io/faustvii/containers/actions-runner:1.0.0@sha256:bb5967eb79e0131670dfa951262a9089efeed67ddd5bc020129471ee034d2824
+            name: runner
+        securityContext:
+          fsGroup: 1001
+          fsGroupChangePolicy: OnRootMismatch
