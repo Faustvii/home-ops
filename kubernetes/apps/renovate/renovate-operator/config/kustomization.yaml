@@ -5,5 +5,5 @@ kind: Kustomization
 resources:
   - ./renovatejob.yaml
   - ./renovatejob-bookarr.yaml
-  - ./renovatejob-warden.yaml
+  - ./renovatejob-go.yaml
   - ./externalsecret.yaml

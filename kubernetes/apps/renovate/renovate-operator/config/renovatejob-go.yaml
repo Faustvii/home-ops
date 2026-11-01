@@ -3,7 +3,7 @@
 apiVersion: renovate-operator.mogenius.com/v1alpha1
 kind: RenovateJob
 metadata:
-  name: renovate-warden
+  name: renovate-go
 spec:
   extraEnv:
     - name: LOG_LEVEL
@@ -34,6 +34,7 @@ spec:
   secretRef: renovate-secret
   discoveryFilters:
     - "Faustvii/warden"
+    - "Faustvii/shelfglade"
   webhook:
     authentication:
       enabled: true

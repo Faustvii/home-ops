@@ -31,6 +31,7 @@ spec:
   discoveryFilters:
     - "!Faustvii/bookarr"
     - "!Faustvii/warden"
+    - "!Faustvii/shelfglade"
   webhook:
     authentication:
       enabled: true
