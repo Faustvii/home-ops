@@ -8,6 +8,8 @@ spec:
     enabled: true
   acceptEula: true
   env:
+    - name: ALLOW_FLIGHT
+      value: "true"
     # with the default malloc, this modpack was OOMKilled at 6Gi
     - name: MALLOC_ARENA_MAX
       value: "2"
