@@ -1,5 +1,8 @@
 customization:
   extraKernelArgs:
+    - amd_iommu=on # PCI Passthrough
+    - amd_pstate=active # AMD P-State Driver
+    - iommu=pt # PCI Passthrough
     - pcie_aspm=off # Disable PCIe ASPM
     - talos.dashboard.disabled=1 # Disable Talos Dashboard
   systemExtensions:
