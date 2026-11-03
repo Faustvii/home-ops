@@ -15,19 +15,3 @@ spec:
   passwordSecret:
     name: kritika-postgres-app
   superuser: false
----
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/databaserole_v1.json
-apiVersion: postgresql.cnpg.io/v1
-kind: DatabaseRole
-metadata:
-  name: kritika-runner
-spec:
-  cluster:
-    name: kritika-postgres
-  comment: "kritika runner role"
-  databaseRoleReclaimPolicy: retain
-  login: true
-  name: kritika_runner
-  passwordSecret:
-    name: kritika-postgres-runner
-  superuser: false
