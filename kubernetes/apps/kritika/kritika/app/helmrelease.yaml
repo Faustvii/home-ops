@@ -152,8 +152,6 @@ spec:
         existingSecret: kritika-postgres-credentials
       app:
         existingSecret: kritika-postgres-app
-      runner:
-        existingSecret: kritika-postgres-runner
 
     httpRoute:
       enabled: true
