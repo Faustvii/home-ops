@@ -10,7 +10,7 @@ spec:
   hostnames:
     - anime.${SECRET_DOMAIN}
   parentRefs:
-    - name: envoy-external
+    - name: envoy-internal
       namespace: network
   rules:
     - filters:
@@ -35,7 +35,7 @@ spec:
   hostnames:
     - anime.${SECRET_DOMAIN}
   parentRefs:
-    - name: envoy-external
+    - name: envoy-internal
       namespace: network
   rules:
     - backendRefs:
