@@ -21,8 +21,8 @@ spec:
         - chunky
   modpack:
     curseforge:
-      # From the Fog Reimagined v6.4.1
-      fileId: 9355455
+      # From the Fog Reimagined v6.4.4
+      fileId: 9399188
       slug: from-the-fog-reimagined
   ops:
     names: ["Liope"]
