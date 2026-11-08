@@ -50,7 +50,12 @@ spec:
                     name: shelfglade-oidc-credentials
               SHELFGLADE_OIDC_ISSUER: https://idm.${SECRET_DOMAIN}
               SHELFGLADE_PUBLIC_URL: https://shelfglade.${SECRET_DOMAIN}
-              SHELFGLADE_SOURCE_ROOTS: /books
+              SHELFGLADE_SECRET_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    key: SHELFGLADE_SECRET_KEY
+                    name: shelfglade-secret
+              SHELFGLADE_SOURCE_ROOTS: /books/books
             probes:
               liveness:
                 enabled: true
