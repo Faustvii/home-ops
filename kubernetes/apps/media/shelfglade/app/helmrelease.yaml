@@ -1,0 +1,119 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app shelfglade
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  interval: 30m
+  values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 65532
+        runAsNonRoot: true
+        runAsUser: 65532
+    controllers:
+      shelfglade:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/faustvii/shelfglade
+              tag: 0.0.1@sha256:c9b29d94745e1caedfa6c67eb328d324513e3bc242c893e395ba40a4ec2b9936
+            env:
+              SHELFGLADE_DATABASE_OWNER_URL:
+                valueFrom:
+                  secretKeyRef:
+                    key: uri
+                    name: shelfglade-postgres
+              SHELFGLADE_DATABASE_URL:
+                valueFrom:
+                  secretKeyRef:
+                    key: uri
+                    name: shelfglade-postgres-app
+              SHELFGLADE_OIDC_ADMIN_GROUPS: shelfglade-admins
+              SHELFGLADE_OIDC_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    key: client-id
+                    name: shelfglade-oidc-credentials
+              SHELFGLADE_OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    key: client-secret
+                    name: shelfglade-oidc-credentials
+              SHELFGLADE_OIDC_ISSUER: https://idm.${SECRET_DOMAIN}
+              SHELFGLADE_PUBLIC_URL: https://shelfglade.${SECRET_DOMAIN}
+              SHELFGLADE_SOURCE_ROOTS: /books
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: &port 8080
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /readyz
+                    port: *port
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 60
+                  httpGet:
+                    path: /healthz
+                    port: *port
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: [ALL]
+              readOnlyRootFilesystem: true
+    persistence:
+      books:
+        existingClaim: media-books-nfs-pvc
+        globalMounts:
+          - path: /books
+            readOnly: true
+      cache:
+        type: emptyDir
+        globalMounts:
+          - path: /cache
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port

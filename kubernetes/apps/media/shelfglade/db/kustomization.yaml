@@ -1,0 +1,20 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../../components/database/postgres/base/db
+  - ./databaserole.yaml
+patches:
+  - target:
+      kind: Database
+    patch: |-
+      - op: add
+        path: /spec/extensions
+        value:
+          - name: vector
+            ensure: present
+          - name: pg_trgm
+            ensure: present
+          - name: unaccent
+            ensure: present

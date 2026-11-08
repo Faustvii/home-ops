@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: ${APP}-app
+spec:
+  cluster:
+    name: ${APP}-postgres
+  comment: "${APP} application role"
+  # Retain so a running ${APP} keeps its connections if this is deleted.
+  databaseRoleReclaimPolicy: retain
+  login: true
+  name: ${APP}_app
+  passwordSecret:
+    name: ${APP}-postgres-app
+  superuser: false

@@ -20,4 +20,5 @@ resources:
   - ./ombi/ks.yaml
   - ./dashbrr/ks.yaml
   - ./seerr/ks.yaml
+  - ./shelfglade/ks.yaml
   - ./homepage/ks.yaml
