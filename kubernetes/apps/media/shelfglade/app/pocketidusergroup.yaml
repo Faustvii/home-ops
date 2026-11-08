@@ -22,3 +22,5 @@ spec:
     userRefs:
       - name: faust
         namespace: security
+      - name: shazbot
+        namespace: security
