@@ -82,7 +82,7 @@ spec:
       repository:
         type: nfs
         path: /mnt/standard/volsync/kopia
-        server: ${NFS_SERVER_IP:=192.168.1.94}
+        server: ${NFS_SERVER_IP:=192.168.10.5}
         globalMounts:
           - path: /repository
       tmpfs:

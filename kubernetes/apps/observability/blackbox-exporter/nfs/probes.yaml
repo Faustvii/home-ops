@@ -15,4 +15,4 @@ spec:
   targets:
     staticConfig:
       static:
-        - truenas.faust:2049
+        - ${NFS_SERVER_IP}:2049
