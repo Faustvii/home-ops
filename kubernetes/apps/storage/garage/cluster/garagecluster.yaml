@@ -37,7 +37,7 @@ spec:
   # Nodes are auto-discovered via Admin API
   remoteClusters:
     - connection:
-        adminApiEndpoint: "http://truenas.faust:30190"
+        adminApiEndpoint: "http://192.168.10.5:30190"
       name: garage-eu
       zone: eu-west-2
 
