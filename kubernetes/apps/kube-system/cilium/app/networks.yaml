@@ -19,6 +19,11 @@ spec:
   # Only the bond: talos-03 also has ens5 (TrueNAS link) as a Cilium device.
   interfaces:
     - ^bond[0-9]+$
+  # Not talos-03: it is a macvtap VM on TrueNAS, and TrueNAS cannot reach an
+  # IP that talos-03 announces on VLAN 10 (for example the Garage RPC LB IPs).
   nodeSelector:
-    matchLabels:
-      kubernetes.io/os: linux
+    matchExpressions:
+      - key: kubernetes.io/hostname
+        operator: NotIn
+        values:
+          - talos-03
