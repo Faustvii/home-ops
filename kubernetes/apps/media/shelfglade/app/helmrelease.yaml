@@ -25,7 +25,7 @@ spec:
           app:
             image:
               repository: ghcr.io/faustvii/shelfglade
-              tag: 0.0.1@sha256:c9b29d94745e1caedfa6c67eb328d324513e3bc242c893e395ba40a4ec2b9936
+              tag: 0.0.2@sha256:520f421f67d0c2e70b7b27a6448d29bb441a0e04fdb67bf4c94538811c072564
             env:
               SHELFGLADE_DATABASE_OWNER_URL:
                 valueFrom:
