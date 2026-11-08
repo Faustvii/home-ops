@@ -87,8 +87,6 @@ spec:
         certificateRefs:
           - kind: Secret
             name: ${SECRET_DOMAIN/./-}-production-tls
-          - kind: Secret
-            name: ${SECRET_DOMAIN_1/./-}-production-tls
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
@@ -125,8 +123,6 @@ spec:
         certificateRefs:
           - kind: Secret
             name: ${SECRET_DOMAIN/./-}-production-tls
-          - kind: Secret
-            name: ${SECRET_DOMAIN_1/./-}-production-tls
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.envoyproxy.io/backendtrafficpolicy_v1alpha1.json
 apiVersion: gateway.envoyproxy.io/v1alpha1

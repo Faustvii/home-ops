@@ -9,7 +9,7 @@ spec:
     name: cloudflare-dns
   interval: 1h
   values:
-    domainFilters: ["${SECRET_DOMAIN}", "${SECRET_DOMAIN_1}"]
+    domainFilters: ["${SECRET_DOMAIN}"]
     env:
       - name: CF_API_TOKEN
         valueFrom:
