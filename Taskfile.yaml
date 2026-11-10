@@ -34,4 +34,4 @@ tasks:
 
   flate:
     desc: Runs Flate Test against the current repository to ensure that all files are formatted correctly
-    cmd: flate test all --allow-missing-secrets --no-progress
+    cmd: scripts/flate-supply.sh | flate test all --supply - --no-progress
