@@ -48,5 +48,5 @@ spec:
       - matchers:
           - matchType: =
             name: severity
-            value: error
+            value: critical
         receiver: discord-general
