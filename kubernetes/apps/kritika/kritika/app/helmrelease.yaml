@@ -47,6 +47,7 @@ spec:
           type: openai
           baseUrl: http://modelrouter-router-proxy.ai.svc.cluster.local:8080/v1
           apiKey: { env: LOCAL_LLM_API_KEY }
+          concurrency: 2
           # $/M tokens. Local inference costs nothing; priced as OpenRouter's
           # qwen/qwen3.8-flash (Alibaba endpoint) to show what it would cost.
           pricing:
@@ -56,6 +57,7 @@ spec:
           type: openai
           baseUrl: http://qwen3-embedding.ai.svc.cluster.local:8080/v1
           apiKey: { env: LOCAL_LLM_API_KEY }
+          concurrency: 2
       embedding:
         model: embed/qwen3-embedding
         dims: 1024
@@ -95,8 +97,6 @@ spec:
         timeout: 45m
         # Qwen finds the same issues with fewer steps.
         steps: 24
-      limits:
-        concurrency: 2
       trigger:
         exclude:
           - { name: forks, expr: pr.fork }
