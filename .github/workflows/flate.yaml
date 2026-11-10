@@ -60,7 +60,7 @@ jobs:
         run: |
           {
             echo 'diff<<EOF'
-            flate diff "$KIND" --allow-missing-secrets -o github
+            scripts/flate-supply.sh | flate diff "$KIND" --supply - -o github
             echo 'EOF'
           } >> $GITHUB_OUTPUT
 
