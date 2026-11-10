@@ -23,7 +23,7 @@ spec:
           app:
             image:
               repository: ghcr.io/justarchinet/archisteamfarm
-              tag: 6.3.11.7@sha256:884137cd5dd93c42c789008ce12016107073b1c7bfa79c59cd675b583ae30975
+              tag: 7.0.0.8@sha256:b28de19ba25ac27fdab0a481f8acb23cdaccb81cbc168b98c567dcb88d8cf310
             env:
               TZ: UTC
             probes:
