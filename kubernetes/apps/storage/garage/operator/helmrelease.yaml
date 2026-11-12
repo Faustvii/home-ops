@@ -10,6 +10,9 @@ spec:
     name: garage-operator
   interval: 1h
   values:
+    resources:
+      limits:
+        memory: 512Mi
     grafanaDashboard:
       enabled: true
     serviceMonitor:
