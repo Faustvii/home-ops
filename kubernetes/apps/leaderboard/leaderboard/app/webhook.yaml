@@ -1,0 +1,39 @@
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: production-webhook-token
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: infisical
+  target:
+    name: production-webhook-token
+  data:
+    - remoteRef:
+        key: /leaderboard/GITHUB_WEBHOOK_TOKEN
+      secretKey: token
+---
+# Trigger only after the main-branch image publishing job succeeds.
+apiVersion: notification.toolkit.fluxcd.io/v1
+kind: Receiver
+metadata:
+  name: leaderboard-production
+spec:
+  type: github
+  events:
+    - workflow_job
+  secretRef:
+    name: production-webhook-token
+  resourceFilter: >-
+    req.repository.full_name == 'Faustvii/beth-leaderboard' &&
+    req.action == 'completed' &&
+    req.workflow_job.head_branch == 'main' &&
+    req.workflow_job.name == 'build-and-publish-docker' &&
+    req.workflow_job.conclusion == 'success'
+  resources:
+    - apiVersion: fluxcd.controlplane.io/v1
+      kind: ResourceSetInputProvider
+      name: leaderboard-image
+      namespace: leaderboard

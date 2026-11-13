@@ -32,14 +32,6 @@ spec:
     metadata:
       name: pr-<< inputs.id >>-preview
       namespace: leaderboard-previews
-      annotations:
-        event.toolkit.fluxcd.io/author: << inputs.author | quote >>
-        event.toolkit.fluxcd.io/branch: << inputs.branch | quote >>
-        event.toolkit.fluxcd.io/change_request: << inputs.id | quote >>
-        event.toolkit.fluxcd.io/commit: << inputs.sha | quote >>
-        event.toolkit.fluxcd.io/preview-url: "https://pr-<< inputs.id >>-leaderboard.${SECRET_DOMAIN}"
-      labels:
-        event.toolkit.fluxcd.io/helmrelease: leaderboard-preview
     spec:
       chartRef:
         kind: OCIRepository

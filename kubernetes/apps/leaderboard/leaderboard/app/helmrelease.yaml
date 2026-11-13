@@ -9,6 +9,11 @@ spec:
     kind: OCIRepository
     name: leaderboard
   interval: 1h
+  valuesFrom:
+    - kind: ConfigMap
+      name: leaderboard-image
+      valuesKey: image
+      targetPath: controllers.leaderboard.containers.app.image.tag
   values:
     defaultPodOptions:
       securityContext:
@@ -39,7 +44,6 @@ spec:
           app:
             image:
               repository: ghcr.io/faustvii/beth-leaderboard
-              tag: latest@sha256:6f30c04601910be84ea2f772a1b3530b2db0d2ff42460e8b909f8f42c948d95b
             env:
               DATABASE_CONNECTION_TYPE: local-replica
               HOST_URL: https://leaderboard.${SECRET_DOMAIN}

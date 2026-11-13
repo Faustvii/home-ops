@@ -6,3 +6,8 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
+  - ./networkpolicy.yaml
+  - ./rbac.yaml
+  - ./rsip.yaml
+  - ./rset.yaml
+  - ./webhook.yaml

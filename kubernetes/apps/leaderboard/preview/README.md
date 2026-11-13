@@ -12,7 +12,7 @@ gets its own live deployment. When the PR closes, Flux deletes the preview.
    PR.
 3. The `ResourceSet` renders one `OCIRepository` and one `HelmRelease`
    (`pr-<id>-preview`) for each input, in the namespace `leaderboard-previews`.
-4. The notification controller posts the deploy result as a comment on the PR.
+4. CI reports the deployment status and preview link through GitHub deployments.
 
 ## Layout
 
@@ -22,7 +22,6 @@ kubernetes/apps/leaderboard/preview/           # namespace: leaderboard
 └── app/
     ├── rsip.yaml            # PR provider, filtered on the `preview` label
     ├── rset.yaml            # per-PR OCIRepository + HelmRelease template
-    ├── providers.yaml       # PR comment Provider + Alert
     ├── webhook.yaml         # webhook token + Receiver
     ├── externalsecret.yaml  # GitHub App credentials
     └── rbac.yaml            # SA/preview-applier
@@ -54,7 +53,7 @@ runs in `leaderboard-previews`, which has no access to `leaderboard`.
 
 ## Setup
 
-1. Create a GitHub App with Pull requests read and write, and Metadata read.
+1. Create a GitHub App with Pull requests read and Metadata read.
    Install it on `faustvii/beth-leaderboard` only. Store these keys in
    Infisical under `/leaderboard`: `GITHUB_APP_ID`,
    `GITHUB_APP_INSTALLATION_ID` and `GITHUB_APP_PRIVATE_KEY`.

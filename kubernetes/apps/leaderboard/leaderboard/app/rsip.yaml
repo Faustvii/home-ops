@@ -1,0 +1,14 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSetInputProvider
+metadata:
+  name: leaderboard-image
+  annotations:
+    # Webhooks trigger normal updates; polling recovers from missed deliveries.
+    fluxcd.controlplane.io/reconcileEvery: 1h
+spec:
+  type: OCIArtifactTag
+  url: oci://ghcr.io/faustvii/beth-leaderboard
+  filter:
+    includeTag: "^latest$"
+    limit: 1

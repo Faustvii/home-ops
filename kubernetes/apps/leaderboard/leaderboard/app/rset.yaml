@@ -1,0 +1,20 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: leaderboard-image
+spec:
+  serviceAccountName: leaderboard-image-applier
+  inputsFrom:
+    - kind: ResourceSetInputProvider
+      name: leaderboard-image
+  resources:
+    - apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: leaderboard-image
+        namespace: leaderboard
+        labels:
+          reconcile.fluxcd.io/watch: Enabled
+      data:
+        image: "<< inputs.tag >>@<< inputs.digest >>"
