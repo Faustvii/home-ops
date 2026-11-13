@@ -36,6 +36,7 @@ spec:
               tag: latest@sha256:2af9015df360bba3ca197e06e6a677340254f1c163e4682fab21260943a1720f
             env:
               CACHE__CACHEPATH: /cache/bookarrCache.db
+              MetadataProviders__HardcoverRreadingGlassesApi__Url: https://rghc.${SECRET_DOMAIN}
               CONNECTIONSTRINGS__BOOKARRDB:
                 valueFrom:
                   secretKeyRef:
