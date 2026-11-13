@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: ghcr.io/joryirving/paseo
-              tag: 0.15.4@sha256:86a94bd65c60256f2f1dbd8619a1e2e631ae53167a33b2e4be5e85f28e86fd75
+              tag: 0.15.4@sha256:d4a7e3b47860ef629c134d90d48381429d123fe787431a7bfcd66cc5bd7d278e
             env:
               TZ: ${TZ}
               PASEO_LISTEN: 0.0.0.0:6767
