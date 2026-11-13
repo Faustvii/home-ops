@@ -1,0 +1,18 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.35.0/limitrange-v1.json
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: preview-limits
+spec:
+  limits:
+    - type: Container
+      default:
+        cpu: "1"
+        memory: 512Mi
+      defaultRequest:
+        cpu: 10m
+        memory: 128Mi
+      max:
+        cpu: "1"
+        memory: 512Mi

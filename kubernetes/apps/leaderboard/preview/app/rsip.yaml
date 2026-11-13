@@ -1,0 +1,25 @@
+---
+# Open PRs on beth-leaderboard with the `preview` label.
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSetInputProvider
+metadata:
+  name: leaderboard-github-prs
+  annotations:
+    fluxcd.controlplane.io/reconcileEvery: 1h
+spec:
+  filter:
+    labels:
+      - preview
+    limit: 10
+  secretRef:
+    name: github-auth
+  type: GitHubPullRequest
+  url: https://github.com/faustvii/beth-leaderboard
+# Sample input for offline rendering (flate). Status is dropped on apply.
+status:
+  exportedInputs:
+    - author: example
+      branch: example-pr
+      id: "1"
+      sha: "0000000000000000000000000000000000000000"
+      title: Example PR
