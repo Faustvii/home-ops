@@ -58,8 +58,11 @@ spec:
             resources:
               requests:
                 cpu: 10m
+                memory: 512Mi
               limits:
-                memory: 1Gi
+                # Headless Chromium bursts past 1Gi when solving CF challenges
+                # (plus /dev/shm tmpfs counts against the cgroup limit)
+                memory: 2Gi
             securityContext:
               allowPrivilegeEscalation: false
               capabilities: { drop: ["ALL"] }
