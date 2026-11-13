@@ -39,7 +39,7 @@ spec:
           app:
             image:
               repository: ghcr.io/faustvii/beth-leaderboard
-              tag: pr-latest@sha256:762f718bd9c296bb7d8ea89326d7dbe4854cae406917c67510aee75f6e5a796d
+              tag: pr-latest@sha256:86200c0366763062ea6905ca03aa7461b7ad353811dc918e3470aade48c0bae2
             env:
               DATABASE_CONNECTION_TYPE: local
               HOST_URL: https://leaderboard-preview.${SECRET_DOMAIN}
