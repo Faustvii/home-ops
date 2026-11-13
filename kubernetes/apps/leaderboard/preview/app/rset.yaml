@@ -36,9 +36,18 @@ spec:
       chartRef:
         kind: OCIRepository
         name: pr-<< inputs.id >>-preview-chart
+      install:
+        strategy:
+          name: RetryOnFailure
+          retryInterval: 2m
       interval: 30m
       releaseName: pr-<< inputs.id >>-preview
       serviceAccountName: preview-installer
+      # A push can reach Flux before CI has pushed its image; retry until it exists.
+      upgrade:
+        strategy:
+          name: RetryOnFailure
+          retryInterval: 2m
       values:
         defaultPodOptions:
           # The network policy only resolves the Azure AD names; skip search domains.
