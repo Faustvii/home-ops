@@ -1,0 +1,36 @@
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: previews-webhook-token
+
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: infisical
+  target:
+    name: previews-webhook-token
+  data:
+    - remoteRef:
+        key: /leaderboard/GITHUB_WEBHOOK_TOKEN
+      secretKey: token
+---
+# pull_request webhook from beth-leaderboard. The URL path is in .status.webhookPath.
+apiVersion: notification.toolkit.fluxcd.io/v1
+kind: Receiver
+metadata:
+  name: leaderboard-previews
+
+spec:
+  events:
+    - ping
+    - pull_request
+  resources:
+    - apiVersion: fluxcd.controlplane.io/v1
+      kind: ResourceSetInputProvider
+      name: leaderboard-github-prs
+      namespace: leaderboard
+  secretRef:
+    name: previews-webhook-token
+  type: github

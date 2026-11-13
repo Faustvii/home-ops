@@ -1,0 +1,162 @@
+---
+# One preview (chart source + HelmRelease) per labeled PR, in leaderboard-previews.
+# ${SECRET_DOMAIN} and ${TZ} come from Flux postBuild substitution.
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: leaderboard-github-previews
+spec:
+  serviceAccountName: preview-applier
+  inputsFrom:
+    - apiVersion: fluxcd.controlplane.io/v1
+      kind: ResourceSetInputProvider
+      name: leaderboard-github-prs
+  resourcesTemplate: |
+    ---
+    apiVersion: source.toolkit.fluxcd.io/v1
+    kind: OCIRepository
+    metadata:
+      name: pr-<< inputs.id >>-preview-chart
+      namespace: leaderboard-previews
+    spec:
+      interval: 15m
+      layerSelector:
+        mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+        operation: copy
+      ref:
+        tag: 5.3.0
+      url: oci://ghcr.io/bjw-s-labs/helm/app-template
+    ---
+    apiVersion: helm.toolkit.fluxcd.io/v2
+    kind: HelmRelease
+    metadata:
+      name: pr-<< inputs.id >>-preview
+      namespace: leaderboard-previews
+      annotations:
+        event.toolkit.fluxcd.io/author: << inputs.author | quote >>
+        event.toolkit.fluxcd.io/branch: << inputs.branch | quote >>
+        event.toolkit.fluxcd.io/change_request: << inputs.id | quote >>
+        event.toolkit.fluxcd.io/commit: << inputs.sha | quote >>
+        event.toolkit.fluxcd.io/preview-url: "https://pr-<< inputs.id >>-leaderboard.${SECRET_DOMAIN}"
+      labels:
+        event.toolkit.fluxcd.io/helmrelease: leaderboard-preview
+    spec:
+      chartRef:
+        kind: OCIRepository
+        name: pr-<< inputs.id >>-preview-chart
+      interval: 30m
+      releaseName: pr-<< inputs.id >>-preview
+      serviceAccountName: preview-installer
+      values:
+        defaultPodOptions:
+          # The network policy only resolves the Azure AD names; skip search domains.
+          dnsConfig:
+            options:
+              - name: ndots
+                value: "1"
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          topologySpreadConstraints:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: pr-<< inputs.id >>-preview
+                  app.kubernetes.io/name: pr-<< inputs.id >>-preview
+              maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: ScheduleAnyway
+        controllers:
+          app:
+            annotations:
+              reloader.stakater.com/auto: "true"
+            containers:
+              app:
+                env:
+                  DATABASE_CONNECTION_TYPE: local
+                  HOST_URL: "https://pr-<< inputs.id >>-leaderboard.${SECRET_DOMAIN}"
+                  IS_CHRISTMAS: "true"
+                  LOG_LEVEL: debug
+                  NODE_ENV: preprod
+                  TZ: ${TZ}
+                envFrom:
+                  - secretRef:
+                      name: leaderboard-preview-secret
+                image:
+                  repository: ghcr.io/faustvii/beth-leaderboard
+                  tag: << inputs.sha | quote >>
+                probes:
+                  liveness:
+                    enabled: true
+                    custom: true
+                    spec:
+                      failureThreshold: 5
+                      httpGet:
+                        path: /static/styles.css
+                        port: &port 3000
+                      periodSeconds: 30
+                      timeoutSeconds: 5
+                  readiness:
+                    enabled: true
+                    custom: true
+                    spec:
+                      failureThreshold: 3
+                      httpGet:
+                        path: /static/styles.css
+                        port: *port
+                      periodSeconds: 10
+                      timeoutSeconds: 5
+                  startup:
+                    enabled: true
+                    custom: true
+                    spec:
+                      failureThreshold: 30
+                      httpGet:
+                        path: /static/styles.css
+                        port: *port
+                      periodSeconds: 5
+                resources:
+                  limits:
+                    cpu: "1"
+                    memory: 512Mi
+                  requests:
+                    cpu: 10m
+                    memory: 128Mi
+                securityContext:
+                  allowPrivilegeEscalation: false
+                  capabilities: { drop: ["ALL"] }
+                  readOnlyRootFilesystem: true
+            replicas: 1
+            rollingUpdate:
+              maxSurge: 1
+              maxUnavailable: 0
+            strategy: RollingUpdate
+        persistence:
+          cache:
+            advancedMounts:
+              app:
+                app:
+                  - path: /usr/src/app/data
+                    subPath: data
+                  - path: /usr/src/app/public/user
+                    subPath: user
+                  - path: /tmp
+                    subPath: tmp
+            sizeLimit: 1Gi
+            type: emptyDir
+        route:
+          app:
+            hostnames:
+              - "pr-<< inputs.id >>-leaderboard.${SECRET_DOMAIN}"
+            parentRefs:
+              - name: envoy-external
+                namespace: network
+        service:
+          app:
+            ports:
+              http:
+                port: *port

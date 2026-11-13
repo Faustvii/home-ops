@@ -10,3 +10,4 @@ resources:
   - ./namespace.yaml
   - ./leaderboard/ks.yaml
   - ./leaderboard-preview/ks.yaml
+  - ./preview/ks.yaml

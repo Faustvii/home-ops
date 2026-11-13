@@ -1,0 +1,8 @@
+---
+# The ResourceSet applies as this SA. Its Role is in leaderboard-previews; it
+# has no permissions in this namespace.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: preview-applier
+automountServiceAccountToken: false
