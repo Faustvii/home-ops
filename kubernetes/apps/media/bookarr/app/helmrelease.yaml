@@ -37,6 +37,7 @@ spec:
             env:
               CACHE__CACHEPATH: /cache/bookarrCache.db
               MetadataProviders__HardcoverRreadingGlassesApi__Url: https://rghc.${SECRET_DOMAIN}
+              MetadataProviders__GoodreadsRreadingGlassesApi__Url: https://rggr.${SECRET_DOMAIN}
               CONNECTIONSTRINGS__BOOKARRDB:
                 valueFrom:
                   secretKeyRef:
