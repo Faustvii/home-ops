@@ -7,13 +7,14 @@ metadata:
   namespace: &namespace media
 spec:
   components:
-    - ../../../../components/database/postgres/shared
+    - ../../../../components/database/postgres/standalone
   interval: 1h
   path: ./kubernetes/apps/media/bookarr/app
 
   postBuild:
     substitute:
       APP: *app
+      NAMESPACE: *namespace
       KOPIUR_CAPACITY: 2Gi
       OIDC_APP_NAME: Bookarr
       OIDC_LOGOUT_CALLBACK_PATH: /login

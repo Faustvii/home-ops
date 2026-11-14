@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: ghcr.io/faustvii/bookarr
-              tag: latest@sha256:2af9015df360bba3ca197e06e6a677340254f1c163e4682fab21260943a1720f
+              tag: 1.0.0@sha256:20976fcaa4f444ba95e7c2aefb1bd54c6216a3112f664abc364c09a951ffd12f
             env:
               CACHE__CACHEPATH: /cache/bookarrCache.db
               MetadataProviders__HardcoverRreadingGlassesApi__Url: https://rghc.${SECRET_DOMAIN}

@@ -14,7 +14,7 @@ resources:
   - ./calibre/ks.yaml
   - ./calibre-web/ks.yaml
   - ./freshrss/ks.yaml
-  # - ./bookarr/ks.yaml
+  - ./bookarr/ks.yaml
   - ./plex/ks.yaml
   - ./nfs-connector/ks.yaml
   - ./ombi/ks.yaml
