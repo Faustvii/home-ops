@@ -50,6 +50,18 @@
       },
     },
     {
+      description: "Rreading Glasses image group",
+      groupName: "rreading-glasses",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/faustvii/rreading-glasses"],
+      versionCompatibility: "^(?<compatibility>hardcover-)?(?<version>\\d+\\.\\d+\\.\\d+)$",
+      versioning: "semver",
+      minimumGroupSize: 2,
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
       description: "Talos Group",
       groupName: "talos",
       semanticCommitScope: "container",
