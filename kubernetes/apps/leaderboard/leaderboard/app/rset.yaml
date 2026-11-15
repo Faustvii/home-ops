@@ -17,4 +17,5 @@ spec:
         labels:
           reconcile.fluxcd.io/watch: Enabled
       data:
-        image: "<< inputs.tag >>@<< inputs.digest >>"
+        # Offline renderers cannot fetch OCIArtifactTag inputs.
+        image: '<< if index inputs "digest" >><< index inputs "tag" >>@<< index inputs "digest" >><< else >>latest<< end >>'
