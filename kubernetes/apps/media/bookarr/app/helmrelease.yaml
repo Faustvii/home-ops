@@ -35,6 +35,21 @@ spec:
               repository: ghcr.io/faustvii/bookarr
               tag: 1.3.0@sha256:f00ff9a81ea61927384c8fc5c3d3f5a94fb2f6ddc2243673f1b5da9f6f192b1e
             env:
+              Auth__LocalAuthEnabled: "false" # /login/local for breakglass
+              Auth__Oidc__Enabled: "true"
+              Auth__Oidc__Authority: https://idm.${SECRET_DOMAIN}
+              Auth__Oidc__AdminGroup: bookarr-admin-users
+              Auth__Oidc__ClientId:
+                valueFrom:
+                  secretKeyRef:
+                    name: bookarr-oidc-credentials
+                    key: client-id
+              Auth__Oidc__ClientSecret:
+                valueFrom:
+                  secretKeyRef:
+                    name: bookarr-oidc-credentials
+                    key: client-secret
+              Library__RootFolderBrowser__AllowedRoots__0: /books
               CACHE__CACHEPATH: /cache/bookarrCache.db
               MetadataProviders__HardcoverRreadingGlassesApi__Url: https://rghc.${SECRET_DOMAIN}
               MetadataProviders__GoodreadsRreadingGlassesApi__Url: https://rggr.${SECRET_DOMAIN}
@@ -43,7 +58,6 @@ spec:
                   secretKeyRef:
                     key: connectionString
                     name: bookarr-postgres
-              DATABASE__USEPOSTGRES: "true"
               TZ: ${TZ}
             probes:
               liveness: &probes
@@ -69,12 +83,10 @@ spec:
               readOnlyRootFilesystem: true
     persistence:
       config:
-        type: emptyDir
-      cache:
-        type: emptyDir
-      library:
-        type: emptyDir
+        existingClaim: "{{ .Release.Name }}"
         globalMounts:
+          - path: /config
+            subPath: config
           - path: /app/import
             subPath: import
           - path: /app/failed
@@ -83,12 +95,18 @@ spec:
             subPath: duplicate
           - path: /app/done
             subPath: done
+      cache:
+        type: emptyDir
+      tmpfs:
+        type: emptyDir
+        globalMounts:
           - path: /tmp
             subPath: tmp
 
-      #   existingClaim: "{{ .Release.Name }}"
       books:
         existingClaim: media-books-nfs-pvc
+        globalMounts:
+          - path: /books
     route:
       app:
         hostnames:

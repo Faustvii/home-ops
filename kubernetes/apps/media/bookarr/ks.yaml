@@ -8,6 +8,10 @@ metadata:
 spec:
   components:
     - ../../../../components/database/postgres/standalone
+    - ../../../../components/kopiur
+  dependsOn:
+    - name: kopiur
+      namespace: storage
   interval: 1h
   path: ./kubernetes/apps/media/bookarr/app
 
@@ -15,9 +19,10 @@ spec:
     substitute:
       APP: *app
       NAMESPACE: *namespace
-      KOPIUR_CAPACITY: 2Gi
+      KOPIUR_CAPACITY: 5Gi
       DATABASE_DELETION_POLICY: WaitForTermination
       OIDC_APP_NAME: Bookarr
+      OIDC_CALLBACK_PATH: /signin-oidc
       OIDC_LOGOUT_CALLBACK_PATH: /login
       OIDC_PROVIDER_LOGOUT_PATH: /logout
     substituteFrom:
