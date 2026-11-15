@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: ghcr.io/faustvii/bookarr
-              tag: 1.4.0@sha256:76e8450969ea965a9bd9970ee7aaea9ac36bdf432e11292e761c86badcbc86a9
+              tag: 1.4.1@sha256:2312d6bc713a9367e88158e9efc07d0db0361a019131a62f664dcad65698a48c
             env:
               Auth__LocalAuthEnabled: "false" # /login/local for breakglass
               Auth__Oidc__Enabled: "true"
