@@ -18,7 +18,7 @@ spec:
       namespace: storage
   # Orphan, not the repo-wide WaitForTermination: removing the app leaves its
   # cluster and backup bucket behind to delete by hand.
-  deletionPolicy: Orphan
+  deletionPolicy: ${DATABASE_DELETION_POLICY:=Orphan}
   healthCheckExprs:
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster

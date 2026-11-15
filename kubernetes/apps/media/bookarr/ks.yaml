@@ -16,6 +16,7 @@ spec:
       APP: *app
       NAMESPACE: *namespace
       KOPIUR_CAPACITY: 2Gi
+      DATABASE_DELETION_POLICY: WaitForTermination
       OIDC_APP_NAME: Bookarr
       OIDC_LOGOUT_CALLBACK_PATH: /login
       OIDC_PROVIDER_LOGOUT_PATH: /logout
