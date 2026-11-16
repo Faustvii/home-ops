@@ -107,6 +107,10 @@ spec:
         existingClaim: media-books-nfs-pvc
         globalMounts:
           - path: /books
+      downloads:
+        existingClaim: downloads-nfs-pvc
+        globalMounts:
+          - path: /downloads
     route:
       app:
         hostnames:
