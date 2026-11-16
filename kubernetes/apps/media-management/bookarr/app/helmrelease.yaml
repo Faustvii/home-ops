@@ -104,7 +104,7 @@ spec:
             subPath: tmp
 
       books:
-        existingClaim: media-books-nfs-pvc
+        existingClaim: readarr-books-nfs-pvc
         globalMounts:
           - path: /books
       downloads:

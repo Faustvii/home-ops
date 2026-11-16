@@ -12,6 +12,8 @@ spec:
   dependsOn:
     - name: kopiur
       namespace: storage
+    - name: nfs-pvcs
+      namespace: media-management
   interval: 1h
   path: ./kubernetes/apps/media-management/bookarr/app
 
