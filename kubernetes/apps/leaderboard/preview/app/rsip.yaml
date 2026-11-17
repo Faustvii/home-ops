@@ -11,6 +11,9 @@ spec:
     labels:
       - preview
     limit: 10
+  skip:
+    labels:
+      - preview-pause
   secretRef:
     name: github-auth
   type: GitHubPullRequest
