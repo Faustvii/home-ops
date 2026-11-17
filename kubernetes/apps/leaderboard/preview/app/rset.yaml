@@ -78,6 +78,7 @@ spec:
             containers:
               app:
                 env:
+                  ALLOW_LOCAL_LOGIN: "true"
                   DATABASE_CONNECTION_TYPE: local
                   HOST_URL: "https://pr-<< inputs.id >>-leaderboard.${SECRET_DOMAIN}"
                   IS_CHRISTMAS: "true"

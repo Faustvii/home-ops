@@ -41,6 +41,7 @@ spec:
               repository: ghcr.io/faustvii/beth-leaderboard
               tag: pr-latest@sha256:762f718bd9c296bb7d8ea89326d7dbe4854cae406917c67510aee75f6e5a796d
             env:
+              ALLOW_LOCAL_LOGIN: "true"
               DATABASE_CONNECTION_TYPE: local
               HOST_URL: https://leaderboard-preview.${SECRET_DOMAIN}
               IS_CHRISTMAS: "true"
