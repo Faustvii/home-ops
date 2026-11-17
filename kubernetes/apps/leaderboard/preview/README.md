@@ -5,14 +5,19 @@ gets its own live deployment. When the PR closes, Flux deletes the preview.
 
 ## How it works
 
-1. CI pushes `ghcr.io/faustvii/beth-leaderboard:<head-sha>` and adds the
-   `preview` label to the PR.
+1. CI adds `preview-pause` before building. The provider keeps the last
+   exported input for paused PRs. After publishing the head SHA image, CI adds
+   `preview` and removes `preview-pause`.
 2. The `pull_request` webhook starts a reconcile of the
    `ResourceSetInputProvider`. The provider exports one input for each labeled
    PR.
 3. The `ResourceSet` renders one `OCIRepository` and one `HelmRelease`
    (`pr-<id>-preview`) for each input, in the namespace `leaderboard-previews`.
 4. CI reports the deployment status and preview link through GitHub deployments.
+
+The pause starts when the CI job runs, so a reconcile immediately after a push
+can still pick up an image before it is published. A failed build leaves the
+preview paused at its previous exported SHA.
 
 ## Layout
 
