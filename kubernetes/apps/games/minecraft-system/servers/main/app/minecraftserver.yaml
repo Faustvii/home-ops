@@ -27,6 +27,9 @@ spec:
       value: '1000'
     - name: HIDE_ONLINE_PLAYERS
       value: 'true'
+    # Mitigate Java4Shell (CVE-2026-114938) until the Java image is patched.
+    - name: JAVA_TOOL_OPTIONS
+      value: "-XX:-UseBASE64Intrinsics"
     - name: RESOURCE_PACK
       value: https://github.com/Faustvii/minds_packs/releases/download/v0.0.2-mc1.21.11/MindsResources_v0.0.2_mc_1.21.11_rp.zip
     - name: RESOURCE_PACK_ENFORCE

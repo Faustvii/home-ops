@@ -11,6 +11,12 @@ spec:
   interval: 1h
   values:
     configMaps:
+      java4shell:
+        data:
+          java4shell.conf: |
+            [Service]
+            # Disable vulnerable Base64 intrinsics until the Java image is patched.
+            Environment="JAVA_TOOL_OPTIONS=-XX:-UseBASE64Intrinsics"
       timedatectl:
         data:
           timedatectl: |
@@ -94,6 +100,15 @@ spec:
               capabilities:
                 add: ["NET_ADMIN", "NET_RAW", "SYS_ADMIN"]
     persistence:
+      java4shell:
+        type: configMap
+        identifier: java4shell
+        advancedMounts:
+          *app :
+            app:
+              - path: /etc/systemd/system/unifi.service.d/10-java4shell.conf
+                subPath: java4shell.conf
+                readOnly: true
       timedatectl:
         type: configMap
         identifier: timedatectl

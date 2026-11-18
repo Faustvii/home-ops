@@ -21,6 +21,9 @@ spec:
       value: '1000'
     - name: HIDE_ONLINE_PLAYERS
       value: 'true'
+    # Mitigate Java4Shell (CVE-2026-114938) until the Java image is patched.
+    - name: JAVA_TOOL_OPTIONS
+      value: "-XX:-UseBASE64Intrinsics"
     - name: TZ
       value: Europe/Paris
     - name: UID
