@@ -29,6 +29,7 @@ spec:
   schedule: "7 */3 * * *"
   secretRef: renovate-secret
   discoveryFilters:
+    - "Faustvii/*"
     - "!Faustvii/bookarr"
     - "!Faustvii/warden"
     - "!Faustvii/shelfglade"
