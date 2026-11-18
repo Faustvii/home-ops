@@ -13,8 +13,6 @@
     "github>Faustvii/home-ops//.renovate/managers/minecraft.json5",
     "github>Faustvii/home-ops//.renovate/managers/kritika.json5",
   ],
-  dependencyDashboard: true,
-  dependencyDashboardTitle: "Renovate Dashboard 🤖",
   ignorePaths: ["**/*.sops.*"],
   suppressNotifications: ["prEditedNotification", "prIgnoreNotification"],
 }
