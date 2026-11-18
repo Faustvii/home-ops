@@ -10,6 +10,9 @@ spec:
   env:
     - name: ALLOW_FLIGHT
       value: "true"
+    # Mitigate Java4Shell (CVE-2026-114938) until the Java image is patched.
+    - name: JAVA_TOOL_OPTIONS
+      value: "-XX:-UseBASE64Intrinsics"
     # with the default malloc, this modpack was OOMKilled at 6Gi
     - name: MALLOC_ARENA_MAX
       value: "2"
