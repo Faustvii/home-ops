@@ -38,6 +38,10 @@ spec:
       *app :
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            egress.netpol.home.arpa/dns-only: allow
+            ingress.netpol.home.arpa/vpn-proxy: allow
         containers:
           app:
             image:

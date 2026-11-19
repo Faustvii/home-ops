@@ -28,6 +28,9 @@ spec:
           schedule: "*/5 * * * *"
           successfulJobsHistory: 1
           ttlSecondsAfterFinished: 3600
+        pod:
+          labels:
+            egress.netpol.home.arpa/vpn-proxy-http: allow
         containers:
           app:
             image:

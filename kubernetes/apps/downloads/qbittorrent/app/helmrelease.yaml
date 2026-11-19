@@ -38,7 +38,7 @@ spec:
           reloader.stakater.com/auto: "true"
         pod:
           labels:
-            egress.netpol.home.arpa/vpn-dns: allow
+            egress.netpol.home.arpa/dns-only: allow
         containers:
           app:
             image:

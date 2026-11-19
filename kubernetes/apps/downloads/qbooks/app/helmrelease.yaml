@@ -36,6 +36,9 @@ spec:
       *app :
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            egress.netpol.home.arpa/dns-only: allow
         containers:
           app:
             image:

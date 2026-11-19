@@ -3,11 +3,11 @@
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-e-d-vpn-dns
+  name: np-e-a-dns-only
 spec:
   endpointSelector:
     matchLabels:
-      egress.netpol.home.arpa/vpn-dns: allow
+      egress.netpol.home.arpa/dns-only: allow
   egress:
     - toEndpoints:
         - matchLabels:

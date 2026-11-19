@@ -21,6 +21,10 @@ spec:
       prowlarr:
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            egress.netpol.home.arpa/vpn-proxy-http: allow
+            egress.netpol.home.arpa/vpn-proxy-socks: allow
         containers:
           app:
             image:

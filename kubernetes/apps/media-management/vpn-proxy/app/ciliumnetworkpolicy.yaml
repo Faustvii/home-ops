@@ -1,0 +1,73 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: np-e-a-to-vpn-proxy-http
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      egress.netpol.home.arpa/vpn-proxy-http: allow
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: media-management
+            app.kubernetes.io/name: vpn-proxy
+      toPorts:
+        - ports:
+            - port: "8888"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: np-e-a-to-vpn-proxy-socks
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      egress.netpol.home.arpa/vpn-proxy-socks: allow
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: media-management
+            app.kubernetes.io/name: vpn-proxy
+      toPorts:
+        - ports:
+            - port: "1080"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-i-a-vpn-proxy
+spec:
+  endpointSelector:
+    matchLabels:
+      ingress.netpol.home.arpa/vpn-proxy: allow
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            egress.netpol.home.arpa/vpn-proxy-http: allow
+          matchExpressions:
+            - key: io.kubernetes.pod.namespace
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: "8888"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            egress.netpol.home.arpa/vpn-proxy-socks: allow
+          matchExpressions:
+            - key: io.kubernetes.pod.namespace
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: "1080"
+              protocol: TCP

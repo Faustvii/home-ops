@@ -11,6 +11,7 @@ generatorOptions:
     kustomize.toolkit.fluxcd.io/substitute: disabled
   disableNameSuffixHash: true
 resources:
+  - ./ciliumnetworkpolicy.yaml
   - ./helmrelease.yaml
   - ./networkpolicy.yaml
   - ./ocirepository.yaml
