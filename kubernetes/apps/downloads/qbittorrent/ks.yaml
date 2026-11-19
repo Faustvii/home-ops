@@ -8,7 +8,6 @@ metadata:
 spec:
   components:
     - ../../../../components/kopiur
-    - ../../../../components/vpn-egress-lock
   dependsOn:
     - name: kopiur
       namespace: storage
