@@ -7,7 +7,7 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      network.home.arpa/vpn: dns
+      egress.netpol.home.arpa/vpn-dns: allow
   egress:
     - toEndpoints:
         - matchLabels:
