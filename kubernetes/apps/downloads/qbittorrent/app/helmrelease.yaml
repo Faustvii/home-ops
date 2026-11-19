@@ -36,6 +36,9 @@ spec:
       *app :
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            network.home.arpa/vpn: dns
         containers:
           app:
             image:
