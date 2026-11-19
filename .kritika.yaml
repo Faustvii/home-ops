@@ -4,7 +4,7 @@
 ignore: ["**/?*.sops.*"]
 tools:
   # renovate: datasource=github-releases depName=Faustvii/agent-tools
-  "aqua:Faustvii/agent-tools": v1.1.1
+  "aqua:Faustvii/agent-tools": v2.0.0
 rules:
   - id: konflate
     paths: ["kubernetes/**"]
