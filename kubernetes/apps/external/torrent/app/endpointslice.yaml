@@ -1,0 +1,17 @@
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: torrent-external-service
+  labels:
+    kubernetes.io/service-name: torrent-external-service
+addressType: IPv4
+endpoints:
+  - addresses:
+      - 192.168.1.71
+    conditions:
+      ready: true
+ports:
+  - name: https
+    port: 443
+    protocol: TCP

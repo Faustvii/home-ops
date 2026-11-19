@@ -11,4 +11,5 @@ namespace: external
 resources:
   - ./namespace.yaml
   - ./hass/ks.yaml
+  - ./torrent/ks.yaml
   - ./truenas/ks.yaml

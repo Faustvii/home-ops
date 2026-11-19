@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/backendtlspolicy_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: torrent-external-service
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: torrent-external-service
+      sectionName: https
+  validation:
+    hostname: torrent.${SECRET_DOMAIN}
+    wellKnownCACertificates: System

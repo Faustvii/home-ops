@@ -1,0 +1,13 @@
+---
+# A Service without a selector; the EndpointSlice points it at the old cluster's nginx
+apiVersion: v1
+kind: Service
+metadata:
+  name: torrent-external-service
+spec:
+  ports:
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 443
+  type: ClusterIP
