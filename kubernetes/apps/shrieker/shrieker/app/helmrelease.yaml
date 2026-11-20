@@ -39,7 +39,7 @@ spec:
           main:
             image:
               repository: ghcr.io/faust-ops/shrieker
-              tag: v0.1.0@sha256:9dfb5630a0b584334f2e0aeb5fe19cb8a5bdda5c514ffb0f15b28f7db5cf7d4a
+              tag: v0.1.1@sha256:2a37e310c796287e79e159ed5d8f207f9a9fcee1c464a75fda4128eccd6196aa
             args:
               - coordinator
               - /settings/coordinator.json
