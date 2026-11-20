@@ -12,14 +12,10 @@ spec:
   values:
     controllers:
       coordinator:
-        type: cronjob
-        cronjob:
-          activeDeadlineSeconds: 1800
-          backoffLimit: 0
-          concurrencyPolicy: Forbid
-          schedule: "*/30 * * * *"
-          # Keep suspended until a one-off Job from this template has succeeded.
-          suspend: true
+        type: deployment
+        replicas: 1
+        # Recreate stops the old Pod before the new one starts. Two coordinators must not share the state lock.
+        strategy: Recreate
         pod:
           automountServiceAccountToken: true
           enableServiceLinks: false
@@ -33,21 +29,39 @@ spec:
             runAsUser: 10001
             seccompProfile:
               type: RuntimeDefault
+          # Leave time to record the interrupted phase and delete running worker Jobs.
+          terminationGracePeriodSeconds: 60
         serviceAccount:
           identifier: coordinator
         containers:
           main:
             image:
               repository: ghcr.io/faust-ops/shrieker
-              tag: v0.1.1@sha256:2a37e310c796287e79e159ed5d8f207f9a9fcee1c464a75fda4128eccd6196aa
+              tag: v0.1.2@sha256:e6f84e660c96140a760b6282a937de19af933ba567833591a5f30e5153d46d1f
             args:
               - coordinator
+              - --serve
               - /settings/coordinator.json
             env:
               SHRIEKER_COORDINATOR_NODE:
                 valueFrom:
                   fieldRef:
                     fieldPath: spec.nodeName
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: 8080
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /readyz
+                    port: 8080
             resources:
               requests:
                 cpu: 250m

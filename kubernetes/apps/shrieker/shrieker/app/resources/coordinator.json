@@ -2,11 +2,11 @@
   "jobs": {
     "cpu": "2",
     "database_claim": "shrieker-database",
-    "download_image": "ghcr.io/faust-ops/shrieker@sha256:2a37e310c796287e79e159ed5d8f207f9a9fcee1c464a75fda4128eccd6196aa",
+    "download_image": "ghcr.io/faust-ops/shrieker@sha256:e6f84e660c96140a760b6282a937de19af933ba567833591a5f30e5153d46d1f",
     "download_runtime_class": "gvisor-download",
     "memory": "3Gi",
     "namespace": "shrieker",
-    "scanner_image": "ghcr.io/faust-ops/shrieker@sha256:2a37e310c796287e79e159ed5d8f207f9a9fcee1c464a75fda4128eccd6196aa",
+    "scanner_image": "ghcr.io/faust-ops/shrieker@sha256:e6f84e660c96140a760b6282a937de19af933ba567833591a5f30e5153d46d1f",
     "scanner_runtime_class": "gvisor-offline",
     "scratch_bytes": 4294967296,
     "tools": {
