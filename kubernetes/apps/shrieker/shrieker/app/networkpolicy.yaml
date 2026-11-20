@@ -52,11 +52,16 @@ specs:
     endpointSelector:
       matchLabels:
         shrieker.io/worker: download
+  # CoreDNS runs autopath, so Cilium records answers under the search-domain
+  # name (`<host>.shrieker.svc.cluster.local`). Allow both forms of each host.
   - egress:
       - toFQDNs:
           - matchName: api.github.com
+          - matchName: api.github.com.shrieker.svc.cluster.local
           - matchName: github.com
+          - matchName: github.com.shrieker.svc.cluster.local
           - matchName: release-assets.githubusercontent.com
+          - matchName: release-assets.githubusercontent.com.shrieker.svc.cluster.local
         toPorts:
           - ports:
               - port: "443"
@@ -67,6 +72,7 @@ specs:
   - egress:
       - toFQDNs:
           - matchName: grype.anchore.io
+          - matchName: grype.anchore.io.shrieker.svc.cluster.local
         toPorts:
           - ports:
               - port: "443"
