@@ -2,11 +2,11 @@
   "jobs": {
     "cpu": "2",
     "database_claim": "shrieker-database",
-    "download_image": "ghcr.io/faust-ops/shrieker@sha256:e6f84e660c96140a760b6282a937de19af933ba567833591a5f30e5153d46d1f",
+    "download_image": "ghcr.io/faust-ops/shrieker@sha256:4a01567f6ac6e412a141f61b026f2a1f94ae3aa6c67f6fa741e9e0248ec75cb6",
     "download_runtime_class": "gvisor-download",
     "memory": "3Gi",
     "namespace": "shrieker",
-    "scanner_image": "ghcr.io/faust-ops/shrieker@sha256:e6f84e660c96140a760b6282a937de19af933ba567833591a5f30e5153d46d1f",
+    "scanner_image": "ghcr.io/faust-ops/shrieker@sha256:4a01567f6ac6e412a141f61b026f2a1f94ae3aa6c67f6fa741e9e0248ec75cb6",
     "scanner_runtime_class": "gvisor-offline",
     "scratch_bytes": 4294967296,
     "tools": {
@@ -25,6 +25,12 @@
     "max_archive_bytes": 2147483648,
     "max_output_bytes": 67108864,
     "platform": "linux/amd64",
+    "registry_mirrors": [
+      {
+        "endpoint": "http://{node_ip}:30021",
+        "spegel": true
+      }
+    ],
     "repository": "https://github.com/Faustvii/home-ops",
     "revision": "main",
     "state_dir": "/state",

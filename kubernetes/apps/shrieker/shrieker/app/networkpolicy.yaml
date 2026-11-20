@@ -52,6 +52,20 @@ specs:
     endpointSelector:
       matchLabels:
         shrieker.io/worker: download
+  # Download Jobs pull digest-pinned images through Spegel. The node port DNATs
+  # to the Spegel Pod, so allow the Pod endpoints on the registry port.
+  - egress:
+      - toEndpoints:
+          - matchLabels:
+              app.kubernetes.io/name: spegel
+              k8s:io.kubernetes.pod.namespace: kube-system
+        toPorts:
+          - ports:
+              - port: "5000"
+                protocol: TCP
+    endpointSelector:
+      matchLabels:
+        shrieker.io/worker: download
   # CoreDNS runs autopath, so Cilium records answers under the search-domain
   # name (`<host>.shrieker.svc.cluster.local`). Allow both forms of each host.
   - egress:
