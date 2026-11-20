@@ -60,7 +60,7 @@ jobs:
         run: |
           {
             echo 'diff<<EOF'
-            scripts/flate-supply.sh | flate diff "$KIND" --supply - -o github
+            flate diff "$KIND" -o github
             echo 'EOF'
           } >> $GITHUB_OUTPUT
 
