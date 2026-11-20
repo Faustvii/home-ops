@@ -66,6 +66,9 @@ spec:
       rules:
         "count:up0":
           enabled: false
+        # Replaced by kube-client-certificate-rules below (ignores Talos temporary certs)
+        KubeClientCertificateExpiration:
+          enabled: false
         # Replaced by node-memory-rules below (ZFS ARC aware)
         NodeMemoryHighUtilization:
           enabled: false
@@ -78,6 +81,32 @@ spec:
                 annotations:
                   summary: Kubernetes cluster Dockerhub rate limit risk
                 expr: count(time() - container_last_seen{image=~"(docker.io).*",container!=""} < 30) > 100
+                labels:
+                  severity: critical
+      # Talos authenticates to the apiserver with short-lived (10 minute) client
+      # certificates. A few of those requests are enough to drag the 1st
+      # percentile below the threshold for a single evaluation window, so a
+      # real expiry must now persist for an hour before alerting.
+      kube-client-certificate-rules:
+        groups:
+          - name: kube-client-certificate
+            rules:
+              - alert: KubeClientCertificateExpiration
+                annotations:
+                  description: A client certificate used to authenticate to kubernetes apiserver is expiring in less than 7.0 days on cluster {{ $labels.cluster }}.
+                  runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeclientcertificateexpiration
+                  summary: Client certificate is about to expire.
+                expr: (histogram_quantile(0.01, sum(rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m])) without(namespace,service,endpoint)) < 604800) and on(job,cluster,instance) (apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0)
+                for: 1h
+                labels:
+                  severity: warning
+              - alert: KubeClientCertificateExpiration
+                annotations:
+                  description: A client certificate used to authenticate to kubernetes apiserver is expiring in less than 24.0 hours on cluster {{ $labels.cluster }}.
+                  runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeclientcertificateexpiration
+                  summary: Client certificate is about to expire.
+                expr: (histogram_quantile(0.01, sum(rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m])) without(namespace,service,endpoint)) < 86400) and on(job,cluster,instance) (apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0)
+                for: 1h
                 labels:
                   severity: critical
       # The default rule counts the ZFS ARC as used, so TrueNAS sits at ~96%.
