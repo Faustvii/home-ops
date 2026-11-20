@@ -24,5 +24,5 @@ status:
     - author: example
       branch: example-pr
       id: "1"
-      sha: "ec44e4ac9dde09940c2fc34cfd865f8bbd8ac1efed92ef06e0e33b49c958813b"
+      sha: "latest@sha256:ec44e4ac9dde09940c2fc34cfd865f8bbd8ac1efed92ef06e0e33b49c958813b"
       title: Example PR
