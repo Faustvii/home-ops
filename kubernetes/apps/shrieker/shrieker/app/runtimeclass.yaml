@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/node.k8s.io/runtimeclass_v1.json
+# Shrieker requires distinct RuntimeClass names for scanner and download Jobs.
+# Both use the cluster's gVisor handler. The scanner has no egress because of
+# the `workers` NetworkPolicy, not because of the runtime.
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata:
+  name: gvisor-download
+handler: runsc
+---
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata:
+  name: gvisor-offline
+handler: runsc

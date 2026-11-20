@@ -3,11 +3,11 @@
     "cpu": "2",
     "database_claim": "shrieker-database",
     "download_image": "ghcr.io/faust-ops/shrieker@sha256:9dfb5630a0b584334f2e0aeb5fe19cb8a5bdda5c514ffb0f15b28f7db5cf7d4a",
-    "download_runtime_class": "gvisor",
+    "download_runtime_class": "gvisor-download",
     "memory": "3Gi",
     "namespace": "shrieker",
     "scanner_image": "ghcr.io/faust-ops/shrieker@sha256:9dfb5630a0b584334f2e0aeb5fe19cb8a5bdda5c514ffb0f15b28f7db5cf7d4a",
-    "scanner_runtime_class": "gvisor",
+    "scanner_runtime_class": "gvisor-offline",
     "scratch_bytes": 4294967296,
     "tools": {
       "aqua:anchore/grype": "v0.122.1",
