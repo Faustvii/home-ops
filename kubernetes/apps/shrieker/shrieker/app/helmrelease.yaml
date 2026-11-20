@@ -1,0 +1,136 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: shrieker
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: shrieker
+  interval: 1h
+  values:
+    controllers:
+      coordinator:
+        type: cronjob
+        cronjob:
+          activeDeadlineSeconds: 1800
+          backoffLimit: 0
+          concurrencyPolicy: Forbid
+          schedule: "*/30 * * * *"
+          # Keep suspended until a one-off Job from this template has succeeded.
+          suspend: true
+        pod:
+          automountServiceAccountToken: true
+          enableServiceLinks: false
+          nodeSelector:
+            kubernetes.io/arch: amd64
+            kubernetes.io/os: linux
+          securityContext:
+            fsGroup: 10001
+            runAsGroup: 10001
+            runAsNonRoot: true
+            runAsUser: 10001
+            seccompProfile:
+              type: RuntimeDefault
+        serviceAccount:
+          identifier: coordinator
+        containers:
+          main:
+            image:
+              repository: ghcr.io/faust-ops/shrieker
+              tag: v0.1.0@sha256:9dfb5630a0b584334f2e0aeb5fe19cb8a5bdda5c514ffb0f15b28f7db5cf7d4a
+            args:
+              - coordinator
+              - /settings/coordinator.json
+            env:
+              SHRIEKER_COORDINATOR_NODE:
+                valueFrom:
+                  fieldRef:
+                    fieldPath: spec.nodeName
+            resources:
+              requests:
+                cpu: 250m
+                memory: 256Mi
+              limits:
+                cpu: "1"
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+              readOnlyRootFilesystem: true
+    fullnameOverride: shrieker
+    networkpolicies:
+      workers:
+        type: native
+        podSelector:
+          matchExpressions:
+            - key: shrieker.io/worker
+              operator: In
+              values: [database, download, scanner, setup]
+        policyTypes: [Egress, Ingress]
+        rules: {}
+    persistence:
+      database:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 12Gi
+        suffix: database
+        globalMounts:
+          - path: /database
+            readOnly: true
+      scratch:
+        type: emptyDir
+        sizeLimit: 1Gi
+        globalMounts:
+          - path: /tmp
+      settings:
+        type: configMap
+        name: shrieker-settings
+        globalMounts:
+          - path: /settings
+            readOnly: true
+      state:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 10Gi
+        suffix: state
+        globalMounts:
+          - path: /state
+      tools:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        suffix: tools
+        globalMounts:
+          - path: /tools
+            readOnly: true
+      transfer:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 12Gi
+        suffix: transfer
+        globalMounts:
+          - path: /transfer
+    rbac:
+      bindings:
+        coordinator:
+          type: RoleBinding
+          roleRef:
+            identifier: coordinator
+          subjects:
+            - identifier: coordinator
+      roles:
+        coordinator:
+          type: Role
+          rules:
+            - apiGroups: [batch]
+              resources: [jobs]
+              verbs: [create, delete, get]
+            - apiGroups: [""]
+              resources: [pods]
+              verbs: [list]
+    serviceAccount:
+      coordinator: {}
+      worker:
+        automountServiceAccountToken: false
