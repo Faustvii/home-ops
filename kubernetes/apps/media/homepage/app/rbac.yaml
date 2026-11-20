@@ -1,12 +1,6 @@
 ---
 # Service discovery for Homepage (mode: cluster, gateway: true)
 # Ref: https://gethomepage.dev/configs/kubernetes/
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: homepage
-secrets: []
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
