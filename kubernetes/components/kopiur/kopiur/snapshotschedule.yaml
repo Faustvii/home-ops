@@ -5,6 +5,7 @@ kind: SnapshotSchedule
 metadata:
   name: ${APP}
 spec:
+  failedJobsHistoryLimit: 2
   policyRef:
     name: ${APP}
   schedule:
