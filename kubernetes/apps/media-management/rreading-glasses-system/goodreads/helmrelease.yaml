@@ -51,7 +51,7 @@ spec:
               TZ: ${TZ}
             image:
               repository: ghcr.io/faustvii/rreading-glasses
-              tag: 1.2.0@sha256:881216aab8b131ccc5f96ede513ce38c00629de52b78335ac27f15f514cf5952
+              tag: 1.3.0@sha256:c17ec132e93987e67ecef3bf0459bcaef223b4b65473b79e759e7cc44691e1fe
             probes:
               liveness: &probes
                 enabled: true
