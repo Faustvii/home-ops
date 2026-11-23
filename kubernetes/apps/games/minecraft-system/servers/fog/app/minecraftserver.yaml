@@ -10,14 +10,12 @@ spec:
   env:
     - name: ALLOW_FLIGHT
       value: "true"
-    # Mitigate Java4Shell (CVE-2026-114938) until the Java image is patched.
-    - name: JAVA_TOOL_OPTIONS
-      value: "-XX:-UseBASE64Intrinsics"
     # with the default malloc, this modpack was OOMKilled at 6Gi
     - name: MALLOC_ARENA_MAX
       value: "2"
   hostnames:
     - fog.mc.${SECRET_DOMAIN}
+  image: ghcr.io/itzg/minecraft-server:2026.11.1-java17@sha256:94e447e5154d17c3bc3afb4dc8a339a67ade040c780c25572214f88df8048085
   mods:
     modrinth:
       projects:
