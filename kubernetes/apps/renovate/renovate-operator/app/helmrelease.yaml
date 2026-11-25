@@ -27,8 +27,8 @@ spec:
     fullnameOverride: *app
     logging:
       level: debug
-    # rbac:
-    #   ownNamespaceOnly: true
+    rbac:
+      ownNamespaceOnly: true
     webhook:
       enabled: true
       route:
