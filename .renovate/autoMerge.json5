@@ -25,6 +25,7 @@
       description: "Auto-merge high-cadence packages weekly",
       matchDatasources: ["docker"],
       automerge: true,
+      automergeType: "pr",
       matchUpdateTypes: ["minor", "patch"],
       matchPackageNames: [
         "ghcr.io/renovatebot/renovate",
