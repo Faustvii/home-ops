@@ -7,7 +7,12 @@ metadata:
 spec:
   enableDefaultDeny:
     egress: false
-  endpointSelector: {}
+  endpointSelector:
+    matchExpressions:
+      - key: app.kubernetes.io/instance
+        operator: NotIn
+        values:
+          - blackbox-exporter-nfs
   egressDeny:
     - toEntities:
         - all
