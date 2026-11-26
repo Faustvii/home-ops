@@ -19,6 +19,21 @@ spec:
         runAsUser: 1000
     controllers:
       *app :
+        pod:
+          labels:
+            egress.netpol.home.arpa/bookarr: allow
+            egress.netpol.home.arpa/envoy-external: allow
+            egress.netpol.home.arpa/envoy-internal: allow
+            egress.netpol.home.arpa/internet-https: allow
+            egress.netpol.home.arpa/qbittorrent: allow
+            egress.netpol.home.arpa/radarr: allow
+            egress.netpol.home.arpa/readarr: allow
+            egress.netpol.home.arpa/sonarr-anime: allow
+            egress.netpol.home.arpa/sonarr: allow
+            egress.netpol.home.arpa/znc: allow
+            ingress.netpol.home.arpa/autobrr: allow
+            ingress.netpol.home.arpa/envoy-internal: allow
+            ingress.netpol.home.arpa/host: allow
         annotations:
           reloader.stakater.com/auto: "true"
         containers:

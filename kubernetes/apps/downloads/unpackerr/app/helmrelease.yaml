@@ -21,6 +21,12 @@ spec:
         runAsUser: 1000
     controllers:
       *app :
+        pod:
+          labels:
+            egress.netpol.home.arpa/radarr: allow
+            egress.netpol.home.arpa/sonarr-anime: allow
+            egress.netpol.home.arpa/sonarr: allow
+            ingress.netpol.home.arpa/host: allow
         containers:
           app:
             image:

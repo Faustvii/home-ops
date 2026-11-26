@@ -19,6 +19,16 @@ spec:
         runAsUser: 1000
     controllers:
       qui:
+        pod:
+          labels:
+            egress.netpol.home.arpa/envoy-external: allow
+            egress.netpol.home.arpa/envoy-internal: allow
+            egress.netpol.home.arpa/internet-https: allow
+            egress.netpol.home.arpa/qbittorrent: allow
+            egress.netpol.home.arpa/qbooks: allow
+            ingress.netpol.home.arpa/envoy-internal: allow
+            ingress.netpol.home.arpa/host: allow
+            ingress.netpol.home.arpa/observability: allow
         annotations:
           reloader.stakater.com/auto: "true"
         containers:

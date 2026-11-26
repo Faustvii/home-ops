@@ -235,6 +235,9 @@ spec:
           - action: labeldrop
             regex: ((?:extensions_talos|feature_node).*)
         inlineRelabelConfig: *relabel-config
+        podMetadata:
+          labels:
+            netpol.home.arpa/observability: "true"
         resources:
           limits:
             cpu: 1

@@ -1,0 +1,44 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: np-e-a-to-autobrr
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      egress.netpol.home.arpa/autobrr: allow
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: downloads
+            app.kubernetes.io/name: autobrr
+      toPorts:
+        - ports:
+            - port: "7474"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-i-a-autobrr
+spec:
+  enableDefaultDeny:
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      ingress.netpol.home.arpa/autobrr: allow
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            egress.netpol.home.arpa/autobrr: allow
+          matchExpressions:
+            - key: io.kubernetes.pod.namespace
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: "7474"
+              protocol: TCP

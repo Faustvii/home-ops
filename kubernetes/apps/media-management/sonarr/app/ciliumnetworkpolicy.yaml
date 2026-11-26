@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: np-e-a-to-sonarr
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      egress.netpol.home.arpa/sonarr: allow
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: media-management
+            app.kubernetes.io/name: sonarr
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP

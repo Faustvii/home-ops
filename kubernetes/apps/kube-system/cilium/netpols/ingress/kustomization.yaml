@@ -7,5 +7,6 @@ resources:
   - ./cluster.yaml
   - ./host.yaml
   - ./internet.yaml
+  - ./kubedns.yaml
   - ./observability.yaml
   - ./world.yaml

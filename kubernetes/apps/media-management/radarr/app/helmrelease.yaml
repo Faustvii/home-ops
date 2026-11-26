@@ -21,6 +21,9 @@ spec:
         runAsUser: 1000
     controllers:
       *app :
+        pod:
+          labels:
+            egress.netpol.home.arpa/qbittorrent: allow
         containers:
           app:
             image:

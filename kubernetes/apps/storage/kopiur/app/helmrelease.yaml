@@ -23,6 +23,9 @@ spec:
       credentialProjection:
         enabled: true
     installScope: cluster
+    podLabels:
+      egress.netpol.home.arpa/apiserver: allow
+      ingress.netpol.home.arpa/observability: allow
     monitoring:
       dashboards:
         enabled: true
@@ -41,6 +44,10 @@ spec:
       runAsNonRoot: true
       runAsUser: 1000
     webhook:
+      podLabels:
+        egress.netpol.home.arpa/apiserver: allow
+        ingress.netpol.home.arpa/apiserver: allow
+        ingress.netpol.home.arpa/observability: allow
       serviceMonitor:
         enabled: true
       tls:

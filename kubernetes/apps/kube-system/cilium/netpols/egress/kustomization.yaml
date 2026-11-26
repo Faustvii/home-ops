@@ -10,6 +10,7 @@ resources:
   - ./host.yaml
   - ./internet-https.yaml
   - ./internet.yaml
+  - ./kubedns.yaml
   - ./observability.yaml
   - ./world-https.yaml
   - ./world.yaml

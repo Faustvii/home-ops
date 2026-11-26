@@ -19,6 +19,11 @@ spec:
         runAsUser: 1000
     controllers:
       *app :
+        pod:
+          labels:
+            egress.netpol.home.arpa/autobrr: allow
+            egress.netpol.home.arpa/qbittorrent: allow
+            egress.netpol.home.arpa/qbooks: allow
         serviceAccount:
           identifier: homepage
         annotations:

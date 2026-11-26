@@ -23,6 +23,9 @@ spec:
         runAsUser: 1000
     controllers:
       bookarr:
+        pod:
+          labels:
+            egress.netpol.home.arpa/qbooks: allow
         annotations:
           reloader.stakater.com/auto: "true"
         rollingUpdate:

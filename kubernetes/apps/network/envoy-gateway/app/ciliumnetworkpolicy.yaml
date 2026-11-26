@@ -1,0 +1,84 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: np-i-a-from-envoy-internal
+spec:
+  enableDefaultDeny:
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      ingress.netpol.home.arpa/envoy-internal: allow
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            gateway.envoyproxy.io/owning-gateway-name: envoy-internal
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: np-e-a-to-envoy-internal
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      egress.netpol.home.arpa/envoy-internal: allow
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            gateway.envoyproxy.io/owning-gateway-name: envoy-internal
+      toPorts:
+        - ports:
+            - port: "10080"
+              protocol: TCP
+            - port: "10443"
+              protocol: TCP
+            - port: "10443"
+              protocol: UDP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: np-i-a-from-envoy-external
+spec:
+  enableDefaultDeny:
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      ingress.netpol.home.arpa/envoy-external: allow
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            gateway.envoyproxy.io/owning-gateway-name: envoy-external
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: np-e-a-to-envoy-external
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      egress.netpol.home.arpa/envoy-external: allow
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            gateway.envoyproxy.io/owning-gateway-name: envoy-external
+      toPorts:
+        - ports:
+            - port: "10080"
+              protocol: TCP
+            - port: "10443"
+              protocol: TCP
+            - port: "10443"
+              protocol: UDP

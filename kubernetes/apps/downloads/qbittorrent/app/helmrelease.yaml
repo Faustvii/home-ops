@@ -39,6 +39,9 @@ spec:
         pod:
           labels:
             egress.netpol.home.arpa/dns-only: allow
+            ingress.netpol.home.arpa/envoy-internal: allow
+            ingress.netpol.home.arpa/host: allow
+            ingress.netpol.home.arpa/qbittorrent: allow
         containers:
           app:
             image:

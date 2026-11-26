@@ -33,6 +33,8 @@ spec:
         cron: "0 3 * * *"
         jitter: "1h"
   moverDefaults:
+    podLabels:
+      egress.netpol.home.arpa/apiserver: allow
     podSecurityContext:
       fsGroup: 1000
       fsGroupChangePolicy: OnRootMismatch

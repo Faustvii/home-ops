@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: np-e-a-to-readarr
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      egress.netpol.home.arpa/readarr: allow
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: media-management
+            app.kubernetes.io/name: readarr
+      toPorts:
+        - ports:
+            - port: "8787"
+              protocol: TCP

@@ -35,6 +35,11 @@ spec:
         runAsUser: 1000
     controllers:
       openbooks:
+        pod:
+          labels:
+            egress.netpol.home.arpa/internet: allow
+            ingress.netpol.home.arpa/envoy-internal: allow
+            ingress.netpol.home.arpa/host: allow
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
