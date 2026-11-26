@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: np-i-a-from-internet
+spec:
+  enableDefaultDeny:
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      ingress.netpol.home.arpa/internet: allow
+  ingress:
+    - fromCIDRSet:
+        - cidr: 0.0.0.0/0
+          except:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16

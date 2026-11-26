@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: np-i-a-from-observability
+spec:
+  enableDefaultDeny:
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      ingress.netpol.home.arpa/observability: allow
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            netpol.home.arpa/observability: "true"
