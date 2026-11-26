@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cilium-rules
+spec:
+  groups:
+    - name: cilium.netpol
+      rules:
+        - alert: CiliumPolicyDrop
+          annotations:
+            summary: "Network policy drops {{ $labels.traffic_direction }} traffic of {{ $labels.source_namespace }}/{{ $labels.source_workload }}."
+            description: "Cilium dropped {{ $value | humanize }} packets in 10 minutes from {{ $labels.source_namespace }}/{{ $labels.source_workload }} to {{ $labels.destination_namespace }}/{{ $labels.destination_workload }}, because no policy allows them. An empty destination is outside the cluster. Find the flows with: hubble observe --verdict DROPPED --namespace {{ $labels.source_namespace }}"
+          expr: |-
+            sum by (source_namespace, source_workload, destination_namespace, destination_workload, traffic_direction) (
+              increase(hubble_drop_total{reason="POLICY_DENIED"}[10m])
+            ) > 0
+          labels:
+            severity: warning
+        - alert: CiliumPolicyDenylistDrop
+          annotations:
+            summary: "A deny rule blocks {{ $labels.source_namespace }}/{{ $labels.source_workload }}."
+            description: "Cilium dropped {{ $value | humanize }} packets in 10 minutes from {{ $labels.source_namespace }}/{{ $labels.source_workload }} to {{ $labels.destination_namespace }}/{{ $labels.destination_workload }} with a deny rule, for example np-e-d-nfs. No workload is expected to send this traffic. Find the flows with: hubble observe --verdict DROPPED --namespace {{ $labels.source_namespace }}"
+          expr: |-
+            sum by (source_namespace, source_workload, destination_namespace, destination_workload, traffic_direction) (
+              increase(hubble_drop_total{reason="POLICY_DENY"}[10m])
+            ) > 0
+          labels:
+            severity: critical
