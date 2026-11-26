@@ -82,6 +82,7 @@ spec:
                     - '3500'
   storage:
     existingClaim: minecraft-chunklock
+  loaderVersion: 0.20.1
   type: Fabric
   version: 1.21.11
   voiceChat:

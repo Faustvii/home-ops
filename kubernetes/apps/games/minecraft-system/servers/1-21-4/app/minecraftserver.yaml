@@ -86,6 +86,7 @@ spec:
                     - '3500'
   storage:
     existingClaim: minecraft-1-21-4
+  loaderVersion: 0.20.1
   type: Fabric
   version: 1.21.4
   voiceChat:
