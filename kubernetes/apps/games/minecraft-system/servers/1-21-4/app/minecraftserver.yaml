@@ -58,6 +58,8 @@ spec:
   ops:
     names:
       - liope
+  podLabels:
+    egress.netpol.home.arpa/internet: allow
   properties:
     difficulty: Hard
     motd: MindsCraft

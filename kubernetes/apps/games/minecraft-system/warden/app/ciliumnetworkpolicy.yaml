@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-e-a-warden-prepare
+spec:
+  # Warden gives no podLabels to the prepare Job pods, so this policy selects
+  # them by their component label. Same rule as np-e-a-to-internet.
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      warden.faustvii.github.io/component: prepare
+  egress:
+    - toCIDRSet:
+        - cidr: 0.0.0.0/0
+          except:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16

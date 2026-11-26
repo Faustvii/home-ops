@@ -27,6 +27,8 @@ spec:
       slug: from-the-fog-reimagined
   ops:
     names: ["Liope"]
+  podLabels:
+    egress.netpol.home.arpa/internet: allow
   properties:
     difficulty: Hard
     motd: "From the Fog (Spooooky)"
