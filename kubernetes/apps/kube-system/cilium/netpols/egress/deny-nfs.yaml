@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: np-e-d-nfs
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector: {}
+  egressDeny:
+    - toEntities:
+        - all
+      toPorts:
+        - ports:
+            - port: "2049"
+              protocol: TCP
+            - port: "2049"
+              protocol: UDP
