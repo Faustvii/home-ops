@@ -22,7 +22,7 @@ spec:
       value: '["mise"]'
     - name: RENOVATE_REDIS_URL
       value: "redis://dragonfly.database.svc.cluster.local:6379/2"
-  image: ghcr.io/renovatebot/renovate:44.263.0@sha256:ecfffc1816b8792b1af904497f76a63e0213eb58074fdc459f97603a67e1087e
+  image: ghcr.io/renovatebot/renovate:45.1.0@sha256:1438b77f8ed338e64c7a8bf53d40724fb6229690bcd3a42264158b0768ba9aba
   parallelism: 10
   provider:
     name: github
