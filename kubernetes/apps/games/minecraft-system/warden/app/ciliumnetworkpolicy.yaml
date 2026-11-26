@@ -19,3 +19,24 @@ spec:
             - 10.0.0.0/8
             - 172.16.0.0/12
             - 192.168.0.0/16
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-e-a-warden-isolate
+spec:
+  # Isolates the egress of the server and prepare pods. The empty rule allows
+  # nothing. DNS comes from np-e-a-kubedns, the internet from the labels and
+  # np-e-a-warden-prepare. Ingress stays with the NetworkPolicies of Warden.
+  endpointSelector:
+    matchExpressions:
+      - key: warden.faustvii.github.io/component
+        operator: In
+        values:
+          - prepare
+          - server
+  enableDefaultDeny:
+    egress: true
+  egress:
+    - {}
