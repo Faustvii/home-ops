@@ -6,16 +6,6 @@ metadata:
 spec:
   from:
     - kind: GarageKey
-      namespace: default
-    - kind: GarageBucket
-      namespace: default
-
-    - kind: GarageKey
-      namespace: database
-    - kind: GarageBucket
-      namespace: database
-
-    - kind: GarageKey
       namespace: kritika
     - kind: GarageBucket
       namespace: kritika
@@ -47,3 +37,26 @@ spec:
   to:
     - kind: GarageCluster
       name: garage
+---
+# database/postgres and default/schemas adopt pre-existing buckets via spec.bucketId,
+# which bucketScope Referenced (the default since v0.9.1) denies.
+apiVersion: garage.rajsingh.info/v1beta1
+kind: GarageReferenceGrant
+metadata:
+  name: allow-adopted-buckets
+  namespace: storage
+spec:
+  from:
+    - kind: GarageKey
+      namespace: default
+    - kind: GarageBucket
+      namespace: default
+
+    - kind: GarageKey
+      namespace: database
+    - kind: GarageBucket
+      namespace: database
+  to:
+    - kind: GarageCluster
+      name: garage
+      bucketScope: Cluster
