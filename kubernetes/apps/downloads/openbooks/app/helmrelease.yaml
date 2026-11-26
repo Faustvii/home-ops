@@ -50,6 +50,7 @@ spec:
             args:
               - --persist
               - --name=k8steken
+              - --server=irc.irchighway.net:9999
             env:
               TZ: ${TZ}
             probes:
