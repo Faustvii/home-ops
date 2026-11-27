@@ -10,7 +10,7 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 0.68.2
+    tag: 0.69.0
   url: oci://ghcr.io/victoriametrics/helm-charts/victoria-metrics-operator
   verify:
     matchOIDCIdentity:
@@ -33,5 +33,8 @@ spec:
       plain: true
     operator:
       enable_converter_ownership: true
+    rbac:
+      aggregatedClusterRoles:
+        enabled: false
     serviceMonitor:
       enabled: true
