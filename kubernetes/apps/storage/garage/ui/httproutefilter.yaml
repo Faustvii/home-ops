@@ -1,0 +1,14 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.envoyproxy.io/httproutefilter_v1alpha1.json
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: HTTPRouteFilter
+metadata:
+  name: garage-ui-credential
+spec:
+  # Replace whatever token the UI sends with the dedicated UI token.
+  # Pocket ID (SecurityPolicy from components/oidc/envoy) is the real gate.
+  credentialInjection:
+    credential:
+      valueRef:
+        name: garage-ui-credential
+    overwrite: true

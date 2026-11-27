@@ -5,6 +5,5 @@ resources:
   - ./secret.sops.yaml
   - ./garagecluster.yaml
   - ./httproute-buckets.yaml
-  - ./httproute-admin.yaml
   - ./garagekey.yaml
   - ./garagereferencegrant.yaml
