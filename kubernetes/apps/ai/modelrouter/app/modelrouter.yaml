@@ -43,6 +43,16 @@ spec:
         - code
         - tools
         - vision
+  # Both backends serve QFN, so every request tries the desktop first and
+  # falls back to Strix when the desktop is off or fails. Rules run before
+  # the name match, so this also catches requests that name a backend.
+  rules:
+    - name: qfn-prefer-desktop
+      route:
+        strategy: primary-fallback
+        backends:
+          - desktop-qwen3-8-flash-next
+          - self-qwen3-8-flash-next
   # BackendNameMatch: the request's "model" selects the backend by
   # displayName; anything unmatched falls through to defaultRoute.
   defaultRouteStrategy: BackendNameMatch
