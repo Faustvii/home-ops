@@ -33,5 +33,8 @@ spec:
       plain: true
     operator:
       enable_converter_ownership: true
+    rbac:
+      aggregatedClusterRoles:
+        enabled: false
     serviceMonitor:
       enabled: true
