@@ -126,6 +126,9 @@ spec:
       requests:
         cpu: 100m
         memory: 512Mi
+    startupProbe:
+      enabled: true
+      failureThreshold: 60
   postRenderers:
     - kustomize:
         patches:
