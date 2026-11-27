@@ -126,6 +126,13 @@ spec:
       requests:
         cpu: 100m
         memory: 512Mi
+    startupProbe:
+      # A major upgrade runs occ migrations before php-fpm answers /status.php.
+      # The liveness probe (3 failures) would restart the pod mid-upgrade, so
+      # give it a startup window. Chart default is 30 failures (5 minutes);
+      # 60 makes it 10 minutes.
+      enabled: true
+      failureThreshold: 60
   postRenderers:
     - kustomize:
         patches:
