@@ -36,8 +36,6 @@ spec:
         provider: openai
         url: http://192.168.1.100:18080
         model: qwen3.8-next-flash
-        credentialsSecretRef:
-          name: modelrouter-desktop
       timeout: 20m
       capabilities:
         - code
