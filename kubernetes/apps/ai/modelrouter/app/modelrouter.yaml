@@ -26,6 +26,23 @@ spec:
         - code
         - tools
         - vision
+    # Qwen3.8-Flash-Next on radiance (docker) on faust-desktop, 2x R9700.
+    # Best effort: the desktop is not always on, so this is never the
+    # defaultRoute. The router appends the request path (/v1/...) to url.
+    - name: desktop-qwen3-8-flash-next
+      displayName: desktop-qwen3.8-flash-next
+      tier: local
+      external:
+        provider: openai
+        url: http://192.168.1.100:18080
+        model: qwen3.8-next-flash
+        credentialsSecretRef:
+          name: modelrouter-desktop
+      timeout: 20m
+      capabilities:
+        - code
+        - tools
+        - vision
   # BackendNameMatch: the request's "model" selects the backend by
   # displayName; anything unmatched falls through to defaultRoute.
   defaultRouteStrategy: BackendNameMatch
