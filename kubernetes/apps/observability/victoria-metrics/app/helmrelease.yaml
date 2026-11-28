@@ -140,6 +140,11 @@ spec:
         # Replaced by node-memory-rules below (ZFS ARC aware)
         NodeMemoryHighUtilization:
           enabled: false
+    # Alert "Source" links open the alert query in Grafana Explore
+    external:
+      grafana:
+        datasource: prometheus
+        host: https://grafana.${SECRET_DOMAIN}
     extraRules:
       dockerhub-rules:
         groups:
