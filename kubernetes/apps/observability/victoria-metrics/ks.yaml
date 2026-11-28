@@ -3,66 +3,11 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app victoria-metrics-operator
+  name: &app vmks
   namespace: &namespace observability
 spec:
   interval: 1h
   path: ./kubernetes/apps/observability/victoria-metrics/app
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  targetNamespace: *namespace
-  wait: true
----
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &app victoria-logs-vm
-  namespace: &namespace observability
-spec:
-  dependsOn:
-    - name: victoria-metrics-operator
-  interval: 1h
-  path: ./kubernetes/apps/observability/victoria-metrics/logs
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  targetNamespace: *namespace
----
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &app victoria-traces
-  namespace: &namespace observability
-spec:
-  dependsOn:
-    - name: victoria-metrics-operator
-  interval: 1h
-  path: ./kubernetes/apps/observability/victoria-metrics/traces
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  targetNamespace: *namespace
----
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &app vmks
-  namespace: &namespace observability
-spec:
-  dependsOn:
-    - name: victoria-metrics-operator
-  interval: 1h
-  path: ./kubernetes/apps/observability/victoria-metrics/metrics
   postBuild:
     substituteFrom:
       - kind: Secret

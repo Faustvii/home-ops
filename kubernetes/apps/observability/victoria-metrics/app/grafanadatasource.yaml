@@ -3,6 +3,26 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDatasource
 metadata:
+  name: victorialogs
+spec:
+  datasource:
+    access: proxy
+    jsonData:
+      maxLines: 250
+    name: victorialogs
+    type: victoriametrics-logs-datasource
+    url: http://vlsingle-vl.observability.svc.cluster.local:9428
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  plugins:
+    - name: victoriametrics-logs-datasource
+      version: 0.29.0
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadatasource_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
   name: victoriatraces-tempo
 spec:
   datasource:

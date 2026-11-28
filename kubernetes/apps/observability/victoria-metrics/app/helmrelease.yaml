@@ -38,3 +38,377 @@ spec:
         enabled: false
     serviceMonitor:
       enabled: true
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/ocirepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: vm-k8s-stack
+spec:
+  interval: 5m
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 0.99.1
+  url: oci://ghcr.io/victoriametrics/helm-charts/victoria-metrics-k8s-stack
+  verify:
+    matchOIDCIdentity:
+      - issuer: "^https://token.actions.githubusercontent.com$"
+        subject: "^https://github.com/VictoriaMetrics/helm-charts.*$"
+    provider: cosign
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vmks
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: vm-k8s-stack
+  dependsOn:
+    - name: victoria-metrics-operator
+  interval: 1h
+  values:
+    alertmanager:
+      enabled: true
+      config:
+        route:
+          receiver: blackhole
+          group_by: ["alertname", "cluster", "job"]
+          repeat_interval: 12h
+          routes:
+            - receiver: blackhole
+              matchers: ['alertname = "InfoInhibitor"']
+            - receiver: discord-general
+              matchers: ['severity = "critical"']
+        inhibit_rules:
+          - equal: ["alertname", "namespace"]
+            source_matchers: ['severity = "critical"']
+            target_matchers: ['severity = "warning"']
+        receivers:
+          - name: blackhole
+          - name: discord-general
+            discord_configs:
+              - webhook_url_file: /etc/vm/secrets/alertmanager-secret/discord_general_webhook_url
+                username: Talos
+          - name: discord-flux
+            discord_configs:
+              - webhook_url_file: /etc/vm/secrets/alertmanager-secret/discord_flux_webhook_url
+                username: Flux
+      monzoTemplate:
+        enabled: false
+      route:
+        enabled: true
+        hostnames: ["alertmanager.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+      spec:
+        disableNamespaceMatcher: true
+        externalURL: https://alertmanager.${SECRET_DOMAIN}
+        secrets:
+          - alertmanager-secret
+        storage:
+          volumeClaimTemplate:
+            spec:
+              resources:
+                requests:
+                  storage: 1Gi
+    crds:
+      enabled: false
+    defaultDashboards:
+      enabled: false
+      grafanaOperator:
+        enabled: true
+        spec:
+          instanceSelector:
+            matchLabels:
+              dashboards: grafana
+    defaultDatasources:
+      grafanaOperator:
+        enabled: false
+    defaultRules:
+      create: true
+      rules:
+        "count:up0":
+          enabled: false
+        # Replaced by kube-client-certificate-rules below (ignores Talos temporary certs)
+        KubeClientCertificateExpiration:
+          enabled: false
+        # Replaced by node-memory-rules below (ZFS ARC aware)
+        NodeMemoryHighUtilization:
+          enabled: false
+    extraRules:
+      dockerhub-rules:
+        groups:
+          - name: dockerhub
+            rules:
+              - alert: DockerhubRateLimitRisk
+                annotations:
+                  summary: Kubernetes cluster Dockerhub rate limit risk
+                expr: count(time() - container_last_seen{image=~"(docker.io).*",container!=""} < 30) > 100
+                labels:
+                  severity: critical
+      # Talos authenticates to the apiserver with short-lived (10 minute) client
+      # certificates. A few of those requests are enough to drag the 1st
+      # percentile below the threshold for a single evaluation window, so a
+      # real expiry must now persist for an hour before alerting.
+      kube-client-certificate-rules:
+        groups:
+          - name: kube-client-certificate
+            rules:
+              - alert: KubeClientCertificateExpiration
+                annotations:
+                  description: A client certificate used to authenticate to kubernetes apiserver is expiring in less than 7.0 days on cluster {{ $labels.cluster }}.
+                  runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeclientcertificateexpiration
+                  summary: Client certificate is about to expire.
+                expr: (histogram_quantile(0.01, sum(rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m])) without(namespace,service,endpoint)) < 604800) and on(job,cluster,instance) (apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0)
+                for: 1h
+                labels:
+                  severity: warning
+              - alert: KubeClientCertificateExpiration
+                annotations:
+                  description: A client certificate used to authenticate to kubernetes apiserver is expiring in less than 24.0 hours on cluster {{ $labels.cluster }}.
+                  runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeclientcertificateexpiration
+                  summary: Client certificate is about to expire.
+                expr: (histogram_quantile(0.01, sum(rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m])) without(namespace,service,endpoint)) < 86400) and on(job,cluster,instance) (apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0)
+                for: 1h
+                labels:
+                  severity: critical
+      # The default rule counts the ZFS ARC as used, so TrueNAS sits at ~96%.
+      # Count ARC above its minimum (zfs_arc_min) as available. Nodes without
+      # ZFS metrics get 0 added and keep the default calculation.
+      node-memory-rules:
+        groups:
+          - name: node-memory
+            rules:
+              - record: instance:node_memory_used_excluding_arc:percent
+                expr: |
+                  100 - (
+                    (
+                      sum by (instance, job) (node_memory_MemAvailable_bytes{job="node-exporter"})
+                      + (
+                        sum by (instance, job) (clamp_min(node_zfs_arc_size{job="node-exporter"} - node_zfs_arc_c_min{job="node-exporter"}, 0))
+                        or sum by (instance, job) (node_memory_MemTotal_bytes{job="node-exporter"}) * 0
+                      )
+                    )
+                    / sum by (instance, job) (node_memory_MemTotal_bytes{job="node-exporter"}) * 100
+                  )
+              - alert: NodeMemoryHighUtilization
+                annotations:
+                  description: |
+                    Memory is filling up at {{ $labels.instance }}, has been above 90% for the last 15 minutes, is currently at {{ printf "%.2f" $value }}%.
+                  runbook_url: https://runbooks.prometheus-operator.dev/runbooks/node/nodememoryhighutilization
+                  summary: Host is running out of memory.
+                expr: instance:node_memory_used_excluding_arc:percent{instance!="192.168.10.13:9100"} > 90
+                for: 15m
+                labels:
+                  severity: warning
+              # talos-04 (192.168.10.13) runs at ~91% by design: the LLM models
+              # hold their memory. Alert only when the last ~3.7 GiB are in use.
+              - alert: NodeMemoryHighUtilization
+                annotations:
+                  description: |
+                    Memory is filling up at {{ $labels.instance }}, has been above 97% for the last 15 minutes, is currently at {{ printf "%.2f" $value }}%.
+                  runbook_url: https://runbooks.prometheus-operator.dev/runbooks/node/nodememoryhighutilization
+                  summary: Host is running out of memory.
+                expr: instance:node_memory_used_excluding_arc:percent{instance="192.168.10.13:9100"} > 97
+                for: 15m
+                labels:
+                  severity: warning
+      oom-rules:
+        groups:
+          - name: oom
+            rules:
+              - alert: OomKilled
+                annotations:
+                  summary: Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} has been OOMKilled {{ $value }} times in the last 10 minutes.
+                expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 10m >= 1) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[10m]) == 1
+                labels:
+                  severity: critical
+    global:
+      cluster:
+        dnsDomain: cluster.local.
+    grafana:
+      enabled: false
+    kube-state-metrics:
+      enabled: true
+      fullnameOverride: kube-state-metrics
+    kubeApiServer:
+      enabled: true
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              # Drop histogram buckets and histograms that no rule or dashboard uses
+              metricRelabelConfigs:
+                - action: drop
+                  regex: (etcd_request|apiserver_request_slo|apiserver_request_sli|apiserver_request)_duration_seconds_bucket;(0\.15|0\.2|0\.3|0\.35|0\.4|0\.45|0\.6|0\.7|0\.8|0\.9|1\.25|1\.5|1\.75|2|3|3\.5|4|4\.5|6|7|8|9|15|20|40|45|50)(\.0)?
+                  sourceLabels: [__name__, le]
+                - action: drop
+                  regex: (apiserver_request_body_size_bytes|apiserver_response_sizes|apiserver_storage_list_duration_seconds|apiserver_watch_cache_initialization_duration_seconds|apiserver_watch_cache_read_wait_seconds|apiserver_watch_events_dispatch_duration_seconds|apiserver_watch_events_sizes|apiserver_watch_list_duration_seconds|etcd_request_duration_seconds)_(bucket|count|sum)
+                  sourceLabels: [__name__]
+              port: https
+              scheme: https
+              tlsConfig:
+                caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+                serverName: kubernetes
+    kubeControllerManager:
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              port: http-metrics
+              scheme: https
+              tlsConfig:
+                insecureSkipVerify: true
+    kubeEtcd:
+      service:
+        port: 2381
+        selector:
+          component: kube-apiserver
+        targetPort: 2381
+      vmScrape:
+        spec:
+          endpoints:
+            - port: http-metrics
+              scheme: http
+    kubeScheduler:
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              port: http-metrics
+              scheme: https
+              tlsConfig:
+                insecureSkipVerify: true
+    kubelet:
+      vmScrape:
+        spec:
+          # This list replaces the chart's rules, which also copy every node label onto each series
+          relabelConfigs:
+            - sourceLabels: [__metrics_path__]
+              targetLabel: metrics_path
+            - replacement: kubelet
+              targetLabel: job
+      vmScrapes:
+        kubelet:
+          enabled: true
+    nameOverride: vmks
+    prometheus-node-exporter:
+      enabled: true
+    victoria-metrics-operator:
+      enabled: false
+    vlagent:
+      enabled: true
+      name: vl
+      spec:
+        k8sCollector:
+          enabled: true
+          # Prevent VLAgent self-ingestion
+          excludeFilter: |-
+            kubernetes.pod_name:=%{HOSTNAME}
+          includePodLabels: true
+          # Normalize stream identity around one app label key plus namespace
+          streamFields:
+            - kubernetes.namespace
+            - kubernetes.pod_labels.app.kubernetes.io/name
+        remoteWrite:
+          - url: http://vlsingle-vl.observability.svc.cluster.local:9428/insert/native
+    vlsingle:
+      enabled: true
+      name: vl
+      spec:
+        retentionMaxDiskSpaceUsageBytes: 20GB
+        retentionPeriod: 14d
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 20Gi
+    vmagent:
+      spec:
+        extraArgs:
+          # Hides dropped targets and pre-relabel labels on the targets page
+          promscrape.dropOriginalLabels: "true"
+          promscrape.maxScrapeSize: "32MB"
+          promscrape.streamParse: "true"
+        globalScrapeMetricRelabelConfigs: &relabel-config
+          - action: labeldrop
+            regex: ((?:extensions_talos|feature_node).*)
+        inlineRelabelConfig: *relabel-config
+        podMetadata:
+          labels:
+            netpol.home.arpa/observability: "true"
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+          requests:
+            cpu: 150m
+        scrapeInterval: 20s
+        selectAllByDefault: true
+    vmalert:
+      enabled: true
+    vmsingle:
+      route:
+        enabled: true
+        hostnames: ["vmsingle.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+      spec:
+        extraArgs:
+          # Keeps one sample per 5m for data older than 30d (enterprise feature)
+          downsampling.period: 30d:5m
+          eula: "true"
+          maxLabelsPerTimeseries: "40"
+          opentelemetry.usePrometheusNaming: "true"
+          search.maxUniqueTimeseries: "600000"
+          search.minStalenessInterval: 5m
+        image:
+          repository: victoriametrics/victoria-metrics
+          tag: v1.157.0-enterprise
+        replicaCount: 1
+        resources:
+          limits:
+            memory: 3Gi
+          requests:
+            cpu: 100m
+            memory: 2Gi
+        retentionPeriod: 90d
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 75Gi
+        useDefaultResources: false
+        useStrictSecurity: true
+    vtsingle:
+      enabled: true
+      name: vt
+      spec:
+        extraArgs:
+          otlpGRPC.tls: "false"
+          otlpGRPCListenAddr: ":4317"
+        retentionMaxDiskSpaceUsageBytes: 20GB
+        retentionPeriod: 14d
+        serviceSpec:
+          metadata:
+            name: vtsingle-vt-otel
+          spec:
+            ports:
+              - name: grpc
+                port: 4317
+                protocol: TCP
+                targetPort: 4317
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 20Gi
