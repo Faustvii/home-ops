@@ -39,7 +39,7 @@ spec:
           app:
             image:
               repository: ghcr.io/faustvii/beth-leaderboard
-              tag: pr-latest@sha256:762f718bd9c296bb7d8ea89326d7dbe4854cae406917c67510aee75f6e5a796d
+              tag: pr-latest@sha256:1b01c03f24fdb25b49d3d25ae0312ee34355820bae3b2e489fe4ba0690d65723
             env:
               ALLOW_LOCAL_LOGIN: "true"
               DATABASE_CONNECTION_TYPE: local
